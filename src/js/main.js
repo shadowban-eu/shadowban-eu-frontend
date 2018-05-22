@@ -13,10 +13,16 @@ document.addEventListener('DOMContentLoaded', () => {
       .then((resultDOM) => {
         const tweetElements = Array.from(resultDOM.querySelectorAll('.stream-container .tweet'));
         testCase.tweets = TSBv2.filterHashTweets(tweetElements);
+        const qfTestTweet = testCase.tweets[0];
         ui.updateTask({
           id: 'getTweets',
-          status: 'ok'
-        }, `Found ${testCase.tweets.length} tweets with #tags. \\o/`);
+          status: 'ok',
+          msg: `Found ${testCase.tweets.length} tweets with #tags. \\o/`
+        }, {
+          id: 'checkQF',
+          status: 'running',
+          msg: `Testing #${qfTestTweet.tags[0]}`
+        });
       });
   });
   // M.AutoInit();
