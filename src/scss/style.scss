@@ -1,4 +1,4 @@
-$TWITTER_BLUE: rgb(33, 150, 243);
+$TWITTER_BLUE: rgb(29, 161, 242);
 $ACCENT_PURPLE: rgb(197, 61, 197);
 
 * {
@@ -13,6 +13,16 @@ body {
 }
 
 h1, h2, h3, p { margin: 0; padding: 0; }
+
+a.btn {
+  color: $TWITTER_BLUE;
+  border: 1px solid $TWITTER_BLUE;
+  border-radius: 100px;
+  box-shadow: none;
+  &:hover {
+    color: $ACCENT_PURPLE;
+  }
+}
 
 .header, .controls span.prefix {
     font-family: 'Lobster', cursive;
@@ -47,11 +57,9 @@ h1, h2, h3, p { margin: 0; padding: 0; }
       }
     }
   }
-  a.btn {
-    color: $TWITTER_BLUE;
-    &:hover {
-      color: $ACCENT_PURPLE;
-    }
+  .prefix ~ input[valid] {
+   color: $ACCENT_PURPLE !important;
+
   }
   /* icon prefix focus color */
   .prefix.active {
