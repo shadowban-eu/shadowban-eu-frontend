@@ -1,0 +1,154 @@
+/*
+** Simple Twitter Shadowban Checker - js
+** 2016 @xho
+*/
+
+* {
+    outline: none;
+}
+
+body {
+    font-family: Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: #333;
+    font-weight: 500;
+}
+input {
+  font-weight: 500;
+}
+
+h1, h2, h3, p { margin: 0; padding: 0; }
+
+.header, .controls span.prefix {
+    font-family: 'Lobster', cursive;
+    text-align: center;
+    color: rgb(33, 150, 243);
+    top: 0;
+}
+.header .header-screen_name {
+    color: rgb(197, 61, 197);
+}
+
+/* label color */
+.input-field label {
+ color: rgb(33, 150, 243) !important;
+}
+/* label focus color */
+.input-field input[type=text]:focus + label {
+ color: rgb(33, 150, 243) !important;
+}
+/* label underline focus color */
+.input-field input[type=text]:focus {
+ border-bottom: 1px solid rgb(33, 150, 243) !important;
+ box-shadow: 0 1px 0 0 rgb(33, 150, 243) !important;
+}
+/* valid color */
+.input-field input[type=text].valid {
+ border-bottom: 1px solid rgb(33, 150, 243) !important;
+ box-shadow: 0 1px 0 0 rgb(33, 150, 243) !important;
+}
+/* invalid color */
+.input-field input[type=text].invalid {
+ border-bottom: 1px solid rgb(33, 150, 243) !important;
+ box-shadow: 0 1px 0 0 rgb(33, 150, 243) !important;
+}
+/* icon prefix focus color */
+.input-field .prefix.active {
+ color: rgb(197, 61, 197) !important;
+}
+.input-field input {
+  color: #c53dc5;
+}
+
+form.controls a {
+  font-weight: 500;
+}
+
+
+footer {
+    font-size: .875em;
+    color: #aaa;
+}
+footer a {
+    color: rgb(33, 150, 243);;
+    text-decoration: none;
+}
+footer div:first-child {
+    text-align: center;
+}
+footer p {
+    margin-bottom: 0.25em;
+}
+section.input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+section.results {
+    display: none;
+    background: none;
+    margin-top: 2em;
+    padding-top: 2em;
+    border-top: 1px solid #8fc4de;
+    background: none;
+}
+
+section.results.searching {
+    min-height: 8em;
+    background: transparent url('../img/gears.svg') bottom center no-repeat;
+}
+
+input[type=text], button {
+    border: 0;
+    padding: .4em .5em;
+    flex-grow: 1;
+    font-size: 1em;
+    background-color: #fff;
+    border-radius: .25em;
+}
+input[type=text] {
+    margin-right: 1em;
+    min-width: 5em;
+}
+
+button:active {
+    background-color: #333;
+    color: #fff;
+}
+
+.results ul {
+    margin: 0;
+    padding: 0 1em;
+}
+.results li { margin-bottom: 0.5em; }
+.results li:last-child { margin-bottom: 2em; }
+
+.results:not(.searching) div {
+    padding: .5em;
+    background-color: #3cb4fd;
+    text-align: center;
+    border-radius: .25em;
+}
+
+.results.accent:not(.searching) div {
+    background-color: #c53dc5;
+}
+
+
+.results a {
+    font-weight: bold;
+    color: #fff;
+}
+
+
+
+@media (max-width:440px) {
+    .container, header, footer {
+        padding-left: 1em;
+        padding-right: 1em;
+        margin: 1em auto;
+        box-sizing: border-box;
+        overflow-x: hidden;
+        width: 92%;
+    }
+}
