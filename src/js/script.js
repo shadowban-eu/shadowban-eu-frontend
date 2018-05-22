@@ -1,8 +1,8 @@
+/* global TSBv2 */
 /*
 ** Simple Twitter Shadowban Checker - js
 ** 2016 @xho
 */
-import TSBv2 from './shadowban'; 
 
 var TSB = {
 

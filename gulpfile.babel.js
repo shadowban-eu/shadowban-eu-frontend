@@ -17,7 +17,9 @@ const plugins = gulpLoadPlugins();
 const paths = {
   js: ['src/js/**/*.js', 'node_modules/materialize-css/js/*.js'],
   scss: ['src/scss/*.scss'],
-  copyOnly: ['src/index.html', 'src/img/**', 'src/vendor/**/*.+(css|js)']
+  copyOnly: [
+    'src/index.html', 'src/parsepage.php',
+    'src/css/style.css', 'src/img/**', 'src/vendor/**/*.+(css|js)']
 };
 
 const log = function log(...str) {
@@ -59,8 +61,8 @@ gulp.task('rollup', async () => {
 });
 
 gulp.task('serve', (done) => {
-  const args = ['./dist', '-c-1'];
-  const httpServerProcess = spawn('http-server', args);
+  const args = ['-S', 'localhost:8080', '-t', './dist/'];
+  const httpServerProcess = spawn('php', args);
   httpServerProcess.stdout.on('data', data =>
     data.toString().trim().split('\n')
       .forEach(line => log.call('serve', line.includes('http') ? chalk.green(line) : line))
