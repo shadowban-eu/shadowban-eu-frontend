@@ -7,7 +7,7 @@
     <meta name="keywords" content="Twitter, Shadowban, Shadowbanned, Ban, Block, Quality Filter">
     <meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1'>
     <link rel="icon" type="image/png" href="favicon.png" />
-    
+
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Import Fonts-->
@@ -19,32 +19,38 @@
     <link rel="stylesheet" type="text/css" href="css/style.css">
   </head>
   <body>
-    <section class="row header">
+    <section class="row header section">
       <div class="col s12">
         <h2>Is <span class="header-screen_name">@username</span><br> shadowbanned on Twitter?</h2>
       </div>
     </section>
 
-    <section class="row">
+    <section class="row section">
       <div class="col s12 offset-m1 m10 offset-l2 l8 center-align controls">
         <div class="card-panel">
-          <form class="row valign-wrapper">
-            <div class="col s10">
-              <div class="input-field">
-                <span class="prefix">@</span>
-                <input id="screenName" type="text" autocomplete="username" pattern="^(?:@)?([A-Za-z0-9_]){1,15}$">
-                <label for="screenName">Username</label>
-              </div>
+          <div class="row valign-wrapper">
+            <div class="col s10 input-field">
+              <span class="prefix">@</span>
+              <input
+                id="screenName"
+                type="text"
+                autocomplete="username"
+                required
+                pattern="^(?:@)?([A-Za-z0-9_]){1,15}$"
+                data-position="bottom"
+                data-tooltip="Please provide a valid Twitter @handle!"
+              >
+              <label for="screenName">Username</label>
             </div>
             <div class="col s2">
-              <a class="waves-effect waves white btn btn-flat">Check</a>
+              <a id="check" class="waves-effect waves white btn btn-flat">Check</a>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </section>
 
-    <footer>
+    <footer class="section">
       <div class="row">
         <div class="col offset-s2 s8">
           No copyright 2016 <a href="https://twitter.com/xho">@xho</a> - v. 1.0 beta
