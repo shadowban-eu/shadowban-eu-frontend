@@ -1,11 +1,20 @@
 import resolve from 'rollup-plugin-node-resolve';
 import babel from 'rollup-plugin-babel';
 import uglify from 'rollup-plugin-uglify';
+import commonjs from 'rollup-plugin-commonjs';
 
 const production = process.env.PRODUCTION;
 
 const plugins = [
-  resolve(),
+  resolve({
+    jsnext: true,
+    browser: true,
+    preferBuiltins: false
+  }),
+  commonjs({
+    include: 'node_modules/**',
+    sourceMap: false
+  }),
   babel({
     babelrc: false, // ignore babel config from package.json (used for node/gulp)
     exclude: 'node_modules/**', // only transpile our source code
@@ -23,7 +32,8 @@ const plugins = [
     ],
     plugins: [
       'transform-class-properties',
-      'transform-object-rest-spread'
+      'transform-object-rest-spread',
+      'external-helpers'
     ]
   })
 ];
