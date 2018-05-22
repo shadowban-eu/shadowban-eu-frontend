@@ -25,29 +25,48 @@
       </div>
     </section>
 
-    <section class="row section">
-      <div class="col s12 offset-m1 m10 offset-l2 l8 center-align controls">
-        <div class="card-panel">
-          <div class="row valign-wrapper">
-            <div class="col s10 input-field">
-              <span class="prefix">@</span>
-              <input
-                id="screenName"
-                type="text"
-                autocomplete="username"
-                required
-                pattern="^(?:@)?([A-Za-z0-9_]){1,15}$"
-                data-position="bottom"
-                data-tooltip="Please provide a valid Twitter @handle!"
-              >
-              <label for="screenName">Username</label>
+    <section id="stage" class="row">
+      <div class="col s12 offset-m1 m10 offset-l2 l8 center-align">
+        <ul class="collapsible">
+          <li>
+            <div class="collapsible-header valign-wrapper controls">
+              <div class="input-field">
+                <span class="prefix">@</span>
+                <input
+                  id="screenName"
+                  type="text"
+                  autocomplete="username"
+                  required
+                  pattern="^(?:@)?([A-Za-z0-9_]){1,15}$"
+                  data-position="bottom"
+                  data-tooltip="Please provide a valid Twitter @handle!"
+                >
+                <label for="screenName">Username</label>
+              </div>
+              <div>
+                <a id="check" class="waves-effect waves white btn btn-flat">Check</a>
+              </div>
             </div>
-            <div class="col s2">
-              <a id="check" class="waves-effect waves white btn btn-flat">Check</a>
+            <div class="collapsible-body results">
+              <ul id="tasks">
+                <li>
+                  <div class="collapsible-header" data-task-id="getTweets">
+                    <i class="material-icons gears"></i>
+                    <span class="task-message">Loading tweets...</span>
+                  </div>
+                </li>
+                <li>
+                  <div class="collapsible-header" data-task-id="checkBan">
+                    <i class="material-icons">access_time</i>
+                    <span class="task-message">#QualityFilter</span>
+                  </div>
+                </li>
+              </ul>
             </div>
-          </div>
-        </div>
+          </li>
+        </ul>
       </div>
+    </div>
     </section>
 
     <footer class="section">

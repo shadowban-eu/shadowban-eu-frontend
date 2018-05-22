@@ -1,6 +1,7 @@
 $TWITTER_BLUE: rgb(29, 161, 242);
 $ACCENT_PURPLE: rgb(197, 61, 197);
-$INVALID_RED: rgb(197, 61, 61);
+$ACCENT_SUCCESS: rgb(8, 136, 16);
+$ACCENT_ERROR: rgb(197, 61, 61);
 
 * {
     outline: none;
@@ -35,48 +36,63 @@ a.btn {
     color: $ACCENT_PURPLE;
 }
 
-.controls {
-  /* make panel a slick bar */
-  .card-panel,  { margin: 0; padding: 0 24px };
-  .input-field {
-    /* label color */
-    label { color: $TWITTER_BLUE !important; }
-    input {
-      font-weight: 500;
-      color: $ACCENT_PURPLE;
+.input-field {
+  /* label color */
+  label { color: $TWITTER_BLUE !important; }
+  input {
+    font-weight: 500;
+    color: $ACCENT_PURPLE;
 
-      &[type=text] {
-        /* label underline focus color */
-        &:focus {
-          border-bottom: 1px solid $TWITTER_BLUE !important;
-          box-shadow: 0 1px 0 0 $TWITTER_BLUE !important;
-          /* label focus color */
-          & + label {
-            color: $TWITTER_BLUE !important;
-          }
+    &[type=text] {
+      /* label underline focus color */
+      &:focus {
+        border-bottom: 1px solid $TWITTER_BLUE !important;
+        box-shadow: 0 1px 0 0 $TWITTER_BLUE !important;
+        /* label focus color */
+        & + label {
+          color: $TWITTER_BLUE !important;
         }
       }
     }
-    /* icon prefix focus color */
-    .prefix {
-      &.active, &.valid {
-        color: $ACCENT_PURPLE;
-      }
-      &.invalid {
-        color: $INVALID_RED;
-        & + input {
-          color: $INVALID_RED;
-          border-bottom: 1px solid $INVALID_RED !important;
-          box-shadow: 0 1px 0 0 $INVALID_RED !important;
-        }
+  }
+  /* icon prefix focus color */
+  .prefix {
+    &.active, &.valid {
+      color: $ACCENT_PURPLE;
+    }
+    &.invalid {
+      color: $ACCENT_ERROR;
+      & + input {
+        color: $ACCENT_ERROR;
+        border-bottom: 1px solid $ACCENT_ERROR !important;
+        box-shadow: 0 1px 0 0 $ACCENT_ERROR !important;
       }
     }
   }
 }
 
+.controls {
+  justify-content: space-around;
+}
+
+
+[data-task-id] {
+  transform: color 0.6s ease-out;
+  &[data-task-status="ok"] {
+    color: $ACCENT_SUCCESS;
+  }
+  .gears {
+    width: 2rem;
+    margin-right: 1rem;
+    background: transparent url('../img/gears.svg') bottom center no-repeat;
+    background-size: contain;
+    margin-right: 7px;
+  }
+}
 
 footer {
   font-size: .875em;
+  margin-top: 2em;
   color: #aaa;
   a {
       color: $TWITTER_BLUE;;
@@ -88,55 +104,4 @@ footer {
   p {
       margin-bottom: 0.25em;
   }
-}
-
-section.results {
-    display: none;
-    background: none;
-    margin-top: 2em;
-    padding-top: 2em;
-    border-top: 1px solid #8fc4de;
-    background: none;
-}
-
-section.results.searching {
-    min-height: 8em;
-    background: transparent url('../img/gears.svg') bottom center no-repeat;
-}
-
-.results ul {
-    margin: 0;
-    padding: 0 1em;
-}
-.results li { margin-bottom: 0.5em; }
-.results li:last-child { margin-bottom: 2em; }
-
-.results:not(.searching) div {
-    padding: .5em;
-    background-color: $TWITTER_BLUE;
-    text-align: center;
-    border-radius: .25em;
-}
-
-.results.accent:not(.searching) div {
-    background-color: #c53dc5;
-}
-
-
-.results a {
-    font-weight: bold;
-    color: #fff;
-}
-
-
-
-@media (max-width:440px) {
-    .container, header, footer {
-        padding-left: 1em;
-        padding-right: 1em;
-        margin: 1em auto;
-        box-sizing: border-box;
-        overflow-x: hidden;
-        width: 92%;
-    }
 }
