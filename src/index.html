@@ -19,24 +19,28 @@
     <link rel="stylesheet" type="text/css" href="css/style.css">
   </head>
   <body>
-    <div class="container">
-      <section class="row header">
-        <div class="col s12">
-          <h2>Is <span class="header-screen_name">@username</span><br> shadowbanned on Twitter?</h2>
-        </div>
-      </section>
+    <section class="row header">
+      <div class="col s12">
+        <h2>Is <span class="header-screen_name">@username</span><br> shadowbanned on Twitter?</h2>
+      </div>
+    </section>
 
-      <section class="row">
-        <form class="col s12 m5 controls">
-          <div class="card-panel right-align">
-            <div class="input-field">
-              <span class="prefix">@</span>
-              <input id="screenName" type="text" autocomplete="username" pattern="^(?:@)?([A-Za-z0-9_]){1,15}$" class="validate">
-              <label for="screenName">Username</label>
+    <section class="row">
+      <div class="col s12 offset-m1 m10 offset-l2 l8 center-align controls">
+        <div class="card-panel">
+          <form class="row valign-wrapper">
+            <div class="col s10">
+              <div class="input-field">
+                <span class="prefix">@</span>
+                <input id="screenName" type="text" autocomplete="username" pattern="^(?:@)?([A-Za-z0-9_]){1,15}$">
+                <label for="screenName">Username</label>
+              </div>
             </div>
-            <a class="waves-effect waves white btn blue-text text-darken-2">Check</a>
-          </div>
-        </form>
+            <div class="col s2">
+              <a class="waves-effect waves white btn">Check</a>
+            </div>
+          </form>
+        </div>
       </div>
     </section>
 
