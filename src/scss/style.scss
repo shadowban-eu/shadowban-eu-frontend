@@ -1,5 +1,6 @@
 $TWITTER_BLUE: rgb(29, 161, 242);
 $ACCENT_PURPLE: rgb(197, 61, 197);
+$INVALID_RED: rgb(197, 61, 61);
 
 * {
     outline: none;
@@ -56,14 +57,20 @@ a.btn {
         }
       }
     }
-  }
-  .prefix ~ input[valid] {
-   color: $ACCENT_PURPLE !important;
-
-  }
-  /* icon prefix focus color */
-  .prefix.active {
-   color: $ACCENT_PURPLE !important;
+    /* icon prefix focus color */
+    .prefix {
+      &.active, &.valid {
+        color: $ACCENT_PURPLE;
+      }
+      &.invalid {
+        color: $INVALID_RED;
+        & + input {
+          color: $INVALID_RED;
+          border-bottom: 1px solid $INVALID_RED !important;
+          box-shadow: 0 1px 0 0 $INVALID_RED !important;
+        }
+      }
+    }
   }
 }
 
