@@ -19,7 +19,8 @@ const paths = {
   scss: ['src/scss/*.scss'],
   copyOnly: [
     'src/index.html', 'src/parsepage.php',
-    'src/css/style.css', 'src/img/**', 'src/vendor/**/*.+(css|js)']
+    'src/img/**', 'src/vendor/**/*.+(css|js)'
+  ]
 };
 
 const log = function log(...str) {
@@ -48,8 +49,8 @@ gulp.task('copy', () =>
 );
 
 // Start server with restart on file changes
-gulp.task('dev', ['rollup', 'copy', 'serve'], () =>
-  plugins.watch('src/**/*.*', () => runSequence('copy', 'rollup'))
+gulp.task('dev', ['rollup', 'styles', 'copy', 'serve'], () =>
+  plugins.watch('src/**/*.*', () => runSequence('rollup', 'styles', 'copy'))
 );
 
 gulp.task('rollup', async () => {
@@ -58,6 +59,13 @@ gulp.task('rollup', async () => {
   log.call('rollup', 'Writing bundle...');
   await bundle.write(rollupConfig.output);
   log.call('rollup', 'Done!');
+});
+
+gulp.task('styles', async () => {
+  log.call('styles', 'Compiling styles...');
+  return gulp.src('./src/scss/**/*.scss')
+    .pipe(plugins.sass().on('error', plugins.sass.logError))
+    .pipe(gulp.dest('./dist/css/'));
 });
 
 gulp.task('serve', (done) => {
