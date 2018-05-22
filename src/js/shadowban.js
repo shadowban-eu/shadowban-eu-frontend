@@ -21,7 +21,7 @@ https://twitter.com/i/search/timeline?
 
 export default class TSBv2 {
   static searchFrom(testCase) {
-    return TwitterProxy.search(testCase.screenName, testCase.qf)
+    return TwitterProxy.search(`from:${testCase.screenName}`, testCase.qf)
       .then((body) => {
         const parser = new DOMParser();
         const dom = parser.parseFromString(body, 'text/html');
