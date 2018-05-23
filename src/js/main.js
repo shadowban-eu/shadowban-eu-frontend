@@ -10,9 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const ui = window.ui = new UI((screenName) => {
     const testCase = new TSBTest(screenName);
     TSBv2.searchFrom(testCase)
-      .then((resultDOM) => {
-        const tweetElements = Array.from(resultDOM.querySelectorAll('.stream-container .tweet'));
-        testCase.tweets = TSBv2.filterHashTweets(tweetElements);
+      .then((twpResponse) => {
+        testCase.res = twpResponse;
+        testCase
+          .findTweetElements()
+          .filterHashTweets();
+
         const qfTestTweet = testCase.tweets[0];
         ui.updateTask({
           id: 'getTweets',

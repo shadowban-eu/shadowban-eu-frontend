@@ -23,30 +23,14 @@ export default class TSBv2 {
   static searchFrom(testCase) {
     return TwitterProxy.search(`from:${testCase.screenName}`, testCase.qf);
   }
-  static filterHashTweets(tweetElements) {
-    return tweetElements.map((element) => {
-      try {
-        const tweet = [
-          'tweetId', 'isReplyTo', 'userId',
-        ].reduce((acc, key) => ({
-          ...acc,
-          [key]: element.dataset[key]
-        }), {});
-        const content = element.querySelector('.content .js-tweet-text-container').innerText;
-        tweet.tags = TwitterText.extractHashtags(content);
-        tweet.timestamp = element.querySelector('.tweet-timestamp [data-time-ms]').dataset.timeMs;
-        return tweet;
-      } catch (err) {
-        return null;
-      }
-    }).filter(tweet => (tweet !== null) && tweet.tags.length > 0);
-  }
   static testQF(testCase) {
-    return TwitterProxy.search(`#${testCase.tweets[0].tags[0]}`)
-      .then((body) => {
-        const parser = new DOMParser();
-        const dom = parser.parseFromString(body, 'text/html');
-        return dom;
-      });
+    const testTweet = testCase.tweets[0];
+    const hashTag = testTweet.tags[0];
+    const date = new Date(testTweet.timestamp);
+    const since = date.toISOString().replace(/T.*/, '');
+    date.setDate(date.getDate() + 1);
+    const until = date.toISOString().replace(/T.*/, '');
+    return TwitterProxy.search(`#${hashTag} since:${since} until:${until}`)
+      .then(dom => console.dir(dom));
   }
 }
