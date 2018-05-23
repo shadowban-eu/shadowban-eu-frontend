@@ -10,11 +10,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const ui = window.ui = new UI((screenName) => {
     const testCase = new TSBTest(screenName);
     TSBv2.searchFrom(testCase)
-      .then((twpResponse) => {
-        testCase.res = twpResponse;
-        testCase
-          .findTweetElements()
-          .filterHashTweets();
+      .then((fromSearchResponse) => {
+        if (testCase.findTweetElements(fromSearchResponse).results.hasTweets === false) {
+          return ui.updateTask({
+            id: 'getTweets',
+            status: 'ban',
+            msg: `${testCase.screenName} has a conventional shadow ban`
+          }, {
+            id: 'checkQF',
+            status: 'ban',
+            msg: 'N/A, due to conventional shadow ban'
+          });
+        }
+        testCase.results.hasTweets = testCase.tweetElements.length > 0;
+        testCase.filterHashTweets(fromSearchResponse);
 
         const qfTestTweet = testCase.tweets[0];
         ui.updateTask({
@@ -28,9 +37,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         return testCase;
       })
-      .then(TSBv2.testQF)
-      .then((qfDOM) => {
-        console.dir(qfDOM);
+      .then(TSBv2.testQF(testCase))
+      .then((tagSearchResponse) => {
+        console.dir(tagSearchResponse);
       });
   });
   // M.AutoInit();

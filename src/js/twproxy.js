@@ -28,15 +28,15 @@ export default class TwitterProxy {
     }
     return res;
   }
-  static checkHandheldFriendly(twpRes) {
+  static checkHandheldFriendly(twpResponse) {
     /* eslint-disable no-param-reassign */
-    twpRes.isHandheldFriendly = twpRes.dom.getElementsByName('HandheldFriendly').length > 0;
-    return twpRes;
+    twpResponse.isHandheldFriendly = twpResponse.dom.getElementsByName('HandheldFriendly').length > 0;
+    return twpResponse;
   }
-  static parseDOMString = (twpRes) => {
+  static parseDOMString = (twpResponse) => {
     const parser = new DOMParser();
-    twpRes.dom = parser.parseFromString(twpRes.bodyText, 'text/html');
-    return twpRes;
+    twpResponse.dom = parser.parseFromString(twpResponse.bodyText, 'text/html');
+    return twpResponse;
     /* eslint-enable no-param-reassign */
   }
   static handleError(err) {

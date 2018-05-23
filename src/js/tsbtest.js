@@ -4,24 +4,30 @@ export default class TSBTest {
   constructor(screenName, qf = true) {
     this.screenName = screenName;
     this.qf = qf;
+    this.tweetElements = null;
     this.tweets = [];
     this.results = {
       hasTweets: null,
       isQualityFiltered: null
     };
-    this.res = null;
   }
 
-  findTweetElements() {
-    const tweetSelector = this.res.isHandheldFriendly ?
-      '#ma2in_content .timeline .tweet' :
+  findTweetElements(twpResponse) {
+    // reset tweets
+    this.tweets = [];
+    this.tweetElements = null;
+
+    // HHF response?
+    const tweetSelector = twpResponse.isHandheldFriendly ?
+      '#main_content .timeline .tweet' :
       '.stream-container .tweet';
 
-    this.tweetElements = Array.from(this.res.dom.querySelectorAll(tweetSelector));
+    //
+    this.tweetElements = Array.from(twpResponse.dom.querySelectorAll(tweetSelector));
     return this;
   }
 
-  filterHashTweets() {
+  filterHashTweets(twpResponse) {
     const _buildObject = (element) => {
       const tweet = [
         'tweetId', 'isReplyTo', 'userId',
@@ -37,14 +43,16 @@ export default class TSBTest {
 
     const _buildObjectHHF = (element) => {
       const tweet = {};
-      const content = element.querySelector('.tweet-container .tweet-content').innerText;
-      tweet.tags = TwitterText.extractHashtags(content);
+      const contentElement = element.querySelector('.tweet-container .tweet-content');
+      const textElement = contentElement.querySelector('.tweet-text');
+      tweet.tweetId = textElement.dataset.id;
+      tweet.tags = TwitterText.extractHashtags(contentElement.innerText);
       return tweet;
     };
 
     this.tweets = this.tweetElements
       .map(element => (
-        this.res.isHandheldFriendly ? _buildObjectHHF(element) : _buildObject(element)
+        twpResponse.isHandheldFriendly ? _buildObjectHHF(element) : _buildObject(element)
       ))
       .filter(tweet => (tweet !== null) && tweet.tags.length > 0);
   }

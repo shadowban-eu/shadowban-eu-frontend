@@ -20,16 +20,21 @@ https://twitter.com/i/search/timeline?
 
 export default class TSBv2 {
   static searchFrom(testCase) {
-    return TwitterProxy.search(`from:${testCase.screenName}`, testCase.qf);
+    return TwitterProxy.search(`from:${testCase.screenName} filter:hashtags`, testCase.qf);
   }
   static testQF(testCase) {
-    const testTweet = testCase.tweets[0];
-    const hashTag = testTweet.tags[0];
-    const date = new Date(testTweet.timestamp);
-    const since = date.toISOString().replace(/T.*/, '');
-    date.setDate(date.getDate() + 1);
-    const until = date.toISOString().replace(/T.*/, '');
-    return TwitterProxy.search(`#${hashTag} since:${since} until:${until}`)
-      .then(dom => console.dir(dom));
+    return (twpResponse) => {
+      if (twpResponse.isHandheldFriendly) {
+        console.warn('HHF response for QF test');
+      } else {
+        const testTweet = testCase.tweets[0];
+        const hashTag = testTweet.tags[0];
+        const date = new Date(testTweet.timestamp);
+        const since = date.toISOString().replace(/T.*/, '');
+        date.setDate(date.getDate() + 1);
+        const until = date.toISOString().replace(/T.*/, '');
+        return TwitterProxy.search(`#${hashTag} since:${since} until:${until}`);
+      }
+    };
   }
 }
