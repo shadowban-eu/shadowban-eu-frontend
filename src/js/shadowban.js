@@ -21,12 +21,7 @@ https://twitter.com/i/search/timeline?
 
 export default class TSBv2 {
   static searchFrom(testCase) {
-    return TwitterProxy.search(`from:${testCase.screenName}`, testCase.qf)
-      .then((body) => {
-        const parser = new DOMParser();
-        const dom = parser.parseFromString(body, 'text/html');
-        return dom;
-      });
+    return TwitterProxy.search(`from:${testCase.screenName}`, testCase.qf);
   }
   static filterHashTweets(tweetElements) {
     return tweetElements.map((element) => {
@@ -39,10 +34,19 @@ export default class TSBv2 {
         }), {});
         const content = element.querySelector('.content .js-tweet-text-container').innerText;
         tweet.tags = TwitterText.extractHashtags(content);
+        tweet.timestamp = element.querySelector('.tweet-timestamp [data-time-ms]').dataset.timeMs;
         return tweet;
       } catch (err) {
         return null;
       }
     }).filter(tweet => (tweet !== null) && tweet.tags.length > 0);
+  }
+  static testQF(testCase) {
+    return TwitterProxy.search(`#${testCase.tweets[0].tags[0]}`)
+      .then((body) => {
+        const parser = new DOMParser();
+        const dom = parser.parseFromString(body, 'text/html');
+        return dom;
+      });
   }
 }

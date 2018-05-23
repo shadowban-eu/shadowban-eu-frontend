@@ -21,8 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }, {
           id: 'checkQF',
           status: 'running',
-          msg: `Testing #${qfTestTweet.tags[0]}`
+          msg: `Testing visibility for #${qfTestTweet.tags[0]}`
         });
+        return testCase;
+      })
+      .then(TSBv2.testQF)
+      .then((qfDOM) => {
+        console.dir(qfDOM);
       });
   });
   // M.AutoInit();

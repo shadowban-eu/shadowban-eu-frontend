@@ -3,10 +3,11 @@ export default class TwitterProxy {
     return fetch(`/parsepage.php?q=${query}${qf ? '' : '&noqf=1'}`)
       .then(TwitterProxy.checkSuccess)
       .then(res => res.text())
+      .then(TwitterProxy.parseDOMString)
       .catch(TwitterProxy.handleError);
   }
   static checkSuccess(res) {
-    // res.ok === (res.status in the range 200-299) 
+    // res.ok === (res.status in the range 200-299)
     if (!res.ok) {
       throw res; // throwing response object to make it available to catch()
     }
@@ -27,5 +28,10 @@ export default class TwitterProxy {
         console.error(err);
         break;
     }
+  }
+  static parseDOMString = (body) => {
+    const parser = new DOMParser();
+    const dom = parser.parseFromString(body, 'text/html');
+    return dom;
   }
 }
