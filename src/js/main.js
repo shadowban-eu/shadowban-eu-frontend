@@ -3,7 +3,7 @@
 ** 2016 @xho
 */
 import UI from './ui';
-import TSBv2 from './shadowban';
+import TSBv2 from './tsbv2';
 import TSBTest from './tsbtest';
 
 document.addEventListener('DOMContentLoaded', () => {

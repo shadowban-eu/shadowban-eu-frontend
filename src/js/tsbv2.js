@@ -2,7 +2,6 @@
 ** Simple Twitter Shadowban Checker - v2
 ** 2018 @Netzdenunziant (research, algorithm)
 */
-import TwitterText from 'twitter-text';
 import TwitterProxy from './twproxy';
 
 // target tweet by its ID
