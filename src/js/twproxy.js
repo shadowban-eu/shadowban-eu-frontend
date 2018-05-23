@@ -1,6 +1,7 @@
 export default class TwitterProxy {
   static search(query, qf) {
-    return fetch(`/parsepage.php?q=${query}${qf ? '' : '&noqf=1'}`)
+    const url = encodeURI(`/parsepage.php?q=${encodeURIComponent(query)}${qf ? '' : '&noqf=1'}`);
+    return fetch(url)
       .then(TwitterProxy.checkSuccess)
       .then(res => res.text())
       .then(TwitterProxy.parseDOMString)
