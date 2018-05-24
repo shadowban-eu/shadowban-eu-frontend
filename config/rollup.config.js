@@ -16,6 +16,7 @@ const plugins = [
     sourceMap: false
   }),
   babel({
+    runtimeHelpers: true,
     babelrc: false, // ignore babel config from package.json (used for node/gulp)
     exclude: 'node_modules/**', // only transpile our source code
     presets: [
@@ -26,11 +27,19 @@ const plugins = [
             browsers: 'last 2 versions'
           },
           modules: false,
-          loose: true
+          loose: true,
+          runtimeHelpers: true
         }
       ]
     ],
     plugins: [
+      [
+        'transform-runtime',
+        {
+          polyfill: false,
+          regenerator: true
+        }
+      ],
       'transform-class-properties',
       'transform-object-rest-spread',
       'external-helpers'
