@@ -3,9 +3,11 @@ import TwitterText from 'twitter-text';
 export default class TSBTest {
   constructor(screenName, qf = true) {
     this.screenName = screenName;
+    this.userId = null;
     this.qf = qf;
     this.tweetElements = null;
     this.tweets = [];
+    this.testTweet = null;
     this.results = {
       hasTweets: null,
       isQualityFiltered: null
@@ -20,7 +22,7 @@ export default class TSBTest {
     // HHF response?
     const tweetSelector = twpResponse.isHandheldFriendly ?
       '#main_content .timeline .tweet' :
-      '.stream-container .tweet';
+      '.tweet';
 
     //
     this.tweetElements = Array.from(twpResponse.dom.querySelectorAll(tweetSelector));
@@ -55,5 +57,10 @@ export default class TSBTest {
         twpResponse.isHandheldFriendly ? _buildObjectHHF(element) : _buildObject(element)
       ))
       .filter(tweet => (tweet !== null) && tweet.tags.length > 0);
+    this.userId = this.tweets[0].userId;
+  }
+
+  test() {
+    return this.tweets.filter(tweet => tweet.userId === this.testTweet.userId).length > 0;
   }
 }

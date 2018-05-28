@@ -35,11 +35,36 @@ document.addEventListener('DOMContentLoaded', () => {
           status: 'running',
           msg: `Testing visibility for #${qfTestTweet.tags[0]}`
         });
-        return testCase;
+        return fromSearchResponse;
       })
-      .then(TSBv2.testQF(testCase))
-      .then((tagSearchResponse) => {
-        console.dir(tagSearchResponse);
+      .then((fromSearchResponse) => {
+        const qfTestCase = new TSBTest(screenName);
+        qfTestCase.testTweet = testCase.tweets[0];
+        qfTestCase.qf = true;
+        TSBv2.testQF(qfTestCase, fromSearchResponse)
+          .then((testCase) => {
+            console.log(testCase);
+            switch (testCase.results.isQualityFiltered) {
+              case true:
+                // QF banned
+                ui.updateTask({
+                  id: 'checkQF',
+                  status: 'ban',
+                  msg: 'Tweet not found. Account has a QualityFilter ban. :/'
+                });
+                break;
+              case false:
+                // no QF ban
+                ui.updateTask({
+                  id: 'checkQF',
+                  status: 'ok',
+                  msg: 'Tweet found. No QualityFilter ban. \\o/'
+                });
+                break;
+              default:
+                // not determined;
+            }
+          });
       });
   });
   // M.AutoInit();

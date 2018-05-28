@@ -21,6 +21,22 @@ export default class TwitterProxy {
       .then(TwitterProxy.checkHandheldFriendly)
       .catch(TwitterProxy.handleError);
   }
+
+  static iSearch(query, maxPosition, qf) {
+    const url = `/iSearch.php?q=${encodeURIComponent(query)}&max_position=${maxPosition}${qf ? '' : '&noqf=1'}`;
+    return fetch(url)
+      .then(TwitterProxy.checkSuccess)
+      .then(res => res.json().then((body) => {
+        const twpResponse = new TWPResponse(res);
+        twpResponse.bodyText = body.items_html;
+        twpResponse.json = body;
+        return twpResponse;
+      }))
+      .then(TwitterProxy.parseDOMString)
+      .then(TwitterProxy.checkHandheldFriendly)
+      .catch(TwitterProxy.handleError);
+  }
+
   static checkSuccess(res) {
     // res.ok === (res.status in the range 200-299)
     if (!res.ok) {

@@ -27,7 +27,10 @@ $opts = array(
 );
 
 $context = stream_context_create($opts);
+// $content = file_get_contents('./searchFrom_DOM.html', false, $context);
+// $content = file_get_contents('./searchFrom_HHF.html', false, $context);
 
+error_log('Requesting content from ' . $url);
 $content = file_get_contents($url, false, $context);
 echo $content;
 

@@ -18,7 +18,7 @@ const paths = {
   js: ['src/js/**/*.js', 'node_modules/materialize-css/js/*.js'],
   scss: ['src/scss/*.scss'],
   copyOnly: [
-    'src/index.html', 'src/parsepage.php',
+    'src/*.html', 'src/*.php',
     'src/img/**', 'src/vendor/**/*.+(css|js)'
   ]
 };
