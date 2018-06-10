@@ -29,6 +29,9 @@ watching for file changes.
 npm start
 ```
 
+## Deploy
+Just copy `dist/`'s content to your server_root. (run `npm start` at least once to create it!)
+
 ## Misc
 
 Checking for running server (the PID differs, of course)
