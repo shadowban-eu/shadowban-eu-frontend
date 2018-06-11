@@ -75,11 +75,18 @@ a.btn {
   justify-content: space-around;
 }
 
+#tasks .collapsible-header {
+  cursor: unset;
+  text-align: left;
+}
 
 [data-task-id] {
-  transform: color 0.6s ease-out;
+  transition: color 0.6s ease-out;
   &[data-task-status="ok"] {
     color: $ACCENT_SUCCESS;
+  }
+  &[data-task-status="ban"] {
+    color: $ACCENT_ERROR;
   }
   .gears {
     width: 2rem;
@@ -92,7 +99,7 @@ a.btn {
 
 footer {
   font-size: .875em;
-  margin-top: 2em;
+  margin-top: 6em;
   color: rgb(90, 90, 90);
   a {
       color: $TWITTER_BLUE;;

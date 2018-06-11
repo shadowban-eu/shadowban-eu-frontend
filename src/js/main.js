@@ -14,8 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ui.updateTask({
         id: 'getRefTweet',
         status: 'ban',
-        msg: `${screenName} has not tweeted any images! To be able to test the v2 shadowban,
-        a user has to have tweeted at least one image; sorry.`
+        msg: `@${screenName} has not tweeted any images!\nTo be able to test the v2 shadowban, a user has to have tweeted at least one image; sorry.`
       });
       return;
     }
@@ -38,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ui.updateTask({
         id: 'checkRefTweet',
         status: 'ban',
-        msg: `Reference tweet not found. ${screenName} IS SHADOWBANNED!`
+        msg: `Reference tweet not found.\n@${screenName} IS SHADOWBANNED!`
       });
       return;
     }
@@ -46,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ui.updateTask({
       id: 'checkRefTweet',
       status: 'ok',
-      msg: `Reference tweet found. ${screenName} is not shadowbanned.`
+      msg: `Reference tweet found.\n@${screenName} is not shadowbanned.`
     });
   });
 });
