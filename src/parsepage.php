@@ -14,11 +14,10 @@ if (empty($_GET['q'])) {
 // defaults ?qf to 'on', which is the
 // current (2018-05-20) behaviour of the twitter website
 $params = array(
-  'q' => filter_var($_GET['q'], FILTER_SANITIZE_STRING),
-  'qf' => empty($_GET['noqf']) ? '' : '&qf=off'
+  'q' => filter_var($_GET['q'], FILTER_SANITIZE_STRING)
 );
 
-$url = 'https://twitter.com/search?f=tweets&src=typd&vertical=default&q=' . urlencode($params['q']) . $params['qf'];
+$url = 'https://twitter.com/search?f=tweets&src=typd&vertical=default&q=' . urlencode($params['q']);
 $opts = array(
   "http" => array(
     "method" => "GET",
@@ -27,8 +26,6 @@ $opts = array(
 );
 
 $context = stream_context_create($opts);
-// $content = file_get_contents('./searchFrom_DOM.html', false, $context);
-// $content = file_get_contents('./searchFrom_HHF.html', false, $context);
 
 error_log('Requesting content from ' . $url);
 $content = file_get_contents($url, false, $context);
