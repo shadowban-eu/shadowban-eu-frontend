@@ -93,15 +93,13 @@ a.btn {
 footer {
   font-size: .875em;
   margin-top: 2em;
-  color: #aaa;
+  color: rgb(90, 90, 90);
   a {
       color: $TWITTER_BLUE;;
       text-decoration: none;
-  }
-  div:first-child {
-      text-align: center;
   }
   p {
       margin-bottom: 0.25em;
   }
 }
+
