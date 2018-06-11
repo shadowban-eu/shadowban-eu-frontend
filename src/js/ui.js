@@ -87,5 +87,14 @@ export default class UI {
       // -task-status
       taskEl.dataset.taskStatus = task.status;
     });
-  }
+  };
+  reset = () => this.updateTask({
+    id: 'getRefTweet',
+    status: 'running',
+    msg: 'Getting reference tweet...'
+  }, {
+    id: 'checkRefTweet',
+    status: 'pending',
+    msg: 'Waiting for reference tweet.'
+  });
 }
