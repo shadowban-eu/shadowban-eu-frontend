@@ -11,8 +11,13 @@ export default class UI {
     this.release();
 
     this.stage = document.querySelector('#stage .collapsible');
+    // crow bar approach to disable click and keydown handlers on Collapsible
+    M.Collapsible.prototype._handleCollapsibleClick = () => {};
+    M.Collapsible.prototype._handleCollapsibleKeydown = () => {};
+
+    this.taskCollapsible = M.Collapsible.init(this.stage);
+    this.taskCollapsible._removeEventHandlers();
     this.stageOpen = false;
-    this.taskCollapsible = null;
 
     this.locked = false;
   }
@@ -68,9 +73,7 @@ export default class UI {
   showTasks = () => {
     if (!this.stageOpen) {
       this.stageOpen = true;
-      this.taskCollapsible = M.Collapsible.init(this.stage);
       this.taskCollapsible.open(0);
-      this.taskCollapsible.destroy();
     }
   };
 
