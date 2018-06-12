@@ -30,8 +30,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const testResponse = await TwitterProxy.search(imageAnchor.innerText);
-    const tweet = testResponse.dom.querySelector('.tweet');
-    if (!tweet) {
+    const tweets = Array.from(testResponse.dom.querySelectorAll('.tweet'));
+    const usersTweets = tweets.filter(el =>
+      el.dataset.screenName.toLowerCase() === screenName.toLowerCase()
+    );
+    if (!usersTweets.length) {
       // tweet not fount - shadowban
 
       ui.updateTask({
