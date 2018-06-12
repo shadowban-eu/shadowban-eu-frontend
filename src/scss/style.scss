@@ -8,10 +8,10 @@ $ACCENT_ERROR: rgb(197, 61, 61);
 }
 
 body {
-    font-family: Roboto, 'Helvetica Neue', Arial, sans-serif;
-    color: #333;
-    background-color: rgb(230, 236, 240);
-    font-weight: 500;
+  font-family: Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: #333;
+  background-color: rgb(230, 236, 240);
+  font-weight: 500;
 }
 
 h1, h2, h3, p { margin: 0; padding: 0; }
@@ -23,6 +23,9 @@ a.btn {
   box-shadow: none;
   &:hover {
     color: $ACCENT_PURPLE;
+  }
+  &[locked] {
+    cursor: not-allowed;
   }
 }
 
@@ -75,9 +78,12 @@ a.btn {
   justify-content: space-around;
 }
 
-#tasks .collapsible-header {
+.collapsible-header {
   cursor: unset;
   text-align: left;
+  &:focus {
+    background-color: rgb(255, 255, 255) !important;
+  }
 }
 
 [data-task-id] {

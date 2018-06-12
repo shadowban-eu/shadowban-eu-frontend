@@ -3,17 +3,22 @@ export default class UI {
     this.screenName = document.getElementById('screenName');
     this.screenNamePrefix = document.querySelector('.controls .input-field .prefix');
     this.headerScreenName = document.querySelector('.header-screen_name');
-    this.screenName.addEventListener('keyup', this.updateHeaderScreenName);
+    this.screenName.addEventListener('keyup', this.updateHeaderScreenName, true);
     this.screenName.addEventListener('click', evt => evt.stopPropagation());
 
     this.checkButton = document.getElementById('check');
     this.test = test;
-    this.checkButton.addEventListener('click', this.handleCheckClick);
+    this.release();
 
     this.stage = document.querySelector('#stage .collapsible');
+    this.stageOpen = false;
     this.taskCollapsible = null;
+
+    this.locked = false;
   }
+
   updateHeaderScreenName = (evt) => {
+    evt.stopPropagation();
     if (evt.which === 13) {
       return this.handleCheckClick(evt);
     }
@@ -35,11 +40,20 @@ export default class UI {
     this.headerScreenName.innerText = `@${this.screenName.value}`;
     return false;
   };
+
   handleCheckClick = (evt) => {
     evt.stopPropagation();
+    if (this.locked) {
+      return;
+    }
+
     if (this.screenName.validity.valid) {
       this.showTasks();
-      this.test(this.screenName.value);
+      this.reset();
+      this.lock();
+      this.test(this.screenName.value)
+        .then(this.release)
+        .catch(this.release);
     } else {
       const toolTip = M.Tooltip.init(this.screenName);
       toolTip.isHovered = true;
@@ -50,10 +64,16 @@ export default class UI {
       }, 5000);
     }
   };
+
   showTasks = () => {
-    this.taskCollapsible = M.Collapsible.init(this.stage);
-    this.taskCollapsible.open(0);
+    if (!this.stageOpen) {
+      this.stageOpen = true;
+      this.taskCollapsible = M.Collapsible.init(this.stage);
+      this.taskCollapsible.open(0);
+      this.taskCollapsible.destroy();
+    }
   };
+
   updateTask = (...tasks) => {
     tasks.forEach((task) => {
       const taskEl = this.stage.querySelector(`[data-task-id="${task.id}"]`);
@@ -88,6 +108,7 @@ export default class UI {
       taskEl.dataset.taskStatus = task.status;
     });
   };
+
   reset = () => this.updateTask({
     id: 'getRefTweet',
     status: 'running',
@@ -97,4 +118,16 @@ export default class UI {
     status: 'pending',
     msg: 'Waiting for reference tweet.'
   });
+
+  lock = () => {
+    this.checkButton.removeEventListener('click', this.handleCheckClick);
+    this.checkButton.setAttribute('locked', '');
+    this.locked = true;
+  };
+
+  release = () => {
+    this.checkButton.addEventListener('click', this.handleCheckClick);
+    this.checkButton.removeAttribute('locked');
+    this.locked = false;
+  };
 }
