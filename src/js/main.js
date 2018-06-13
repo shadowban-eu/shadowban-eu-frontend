@@ -1,5 +1,5 @@
 /*
-** Twitter Shadowban Checker
+** Twitter QFD Shadowban Checker
 ** 2018 @Netzdenunziant (research), @raphaelbeerlin (implementation)
 */
 
@@ -44,7 +44,7 @@ const qfBanTest = async (screenName) => {
     window.ui.updateTask({
       id: 'checkRefTweet',
       status: 'ban',
-      msg: `Reference tweet not found.\n@${screenName} IS SHADOWBANNED!`
+      msg: `Reference tweet not found.<br />@${screenName} has a QFD shadowban!`
     });
     return;
   }
@@ -52,7 +52,7 @@ const qfBanTest = async (screenName) => {
   window.ui.updateTask({
     id: 'checkRefTweet',
     status: 'ok',
-    msg: `Reference tweet found.\n@${screenName} is not shadowbanned.`
+    msg: `Reference tweet found.<br />@${screenName} is not shadowbanned.`
   });
 };
 

@@ -98,6 +98,13 @@ h1, h2, h3, p { margin: 0; padding: 0; }
     background-size: contain;
     margin-right: 7px;
   }
+  .qfd-hint {
+    font-size: 1rem;
+    margin-right: 0;
+    width: unset;
+    text-align: unset;
+    color: $TWITTER_BLUE;
+  }
 }
 
 footer {
@@ -112,4 +119,3 @@ footer {
       margin-bottom: 0.25em;
   }
 }
-

@@ -115,7 +115,13 @@ export default class UI {
       }
       // message
       if (task.msg) {
-        taskEl.querySelector('.task-message').innerText = task.msg;
+        const messageElement = taskEl.querySelector('.task-message');
+        // messageElement.children.forEach(child => messageElement.removeChild(child));
+        let htmlMessage = `<span>${task.msg}</span>`;
+        htmlMessage = htmlMessage.replace('QFD', '<abbr title="Quality Filter Discrimination">QFD <i class="material-icons qfd-hint">contact_support</i></abbr>');
+        // Yes, innerHTML is a security issue.
+        // But this is ok since we are using hardcoded values, only.
+        messageElement.innerHTML = htmlMessage;
       }
       // -task-status
       taskEl.dataset.taskStatus = task.status;
