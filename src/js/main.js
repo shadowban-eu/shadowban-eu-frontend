@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }, {
         id: 'checkConventional',
         status: 'ban',
-        msg: 'This test needs at least one tweet to perform both tets.'
+        msg: 'The user hasn\'t made any tweets!<br />This test needs at least one tweet to perform both tets.'
       }, {
         id: 'getRefTweet',
         status: 'ban',
