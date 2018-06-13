@@ -71,14 +71,39 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Check whether user exists at all
-    const isUser = await TwitterProxy.user(screenName);
-    if (!isUser) {
+    const userResponse = await TwitterProxy.user(screenName);
+    if (!userResponse.dom) {
+      // user not found
       return window.ui.updateTask({
         id: 'checkUser',
         status: 'ban',
         msg: `User @${screenName} does not exist.`
       });
     }
+
+    const tweet = userResponse.dom.querySelector('.tweet');
+    // user found, but has no tweets
+    if (!tweet) {
+      return window.ui.updateTask({
+        id: 'checkUser',
+        status: 'ok',
+        msg: `Found @${screenName}.`
+      }, {
+        id: 'checkConventional',
+        status: 'ban',
+        msg: 'This test needs at least one tweet to perform both tets.'
+      }, {
+        id: 'getRefTweet',
+        status: 'ban',
+        msg: 'This test needs at least one tweet to perform both tets.'
+      }, {
+        id: 'checkRefTweet',
+        status: 'ban',
+        msg: 'This test needs at least one tweet to perform both tets.'
+      });
+    }
+
+    // user found and has tweets
     window.ui.updateTask({
       id: 'checkUser',
       status: 'ok',

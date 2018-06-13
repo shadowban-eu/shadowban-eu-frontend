@@ -5,11 +5,6 @@ export default class TwitterProxy {
     const url = `/search.php?q=${encodeURIComponent(query)}`;
     return fetch(url)
       .then(TwitterProxy.checkSuccess)
-      .then(res => res.text().then((body) => {
-        const twpResponse = new TWPResponse(res);
-        twpResponse.bodyText = body;
-        return twpResponse;
-      }))
       .then(TwitterProxy.parseDOMString)
       .catch(TwitterProxy.handleError);
   }
@@ -18,9 +13,8 @@ export default class TwitterProxy {
     const url = `/search.php?screenName=${screenName}`;
     return fetch(url)
       .then(TwitterProxy.checkSuccess)
-      .then(res => res.text().then(body =>
-        !body.includes('Sorry, that page doesn’t exist!')
-      ));
+      .then(TwitterProxy.parseDOMString)
+      .catch(TwitterProxy.handleError);
   }
 
   static checkSuccess(res) {
@@ -32,8 +26,11 @@ export default class TwitterProxy {
   }
 
   /* eslint-disable no-param-reassign */
-  static parseDOMString = (twpResponse) => {
+  static parseDOMString = async (res) => {
+    const body = await res.text();
     const parser = new DOMParser();
+    const twpResponse = new TWPResponse(res);
+    twpResponse.bodyText = body;
     twpResponse.dom = parser.parseFromString(twpResponse.bodyText, 'text/html');
     return twpResponse;
   }
