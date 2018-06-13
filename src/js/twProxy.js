@@ -2,7 +2,7 @@ import TWPResponse from './twpResponse';
 
 export default class TwitterProxy {
   static search(query) {
-    const url = `/parsepage.php?q=${encodeURIComponent(query)}`;
+    const url = `/search.php?q=${encodeURIComponent(query)}`;
     return fetch(url)
       .then(TwitterProxy.checkSuccess)
       .then(res => res.text().then((body) => {
@@ -12,6 +12,15 @@ export default class TwitterProxy {
       }))
       .then(TwitterProxy.parseDOMString)
       .catch(TwitterProxy.handleError);
+  }
+
+  static user(screenName) {
+    const url = `/user.php?screenName=${screenName}`;
+    return fetch(url)
+      .then(TwitterProxy.checkSuccess)
+      .then(res => res.text().then(body =>
+        !body.includes('Sorry, that page doesn’t exist!')
+      ));
   }
 
   static checkSuccess(res) {

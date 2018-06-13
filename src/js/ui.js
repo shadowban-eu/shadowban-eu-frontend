@@ -7,6 +7,7 @@ export default class UI {
     this.screenName.addEventListener('click', evt => evt.stopPropagation());
 
     this.checkButton = document.getElementById('check');
+    this.checkButton.addEventListener('click', this.handleCheckClick);
     this.test = test;
     this.release();
 
@@ -18,8 +19,6 @@ export default class UI {
     this.taskCollapsible = M.Collapsible.init(this.stage);
     this.taskCollapsible._removeEventHandlers();
     this.stageOpen = false;
-
-    this.locked = false;
   }
 
   updateHeaderScreenName = (evt) => {
@@ -54,7 +53,7 @@ export default class UI {
 
     if (this.screenName.validity.valid) {
       this.showTasks();
-      this.reset();
+      this.reset(this.screenName);
       this.lock();
       this.test(this.screenName.value)
         .then(this.release)
@@ -112,10 +111,18 @@ export default class UI {
     });
   };
 
-  reset = () => this.updateTask({
-    id: 'getRefTweet',
+  reset = screenName => this.updateTask({
+    id: 'checkUser',
     status: 'running',
-    msg: 'Getting reference tweet...'
+    msg: `Looking up user @${screenName}`
+  }, {
+    id: 'checkConventional',
+    status: 'pending',
+    msg: 'Waiting for user.'
+  }, {
+    id: 'getRefTweet',
+    status: 'pending',
+    msg: 'Waiting for user.'
   }, {
     id: 'checkRefTweet',
     status: 'pending',
