@@ -1,9 +1,13 @@
 {
-  "name": "basic-frontend",
+  "name": "twitter-shadowban-tests",
   "version": "1.0.0",
-  "description": "Basic frontend boilerplate; eslint, babel and all the good stuff",
+  "description": "Twitter ShadowBan Tests",
   "main": "gulpfile.babel.js",
   "author": "Raphael Beer <raphael.beer@protonmail.com>",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/npm/npm.git"
+  },
   "license": "MIT",
   "private": true,
   "devDependencies": {
@@ -70,6 +74,7 @@
     ]
   },
   "scripts": {
-    "start": "gulp dev"
+    "start": "gulp dev",
+    "build": "cross-env NODE_ENV=production gulp build"
   }
 }

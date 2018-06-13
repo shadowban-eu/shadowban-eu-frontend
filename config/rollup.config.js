@@ -3,7 +3,7 @@ import babel from 'rollup-plugin-babel';
 import uglify from 'rollup-plugin-uglify';
 import commonjs from 'rollup-plugin-commonjs';
 
-const production = process.env.PRODUCTION;
+const production = process.env.NODE_ENV;
 
 const plugins = [
   resolve({

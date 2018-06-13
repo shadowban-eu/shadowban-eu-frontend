@@ -79,5 +79,7 @@ gulp.task('serve', (done) => {
   done();
 });
 
+gulp.task('build', ['clean', 'rollup', 'styles', 'copy']);
+
 // default task: clean dist, compile js files and copy non-js files.
 gulp.task('default', ['dev']);
