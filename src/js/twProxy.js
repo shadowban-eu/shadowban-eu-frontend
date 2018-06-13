@@ -15,7 +15,7 @@ export default class TwitterProxy {
   }
 
   static user(screenName) {
-    const url = `/user.php?screenName=${screenName}`;
+    const url = `/search.php?screenName=${screenName}`;
     return fetch(url)
       .then(TwitterProxy.checkSuccess)
       .then(res => res.text().then(body =>
