@@ -14,7 +14,11 @@ const qfBanTest = async (screenName) => {
     window.ui.updateTask({
       id: 'getRefTweet',
       status: 'ban',
-      msg: `@${screenName} has not tweeted any images!\nThis test requires the user to have tweeted at least one image; sorry.`
+      msg: `@${screenName} has not tweeted any images!<br />This test requires the user to have tweeted at least one image; sorry.`
+    }, {
+      id: 'checkRefTweet',
+      status: 'ban',
+      msg: 'This test requires the user to have tweeted at least one image; sorry.'
     });
     return;
   }
