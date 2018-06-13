@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Check whether user exists at all
     const userResponse = await TwitterProxy.user(screenName);
-    if (!userResponse.dom) {
+    if (!userResponse.bodyText) {
       // user not found
       return window.ui.updateTask({
         id: 'checkUser',
