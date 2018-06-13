@@ -6,7 +6,7 @@
   "author": "Raphael Beer <raphael.beer@protonmail.com>",
   "repository": {
     "type" : "git",
-    "url" : "https://github.com/npm/npm.git"
+    "url" : "https://github.com/rbeer/TwitterShadowBanV2"
   },
   "license": "MIT",
   "private": true,
