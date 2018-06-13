@@ -1,26 +1,34 @@
 export default class UI {
   constructor(test) {
+    // user handle input and title synchronisation
     this.screenName = document.getElementById('screenName');
     this.screenNamePrefix = document.querySelector('.controls .input-field .prefix');
     this.headerScreenName = document.querySelector('.header-screen_name');
     this.screenName.addEventListener('keyup', this.updateHeaderScreenName, true);
     this.screenName.addEventListener('click', evt => evt.stopPropagation());
 
+    // button, initiating test
     this.checkButton = document.getElementById('check');
     this.checkButton.addEventListener('click', this.handleCheckClick);
-    this.test = test;
-    this.release();
 
+    // results
     this.stage = document.querySelector('#stage .collapsible');
     // crow bar approach to disable click and keydown handlers on Collapsible
+    // BEWARE: This disables handlers for all instances of Collapsibles.
+    //         Explicit opening (.open) still works, but you will have to find another
+    //         approach, if you need interactive ones
     M.Collapsible.prototype._handleCollapsibleClick = () => {};
     M.Collapsible.prototype._handleCollapsibleKeydown = () => {};
 
     this.taskCollapsible = M.Collapsible.init(this.stage);
     this.taskCollapsible._removeEventHandlers();
     this.stageOpen = false;
+
+    // actual test function
+    this.test = test;
   }
 
+  // user handle input, title sync
   updateHeaderScreenName = (evt) => {
     evt.stopPropagation();
     if (evt.which === 13) {
@@ -45,6 +53,7 @@ export default class UI {
     return false;
   };
 
+  // click handler for test initiator button
   handleCheckClick = (evt) => {
     evt.stopPropagation();
     if (this.checkButton.disabled) {
@@ -69,6 +78,7 @@ export default class UI {
     }
   };
 
+  // open/show results list
   showTasks = () => {
     if (!this.stageOpen) {
       this.stageOpen = true;
@@ -76,6 +86,7 @@ export default class UI {
     }
   };
 
+  // update task info; takes one or more objects
   updateTask = (...tasks) => {
     tasks.forEach((task) => {
       const taskEl = this.stage.querySelector(`[data-task-id="${task.id}"]`);
@@ -111,6 +122,7 @@ export default class UI {
     });
   };
 
+  // resets tasks to initial state (do this before each test!)
   reset = screenName => this.updateTask({
     id: 'checkUser',
     status: 'running',
@@ -129,7 +141,10 @@ export default class UI {
     msg: 'Waiting for reference tweet.'
   });
 
+  // Prevents running multiple tests at the same time (disables button/{Enter} on handle <input>);
+  // otherwise the updateTask() calls would mess up the results
   lock = () => { this.checkButton.disabled = true; };
 
+  // Enable button/{Enter} event
   release = () => { this.checkButton.disabled = false; };
 }

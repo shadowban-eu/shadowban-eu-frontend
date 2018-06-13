@@ -6,6 +6,7 @@
 import UI from './ui';
 import TwitterProxy from './twProxy';
 
+// Tests quality filter (v2) shadowban
 const qfBanTest = async (screenName) => {
   const forImagesResponse = await TwitterProxy.search(`from:${screenName} filter:images`);
   const imageAnchor = forImagesResponse.dom.querySelector('.tweet-text a.u-hidden');
@@ -51,6 +52,7 @@ const qfBanTest = async (screenName) => {
   });
 };
 
+// Tests conventional (v1) shadowban
 const conventionalBanTest = async (screenName) => {
   const fromResponse = await TwitterProxy.search(`from:${screenName}`);
   return fromResponse.dom.querySelector('.tweet') === null;
@@ -63,6 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
       status: 'running',
       msg: `Looking up @${screenName}`
     });
+
+    // Check whether user exists at all
     const isUser = await TwitterProxy.user(screenName);
     if (!isUser) {
       return window.ui.updateTask({
@@ -81,6 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
       msg: 'Testing conventional shadowban...'
     });
 
+    // Check whether user is v1 banned; no need to test v2, if so
     const isConvBanned = await conventionalBanTest(screenName);
     if (isConvBanned) {
       return window.ui.updateTask({
@@ -107,6 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
       status: 'running',
       msg: 'Getting reference tweet for quality filter shadowban...'
     });
+
+    // Check v2 shadowban; UI updates inside (POLA violation, I know :P)
     return qfBanTest(screenName);
   });
 });
