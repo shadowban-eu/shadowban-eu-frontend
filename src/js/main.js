@@ -14,11 +14,11 @@ const qfBanTest = async (screenName) => {
     window.ui.updateTask({
       id: 'getRefTweet',
       status: 'ban',
-      msg: `@${screenName} has not tweeted any images!<br />This test requires the user to have tweeted at least one image; sorry.`
+      msg: `@${screenName} has not tweeted any images!`
     }, {
       id: 'checkRefTweet',
       status: 'ban',
-      msg: 'This test requires the user to have tweeted at least one image; sorry.'
+      msg: 'The QFD test needs least one image tweet.'
     });
     return;
   }
@@ -78,6 +78,18 @@ document.addEventListener('DOMContentLoaded', () => {
         id: 'checkUser',
         status: 'ban',
         msg: `User @${screenName} does not exist.`
+      }, {
+        id: 'checkConventional',
+        status: 'ban',
+        msg: `User @${screenName} does not exist.`
+      }, {
+        id: 'getRefTweet',
+        status: 'ban',
+        msg: `User @${screenName} does not exist.`
+      }, {
+        id: 'checkRefTweet',
+        status: 'ban',
+        msg: `User @${screenName} does not exist.`
       });
     }
 
@@ -91,15 +103,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }, {
         id: 'checkConventional',
         status: 'ban',
-        msg: 'The user hasn\'t made any tweets!<br />This test needs at least one tweet to perform both tets.'
+        msg: `@${screenName} hasn't made any tweets!<br />This test needs at least one tweet.`
       }, {
         id: 'getRefTweet',
         status: 'ban',
-        msg: 'This test needs at least one tweet to perform both tets.'
+        msg: `@${screenName} has not tweeted any images!<br />The QFD test requires the user to have tweeted at least one image.`
       }, {
         id: 'checkRefTweet',
         status: 'ban',
-        msg: 'This test needs at least one tweet to perform both tets.'
+        msg: 'The QFD test needs at least one image tweet.'
       });
     }
 
