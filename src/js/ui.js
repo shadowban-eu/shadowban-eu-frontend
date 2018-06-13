@@ -48,7 +48,7 @@ export default class UI {
 
   handleCheckClick = (evt) => {
     evt.stopPropagation();
-    if (this.locked) {
+    if (this.checkButton.disabled) {
       return;
     }
 
@@ -122,15 +122,7 @@ export default class UI {
     msg: 'Waiting for reference tweet.'
   });
 
-  lock = () => {
-    this.checkButton.removeEventListener('click', this.handleCheckClick);
-    this.checkButton.setAttribute('locked', '');
-    this.locked = true;
-  };
+  lock = () => { this.checkButton.disabled = true; };
 
-  release = () => {
-    this.checkButton.addEventListener('click', this.handleCheckClick);
-    this.checkButton.removeAttribute('locked');
-    this.locked = false;
-  };
+  release = () => { this.checkButton.disabled = false; };
 }

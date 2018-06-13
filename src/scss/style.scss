@@ -16,16 +16,13 @@ body {
 
 h1, h2, h3, p { margin: 0; padding: 0; }
 
-a.btn {
+.btn {
   color: $TWITTER_BLUE;
   border: 1px solid $TWITTER_BLUE;
   border-radius: 100px;
   box-shadow: none;
   &:hover {
     color: $ACCENT_PURPLE;
-  }
-  &[locked] {
-    cursor: not-allowed;
   }
 }
 
