@@ -1,9 +1,6 @@
-# Twitter Shadowban Checker v2
+# Twitter Shadowban Tests
 
-Twitter introduced a new shadow ban based on the quality filter for
-searches (QFD). This is an updated version of @xho's Simple-Twitter-Shadowban-Checker
-(https://github.com/xho/Simple-Twitter-Shadowban-Checker), checking for both
-types of shadow ban. (And, of course ^_^, I couldn't resist to update code ES6/7 and design)
+One-page web app, testing Twitter users for conventional and QFD shadowbans.
 
 ## Setup
 
@@ -30,7 +27,8 @@ npm start
 ```
 
 ## Deploy
-Just copy `dist/`'s content to your server_root. (run `npm start` at least once to create it!)
+Run `npm start build`! This creates an uglified script bundle and uses minified versions of 3rd party scripts.
+Then copy `dist/`'s content to your server_root.
 
 ## Misc
 
