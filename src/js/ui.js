@@ -86,6 +86,22 @@ export default class UI {
     }
   };
 
+  unhandledError = () => {
+    const incompleteTasks = Array.from(document.querySelectorAll(
+      '[data-task-status="pending"],[data-task-status="running"]'
+    ));
+    //console.log(incompleteTasks.map(x => x));
+    window._tsk = incompleteTasks;
+    const taskUpdates = incompleteTasks.map(x => {
+      return {
+        id: x.dataset.taskId,
+        status: 'warn',
+        msg: 'A server error occured. Failed to test. Please try again later.'
+      };
+    });
+    this.updateTask(...taskUpdates);
+  };
+
   // update task info; takes one or more objects
   updateTask = (...tasks) => {
     tasks.forEach((task) => {
@@ -107,6 +123,10 @@ export default class UI {
           taskIcon.innerText = 'check';
           break;
         case 'ban':
+          taskIconClasses.remove('gears');
+          taskIcon.innerText = 'error_outline';
+          break;
+        case 'warn':
           taskIconClasses.remove('gears');
           taskIcon.innerText = 'error_outline';
           break;

@@ -45,12 +45,12 @@ export default class TwitterProxy {
         break;
       case 500:
         console.warn(`[TwitterProxy|search] ${err.statusText}`);
-        err.json().then(jsonBody => console.error(jsonBody.error));
         break;
       default:
         console.warn('[TwitterProxy|search] Network error');
-        console.error(err);
         break;
     }
+    window.ui.unhandledError();
+    throw err;
   }
 }
