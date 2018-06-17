@@ -35,6 +35,14 @@ $context = stream_context_create($opts);
 
 error_log('Requesting content from ' . $url);
 $content = file_get_contents($url, false, $context);
+if($content === false && isset($_GET['q'])) {
+  header('HTTP/1.1 500 Internal Server Booboo');
+  die();
+}
+if(isset($_GET['q'])) {
+  // relay response code
+  header($http_response_header[0]);
+}
 echo $content;
 
 ?>
