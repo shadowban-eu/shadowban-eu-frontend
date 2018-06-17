@@ -8,17 +8,19 @@ import TwitterProxy from './twProxy';
 
 // Tests quality filter (v2) shadowban
 const qfBanTest = async (screenName) => {
-  const forImagesResponse = await TwitterProxy.search(`from:${screenName} filter:images`);
-  const imageAnchor = forImagesResponse.dom.querySelector('.tweet-text a.u-hidden');
-  if (!imageAnchor) {
+  const targettedResponse = await TwitterProxy.search(`from:${screenName} filter:links`);
+  const anchor = targettedResponse.dom.querySelector(
+    '.tweet-text a[href^="https://t.co/"],.tweet-text a[href^="http://t.co/"]'
+  );
+  if (!anchor) {
     window.ui.updateTask({
       id: 'getRefTweet',
       status: 'ban',
-      msg: `@${screenName} has not tweeted any images!`
+      msg: `@${screenName} has not tweeted any links!`
     }, {
       id: 'checkRefTweet',
       status: 'ban',
-      msg: 'The QFD test needs least one image tweet.'
+      msg: 'The QFD test needs least one tweet containing a link.'
     });
     return;
   }
@@ -33,7 +35,7 @@ const qfBanTest = async (screenName) => {
     msg: 'Trying to find reference tweet...'
   });
 
-  const testResponse = await TwitterProxy.search(imageAnchor.innerText);
+  const testResponse = await TwitterProxy.search(anchor.href);
   const tweets = Array.from(testResponse.dom.querySelectorAll('.tweet'));
   const usersTweets = tweets.filter(el =>
     el.dataset.screenName.toLowerCase() === screenName.toLowerCase()
@@ -72,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Check whether user exists at all
     const userResponse = await TwitterProxy.user(screenName);
-    if (!userResponse.bodyText) {
+    if (!userResponse.dom.querySelector(".ProfileHeaderCard")) {
       // user not found
       return window.ui.updateTask({
         id: 'checkUser',
@@ -107,11 +109,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }, {
         id: 'getRefTweet',
         status: 'ban',
-        msg: `@${screenName} has not tweeted any images!<br />The QFD test requires the user to have tweeted at least one image.`
+        msg: `@${screenName} has not tweeted any links!<br />The QFD test requires the user to have tweeted at least one link.`
       }, {
         id: 'checkRefTweet',
         status: 'ban',
-        msg: 'The QFD test needs at least one image tweet.'
+        msg: 'The QFD test needs at least one link tweet.'
       });
     }
 
