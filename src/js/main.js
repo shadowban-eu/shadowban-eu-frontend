@@ -6,21 +6,30 @@
 import UI from './ui';
 import TwitterProxy from './twProxy';
 
+const findUserTweet = async (query, name, qf) => {
+  const testResponse = await TwitterProxy.search(query, qf);
+  const tweets = Array.from(testResponse.dom.querySelectorAll('.tweet'));
+  const usersTweets = tweets.filter(el =>
+    el.dataset.screenName.toLowerCase() === name.toLowerCase()
+  );
+  return usersTweets.length > 0;
+}
+
 // Tests quality filter (v2) shadowban
 const qfBanTest = async (screenName) => {
-  const targettedResponse = await TwitterProxy.search(`from:${screenName} filter:links`);
-  const anchor = targettedResponse.dom.querySelector(
+  const linkResponse = await TwitterProxy.search(`from:${screenName} filter:links`);
+  const linkAnchor = linkResponse.dom.querySelector(
     '.tweet-text a[href^="https://t.co/"],.tweet-text a[href^="http://t.co/"]'
   );
-  if (!anchor) {
+  if (!linkAnchor) {
     window.ui.updateTask({
       id: 'getRefTweet',
       status: 'ban',
-      msg: `@${screenName} has not tweeted any links!`
+      msg: `@${screenName} has not tweeted any links or images!`
     }, {
       id: 'checkRefTweet',
       status: 'ban',
-      msg: 'The QFD test needs least one tweet containing a link.'
+      msg: 'The QFD test needs least one tweet containing a link or an image.'
     });
     return;
   }
@@ -35,26 +44,65 @@ const qfBanTest = async (screenName) => {
     msg: 'Trying to find reference tweet...'
   });
 
-  const testResponse = await TwitterProxy.search(anchor.href);
-  const tweets = Array.from(testResponse.dom.querySelectorAll('.tweet'));
-  const usersTweets = tweets.filter(el =>
-    el.dataset.screenName.toLowerCase() === screenName.toLowerCase()
-  );
-  if (!usersTweets.length) {
-    // tweet not fount - shadowban
+  const linkFoundNoQf = await findUserTweet(linkAnchor.href, screenName, false);
+  if(linkFoundNoQf) {
+    const linkFoundQf = await findUserTweet(linkAnchor.href, screenName, true);
+    if(!linkFoundQf) {
+      // tweet not fount - shadowban
 
+      window.ui.updateTask({
+        id: 'checkRefTweet',
+        status: 'ban',
+        msg: `Reference tweet not found.<br />@${screenName} has a QFD shadowban!`
+      });
+      return;
+    }
+    // tweet found - no shadowban
     window.ui.updateTask({
       id: 'checkRefTweet',
-      status: 'ban',
-      msg: `Reference tweet not found.<br />@${screenName} has a QFD shadowban!`
+      status: 'ok',
+      msg: `Reference tweet found.<br />@${screenName} is not shadowbanned.`
     });
-    return;
+	return;
   }
-  // tweet found - no shadowban
+
+  const imageResponse = await TwitterProxy.search(`from:${screenName} filter:images`);
+  const imageAnchor = imageResponse.dom.querySelector('.tweet-text a.u-hidden');
+  if(!imageAnchor) {
+    window.ui.updateTask({
+      id: 'checkRefTweet',
+      status: 'warn',
+      msg: `Link test failed and no image tweet detected.<br />@${screenName} could not be tested.`
+    });
+	return;
+  }
+
+  const imageFoundNoQf = await findUserTweet(imageAnchor.innerText, screenName, false);
+  if(imageFoundNoQf) {
+    const imageFoundQf = await findUserTweet(imageAnchor.innerText, screenName, true);
+    if(!imageFoundQf) {
+      // tweet not fount - shadowban
+
+      window.ui.updateTask({
+        id: 'checkRefTweet',
+        status: 'ban',
+        msg: `Reference tweet not found.<br />@${screenName} has a QFD shadowban!`
+      });
+      return;
+    }
+    // tweet found - no shadowban
+    window.ui.updateTask({
+      id: 'checkRefTweet',
+      status: 'ok',
+      msg: `Reference tweet found.<br />@${screenName} is not shadowbanned.`
+    });
+	return;
+  }
+
   window.ui.updateTask({
     id: 'checkRefTweet',
-    status: 'ok',
-    msg: `Reference tweet found.<br />@${screenName} is not shadowbanned.`
+    status: 'warn',
+    msg: `All tests failed.<br />@${screenName} could not be tested.`
   });
 };
 
@@ -109,11 +157,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }, {
         id: 'getRefTweet',
         status: 'ban',
-        msg: `@${screenName} has not tweeted any links!<br />The QFD test requires the user to have tweeted at least one link.`
+        msg: `@${screenName} has not tweeted any links or images!<br />The QFD test requires the user to have tweeted at least one link or image.`
       }, {
         id: 'checkRefTweet',
         status: 'ban',
-        msg: 'The QFD test needs at least one link tweet.'
+        msg: 'The QFD test needs at least one link or image tweet.'
       });
     }
 
