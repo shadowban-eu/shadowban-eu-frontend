@@ -17,7 +17,8 @@ if (empty($_GET['q']) && empty($_GET['screenName'])) {
 // user's page, otherwise
 if (isset($_GET['q'])) {
   $url = 'https://twitter.com/search?f=tweets&src=typd&vertical=default&q=' .
-    urlencode(filter_var($_GET['q'], FILTER_SANITIZE_STRING));
+    urlencode(filter_var($_GET['q'], FILTER_SANITIZE_STRING)) .
+    (isset($_GET['noqf']) ? '&qf=off' : '');
 } else {
   $url = 'https://twitter.com/' .
     urlencode(filter_var($_GET['screenName'], FILTER_SANITIZE_STRING));
