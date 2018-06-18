@@ -1,8 +1,8 @@
 import TWPResponse from './twpResponse';
 
 export default class TwitterProxy {
-  static search(query) {
-    const url = `/search.php?q=${encodeURIComponent(query)}`;
+  static search(query, qf = true) {
+    const url = `/search.php?q=${encodeURIComponent(query)}${qf ? '' : '&noqf=1'}`;
     return fetch(url)
       .then(TwitterProxy.checkSuccess)
       .then(TwitterProxy.parseDOMString)
@@ -45,12 +45,12 @@ export default class TwitterProxy {
         break;
       case 500:
         console.warn(`[TwitterProxy|search] ${err.statusText}`);
-        err.json().then(jsonBody => console.error(jsonBody.error));
         break;
       default:
         console.warn('[TwitterProxy|search] Network error');
-        console.error(err);
         break;
     }
+    window.ui.unhandledError();
+    throw err;
   }
 }

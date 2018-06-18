@@ -17,7 +17,8 @@ if (empty($_GET['q']) && empty($_GET['screenName'])) {
 // user's page, otherwise
 if (isset($_GET['q'])) {
   $url = 'https://twitter.com/search?f=tweets&src=typd&vertical=default&q=' .
-    urlencode(filter_var($_GET['q'], FILTER_SANITIZE_STRING));
+    urlencode(filter_var($_GET['q'], FILTER_SANITIZE_STRING)) .
+    (isset($_GET['noqf']) ? '&qf=off' : '');
 } else {
   $url = 'https://twitter.com/' .
     urlencode(filter_var($_GET['screenName'], FILTER_SANITIZE_STRING));
@@ -34,6 +35,14 @@ $context = stream_context_create($opts);
 
 error_log('Requesting content from ' . $url);
 $content = file_get_contents($url, false, $context);
+if($content === false && isset($_GET['q'])) {
+  header('HTTP/1.1 500 Internal Server Booboo');
+  die();
+}
+if(isset($_GET['q'])) {
+  // relay response code
+  header($http_response_header[0]);
+}
 echo $content;
 
 ?>
