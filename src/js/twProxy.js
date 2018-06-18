@@ -1,8 +1,8 @@
 import TWPResponse from './twpResponse';
 
 export default class TwitterProxy {
-  static search(query, qf = true) {
-    const url = `/search.php?q=${encodeURIComponent(query)}${qf ? '' : '&noqf=1'}`;
+  static search(query, qf = true, ua = 0) {
+    const url = `/search.php?ua=${encodeURIComponent(ua)}&q=${encodeURIComponent(query)}${qf ? '' : '&noqf=1'}`;
     return fetch(url)
       .then(TwitterProxy.checkSuccess)
       .then(TwitterProxy.parseDOMString)
@@ -32,6 +32,10 @@ export default class TwitterProxy {
     const twpResponse = new TWPResponse(res);
     twpResponse.bodyText = body;
     twpResponse.dom = parser.parseFromString(twpResponse.bodyText, 'text/html');
+    if(!twpResponse.dom.querySelector('.SidebarCommonModules')) {
+      window.ui.unhandledError();
+      throw new Error("Unexpected response from Twitter proxy");
+    }
     return twpResponse;
   }
   /* eslint-enable no-param-reassign */

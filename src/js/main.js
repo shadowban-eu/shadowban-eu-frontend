@@ -72,7 +72,7 @@ const qfBanTest = async (screenName) => {
     window.ui.updateTask({
       id: 'checkRefTweet',
       status: 'warn',
-      msg: `Link test failed and no image tweet detected.<br />@${screenName} could not be tested.`
+      msg: `Link and image tests failed.<br />@${screenName} could not be tested for QFD.`
     });
 	return;
   }
@@ -102,14 +102,19 @@ const qfBanTest = async (screenName) => {
   window.ui.updateTask({
     id: 'checkRefTweet',
     status: 'warn',
-    msg: `All tests failed.<br />@${screenName} could not be tested.`
+    msg: `QFD tests failed.<br />@${screenName} could not be tested for QFD.`
   });
 };
 
 // Tests conventional (v1) shadowban
 const conventionalBanTest = async (screenName) => {
-  const fromResponse = await TwitterProxy.search(`from:${screenName}`);
-  return fromResponse.dom.querySelector('.tweet') === null;
+  for(let ua = 0; ua < 5; ua++) {
+    const fromResponse = await TwitterProxy.search(`from:${screenName}`, false, ua);
+    if(fromResponse.dom.querySelector('.tweet') != null) {
+      return false;
+    }
+  }
+  return true;
 };
 
 document.addEventListener('DOMContentLoaded', () => {

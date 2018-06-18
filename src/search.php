@@ -16,7 +16,7 @@ if (empty($_GET['q']) && empty($_GET['screenName'])) {
 // search results, if query is supplied
 // user's page, otherwise
 if (isset($_GET['q'])) {
-  $url = 'https://twitter.com/search?f=tweets&src=typd&vertical=default&q=' .
+  $url = 'https://twitter.com/search?f=tweets&src=typd&vertical=default&lang=en&q=' .
     urlencode(filter_var($_GET['q'], FILTER_SANITIZE_STRING)) .
     (isset($_GET['noqf']) ? '&qf=off' : '');
 } else {
@@ -24,10 +24,24 @@ if (isset($_GET['q'])) {
     urlencode(filter_var($_GET['screenName'], FILTER_SANITIZE_STRING));
 }
 
+$uas = array(
+  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36",
+  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.37",
+  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.38",
+  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.39",
+  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.40"
+);
+$uai = 0;
+if(isset($_GET['ua'])) {
+  $uai = (int)$_GET['ua'];
+}
+$uai = $uai % count($uas);
+$ua = $uas[$uai];
+
 $opts = array(
   "http" => array(
     "method" => "GET",
-    "header" => "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36\r\n" .
+    "header" => "User-Agent: " . $ua . "\r\n" .
       "Accept: */*\r\n"
   )
 );
