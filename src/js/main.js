@@ -36,11 +36,11 @@ const multiTest = async (query, qf, success, prefUA = 0) => {
 }
 
 // Tests quality filter (v2) shadowban
-const qfBanTest = async (screenName) => {
+const qfBanTest = async (screenName, prefUA = 0) => {
   const linkTest = r => r.dom.querySelector(
     '.tweet-text a[href^="https://t.co/"],.tweet-text a[href^="http://t.co/"]'
   );
-  const [linkUA, linkAnchor] = await multiTest(`from:${screenName} filter:links`, true, linkTest);
+  const [linkUA, linkAnchor] = await multiTest(`from:${screenName} filter:links`, true, linkTest, prefUA);
   if (!linkAnchor) {
     window.ui.updateTask({
       id: 'getRefTweet',
@@ -128,13 +128,9 @@ const qfBanTest = async (screenName) => {
 
 // Tests conventional (v1) shadowban
 const conventionalBanTest = async (screenName) => {
-  for(let ua = 0; ua < 5; ua++) {
-    const fromResponse = await TwitterProxy.search(`from:${screenName}`, false, ua);
-    if(fromResponse.dom.querySelector('.tweet') != null) {
-      return false;
-    }
-  }
-  return true;
+  const tweetTest = r => r.dom.querySelector('.tweet');
+  const [userUA, tweet] = await multiTest(`from:${screenName}`, false, tweetTest);
+  return [userUA, !tweet];
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -202,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Check whether user is v1 banned; no need to test v2, if so
-    const isConvBanned = await conventionalBanTest(screenName);
+    const [userUA, isConvBanned] = await conventionalBanTest(screenName);
     if (isConvBanned) {
       return window.ui.updateTask({
         id: 'checkConventional',
@@ -230,6 +226,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Check v2 shadowban; UI updates inside (POLA violation, I know :P)
-    return qfBanTest(screenName);
+    return qfBanTest(screenName, userUA);
   });
 });
