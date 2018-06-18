@@ -5,8 +5,8 @@
   "main": "gulpfile.babel.js",
   "author": "Raphael Beer <raphael.beer@protonmail.com>",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/rbeer/TwitterShadowBanV2"
+    "type": "git",
+    "url": "https://github.com/rbeer/TwitterShadowBanV2"
   },
   "license": "MIT",
   "private": true,
