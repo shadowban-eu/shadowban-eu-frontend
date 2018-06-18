@@ -6,8 +6,8 @@
 import UI from './ui';
 import TwitterProxy from './twProxy';
 
-const findUserTweet = async (query, name, qf) => {
-  const testResponse = await TwitterProxy.search(query, qf);
+const findUserTweet = async (query, name, qf, ua = 0) => {
+  const testResponse = await TwitterProxy.search(query, qf, ua);
   const tweets = Array.from(testResponse.dom.querySelectorAll('.tweet'));
   const usersTweets = tweets.filter(el =>
     el.dataset.screenName.toLowerCase() === name.toLowerCase()
@@ -15,12 +15,32 @@ const findUserTweet = async (query, name, qf) => {
   return usersTweets.length > 0;
 }
 
+// Test with multiple user agents
+const multiTest = async (query, qf, success, prefUA = 0) => {
+  const prefResponse = await TwitterProxy.search(query, qf, prefUA);
+  const prefResult = success(prefResponse);
+  if(prefResult) {
+    return [prefUA, prefResult];
+  }
+  for(let ua = 0; ua < 5; ua++) {
+    if(ua == prefUA) {
+      continue;
+    }
+    const response = await TwitterProxy.search(query, qf, ua);
+    const result = success(response);
+	if(result) {
+      return [ua, result];
+    }
+  }
+  return [-1, false];
+}
+
 // Tests quality filter (v2) shadowban
 const qfBanTest = async (screenName) => {
-  const linkResponse = await TwitterProxy.search(`from:${screenName} filter:links`);
-  const linkAnchor = linkResponse.dom.querySelector(
+  const linkTest = r => r.dom.querySelector(
     '.tweet-text a[href^="https://t.co/"],.tweet-text a[href^="http://t.co/"]'
   );
+  const [linkUA, linkAnchor] = await multiTest(`from:${screenName} filter:links`, true, linkTest);
   if (!linkAnchor) {
     window.ui.updateTask({
       id: 'getRefTweet',
@@ -44,9 +64,9 @@ const qfBanTest = async (screenName) => {
     msg: 'Trying to find reference tweet...'
   });
 
-  const linkFoundNoQf = await findUserTweet(linkAnchor.href, screenName, false);
+  const linkFoundNoQf = await findUserTweet(linkAnchor.href, screenName, false, linkUA);
   if(linkFoundNoQf) {
-    const linkFoundQf = await findUserTweet(linkAnchor.href, screenName, true);
+    const linkFoundQf = await findUserTweet(linkAnchor.href, screenName, true, linkUA);
     if(!linkFoundQf) {
       // tweet not fount - shadowban
 
@@ -65,9 +85,9 @@ const qfBanTest = async (screenName) => {
     });
 	return;
   }
-
-  const imageResponse = await TwitterProxy.search(`from:${screenName} filter:images`);
-  const imageAnchor = imageResponse.dom.querySelector('.tweet-text a.u-hidden');
+  
+  const imageTest = r => r.dom.querySelector('.tweet-text a.u-hidden');
+  const [imageUA, imageAnchor] = await multiTest(`from:${screenName} filter:images`, true, imageTest, linkUA);
   if(!imageAnchor) {
     window.ui.updateTask({
       id: 'checkRefTweet',
@@ -77,9 +97,9 @@ const qfBanTest = async (screenName) => {
 	return;
   }
 
-  const imageFoundNoQf = await findUserTweet(imageAnchor.innerText, screenName, false);
+  const imageFoundNoQf = await findUserTweet(imageAnchor.innerText, screenName, false, imageUA);
   if(imageFoundNoQf) {
-    const imageFoundQf = await findUserTweet(imageAnchor.innerText, screenName, true);
+    const imageFoundQf = await findUserTweet(imageAnchor.innerText, screenName, true, imageUA);
     if(!imageFoundQf) {
       // tweet not fount - shadowban
 
