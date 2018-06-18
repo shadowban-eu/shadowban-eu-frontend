@@ -1,46 +1,61 @@
 <?php
-
 /*
 ** Simple Twitter Shadowban Checker - php proxy
 ** 2016 @xho
 ** 2018 @raphaelbeerlin (V2 modifications)
 */
 
-// bail if neither query nor screenName are supplied
-if (empty($_GET['q']) && empty($_GET['screenName'])) {
-    header('HTTP/1.1 500 Internal Server Booboo');
-    header('Content-Type: application/json; charset=UTF-8');
-    die(json_encode(array('error' => 'Missing query or username')));
-}
-
 // search results, if query is supplied
 // user's page, otherwise
 if (isset($_GET['q'])) {
-  $url = 'https://twitter.com/search?f=tweets&src=typd&vertical=default&q=' .
-    urlencode(filter_var($_GET['q'], FILTER_SANITIZE_STRING)) .
-    (isset($_GET['noqf']) ? '&qf=off' : '');
+    $url = 'https://twitter.com/search?f=tweets&src=typd&vertical=default&q=' .
+        urlencode(filter_var($_GET['q'], FILTER_SANITIZE_STRING)) .
+        (isset($_GET['noqf']) ? '&qf=off' : '');
+} elseif (isset($_GET['sreenName'])) {
+    $url = 'https://twitter.com/' .
+        urlencode(filter_var($_GET['screenName'], FILTER_SANITIZE_STRING));
 } else {
-  $url = 'https://twitter.com/' .
-    urlencode(filter_var($_GET['screenName'], FILTER_SANITIZE_STRING));
+    header('HTTP/1.1 500 Internal Server Booboo');
+    header('Content-Type: application/json; charset=UTF-8');
+    echo json_encode(array('error' => 'Missing query or username'));
+    return;
 }
 
-$opts = array(
-  "http" => array(
-    "method" => "GET",
-    "header" => "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36\r\n" .
-      "Accept: */*\r\n"
-  )
-);
-$context = stream_context_create($opts);
+// initialize curl handler
+$handler = curl_init();
 
-error_log('Requesting content from ' . $url);
-$content = file_get_contents($url, false, $context);
-if($content === false && isset($_GET['q'])) {
-  header('HTTP/1.1 500 Internal Server Booboo');
-  die();
+// define the user agent
+$userAgent = "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36\r\n";
+
+// set some options to the curl handler
+curl_setopt_array($handler, array(
+    CURLOPT_URL => $url,
+    CURLOPT_FAILONERROR => true,
+    CURLOPT_FOLLOWLOCATION => true,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_USERAGENT => $userAgent
+));
+
+//do the request and fetch htmlas well as the http status code
+$response = curl_exec($handler);
+$statusCode = curl_getinfo($handler, CURLINFO_HTTP_CODE);
+
+// return the status code if an error occured
+if ($response === false) {
+    http_response_code($statusCode);
+    curl_close($handler);
+    return;
 }
-if(isset($_GET['q'])) {
-  // relay response code
-  header($http_response_header[0]);
+
+// close the curl handler
+curl_close($handler);
+
+// check for an error
+if ($statusCode != 200) {
+    // relay response code
+    http_response_code($statusCode);
+    return;
 }
-echo $content;
+
+// print the html
+echo $response;
