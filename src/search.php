@@ -44,5 +44,3 @@ if(isset($_GET['q'])) {
   header($http_response_header[0]);
 }
 echo $content;
-
-?>
