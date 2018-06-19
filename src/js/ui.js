@@ -105,46 +105,49 @@ export default class UI {
   // update task info; takes one or more objects
   updateTask = (...tasks) => {
     tasks.forEach((task) => {
-      const taskEl = this.stage.querySelector(`[data-task-id="${task.id}"]`);
-      const taskIcon = taskEl.querySelector('.material-icons');
-      const taskIconClasses = taskIcon.classList;
-      // icon
-      switch (task.status) {
-        case 'running':
-          taskIconClasses.add('gears');
-          taskIcon.innerText = '';
-          break;
-        case 'pending':
-          taskIconClasses.remove('gears');
-          taskIcon.innerText = 'access_time';
-          break;
-        case 'ok':
-          taskIconClasses.remove('gears');
-          taskIcon.innerText = 'check';
-          break;
-        case 'ban':
-          taskIconClasses.remove('gears');
-          taskIcon.innerText = 'error_outline';
-          break;
-        case 'warn':
-          taskIconClasses.remove('gears');
-          taskIcon.innerText = 'error_outline';
-          break;
-        default:
-          break;
-      }
-      // message
-      if (task.msg) {
-        const messageElement = taskEl.querySelector('.task-message');
-        // messageElement.children.forEach(child => messageElement.removeChild(child));
-        let htmlMessage = `<span>${task.msg}</span>`;
-        htmlMessage = htmlMessage.replace('QFD', '<abbr title="Quality Filter Discrimination">QFD <i class="material-icons qfd-hint">contact_support</i></abbr>');
-        // Yes, innerHTML is a security issue.
-        // But this is ok since we are using hardcoded values, only.
-        messageElement.innerHTML = htmlMessage;
-      }
-      // -task-status
-      taskEl.dataset.taskStatus = task.status;
+      const taskEls = Array.isArray(task.id) ? task.id : [task.id];
+	  for(let i = 0; i < taskEls.length; i++) {
+        const taskEl = this.stage.querySelector(`[data-task-id="${taskEls[i]}"]`);
+        const taskIcon = taskEl.querySelector('.material-icons');
+        const taskIconClasses = taskIcon.classList;
+        // icon
+        switch (task.status) {
+          case 'running':
+            taskIconClasses.add('gears');
+            taskIcon.innerText = '';
+            break;
+          case 'pending':
+            taskIconClasses.remove('gears');
+            taskIcon.innerText = 'access_time';
+            break;
+          case 'ok':
+            taskIconClasses.remove('gears');
+            taskIcon.innerText = 'check';
+            break;
+          case 'ban':
+            taskIconClasses.remove('gears');
+            taskIcon.innerText = 'error_outline';
+            break;
+          case 'warn':
+            taskIconClasses.remove('gears');
+            taskIcon.innerText = 'error_outline';
+            break;
+          default:
+            break;
+        }
+        // message
+        if (task.msg) {
+          const messageElement = taskEl.querySelector('.task-message');
+          // messageElement.children.forEach(child => messageElement.removeChild(child));
+          let htmlMessage = `<span>${task.msg}</span>`;
+          htmlMessage = htmlMessage.replace('QFD', '<abbr title="Quality Filter Discrimination">QFD <i class="material-icons qfd-hint">contact_support</i></abbr>');
+          // Yes, innerHTML is a security issue.
+          // But this is ok since we are using hardcoded values, only.
+          messageElement.innerHTML = htmlMessage;
+        }
+        // -task-status
+        taskEl.dataset.taskStatus = task.status;
+	  }
     });
   };
 
@@ -154,17 +157,9 @@ export default class UI {
     status: 'running',
     msg: `Looking up user @${screenName}`
   }, {
-    id: 'checkConventional',
+    id: ['checkSearch', 'checkConventional', 'getRefTweet', 'checkRefTweet'],
     status: 'pending',
     msg: 'Waiting for user.'
-  }, {
-    id: 'getRefTweet',
-    status: 'pending',
-    msg: 'Waiting for user.'
-  }, {
-    id: 'checkRefTweet',
-    status: 'pending',
-    msg: 'Waiting for reference tweet.'
   });
 
   // Prevents running multiple tests at the same time (disables button/{Enter} on handle <input>);

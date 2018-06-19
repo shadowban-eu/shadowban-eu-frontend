@@ -1,12 +1,12 @@
 import TWPResponse from './twpResponse';
 
 export default class TwitterProxy {
-  static search(query, qf = true) {
-    const url = `/search.php?q=${encodeURIComponent(query)}${qf ? '' : '&noqf=1'}`;
+  static search(query, qf = true, ua = 0) {
+    const url = `/search.php?ua=${encodeURIComponent(ua)}&q=${encodeURIComponent(query)}${qf ? '' : '&noqf=1'}`;
     return fetch(url)
       .then(TwitterProxy.checkSuccess)
-      .then(TwitterProxy.parseDOMString)
-      .catch(TwitterProxy.handleError);
+      .then(TwitterProxy.parseSearchDOMString)
+	  .catch(TwitterProxy.handleError);
   }
 
   static user(screenName) {
@@ -14,6 +14,22 @@ export default class TwitterProxy {
     return fetch(url)
       .then(TwitterProxy.checkSuccess)
       .then(TwitterProxy.parseDOMString)
+      .catch(TwitterProxy.handleError);
+  }
+  
+  static status(id) {
+    const url = `/search.php?status=${id}`;
+    return fetch(url)
+      .then(TwitterProxy.checkSuccess)
+      .then(TwitterProxy.parseDOMString)
+      .catch(TwitterProxy.handleError);
+  }
+  
+  static timelinePage(screenName, pos) {
+    const url = `/search.php?timeline=${screenName}${pos ? '&pos=' + pos : ''}`;
+    return fetch(url)
+      .then(TwitterProxy.checkSuccess)
+      .then(TwitterProxy.parseInfinity)
       .catch(TwitterProxy.handleError);
   }
 
@@ -25,6 +41,17 @@ export default class TwitterProxy {
     return res;
   }
 
+  static parseInfinity = async (res) => {
+    const json = await res.json();
+    const body = json.inner || json;
+    const parser = new DOMParser();
+    const twpResponse = new TWPResponse(res);
+    twpResponse.more = body.has_more_items;
+    twpResponse.pos = body.min_position;
+    twpResponse.dom = parser.parseFromString(body.items_html, 'text/html');
+    return twpResponse;
+  }
+  
   /* eslint-disable no-param-reassign */
   static parseDOMString = async (res) => {
     const body = await res.text();
@@ -32,6 +59,21 @@ export default class TwitterProxy {
     const twpResponse = new TWPResponse(res);
     twpResponse.bodyText = body;
     twpResponse.dom = parser.parseFromString(twpResponse.bodyText, 'text/html');
+    return twpResponse;
+  }
+  /* eslint-enable no-param-reassign */
+
+  /* eslint-disable no-param-reassign */
+  static parseSearchDOMString = async (res) => {
+    const body = await res.text();
+    const parser = new DOMParser();
+    const twpResponse = new TWPResponse(res);
+    twpResponse.bodyText = body;
+    twpResponse.dom = parser.parseFromString(twpResponse.bodyText, 'text/html');
+    if(!twpResponse.dom.querySelector('.SidebarCommonModules')) {
+      window.ui.unhandledError();
+      throw new Error("Unexpected response from Twitter proxy");
+    }
     return twpResponse;
   }
   /* eslint-enable no-param-reassign */
