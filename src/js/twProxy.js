@@ -16,6 +16,22 @@ export default class TwitterProxy {
       .then(TwitterProxy.parseDOMString)
       .catch(TwitterProxy.handleError);
   }
+  
+  static status(id) {
+    const url = `/search.php?status=${id}`;
+    return fetch(url)
+      .then(TwitterProxy.checkSuccess)
+      .then(TwitterProxy.parseDOMString)
+      .catch(TwitterProxy.handleError);
+  }
+  
+  static timelinePage(screenName, pos) {
+    const url = `/search.php?timeline=${screenName}${pos ? '&pos=' + pos : ''}`;
+    return fetch(url)
+      .then(TwitterProxy.checkSuccess)
+      .then(TwitterProxy.parseInfinity)
+      .catch(TwitterProxy.handleError);
+  }
 
   static checkSuccess(res) {
     // res.ok === (res.status in the range 200-299)
@@ -23,6 +39,17 @@ export default class TwitterProxy {
       throw res; // throwing response object to make it available to catch()
     }
     return res;
+  }
+
+  static parseInfinity = async (res) => {
+    const json = await res.json();
+    const body = json.inner || json;
+    const parser = new DOMParser();
+    const twpResponse = new TWPResponse(res);
+    twpResponse.more = body.has_more_items;
+    twpResponse.pos = body.min_position;
+    twpResponse.dom = parser.parseFromString(body.items_html, 'text/html');
+    return twpResponse;
   }
 
   /* eslint-disable no-param-reassign */
