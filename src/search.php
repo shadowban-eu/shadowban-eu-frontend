@@ -55,6 +55,10 @@ $opts = array(
   )
 );
 
+if(isset($_GET['screenName'])) {
+  $opts['http']['ignore_errors'] = true;
+}
+
 error_log('Requesting content from ' . $url);
 for($i = 0; $i < 5; $i++) {
   $context = stream_context_create($opts);

@@ -63,7 +63,7 @@ const qfBanTest = async (screenName, prefUA = 0) => {
       id: ['checkRefTweet', 'getRefTweet'],
       status: 'ban',
       msg: `The QFD test needs least one tweet containing a link or an image.<br/>` +
-        `Such a tweet <a href="https://twitter.com/search?q={encodeURIComponent(linkQuery)}">could not be found</a> for ${screenName}.`
+        `Such a tweet <a href="https://twitter.com/search?q=${encodeURIComponent(linkQuery)}">could not be found</a> for ${screenName}.`
     });
     return;
   }
@@ -133,7 +133,7 @@ const qfBanTest = async (screenName, prefUA = 0) => {
     window.ui.updateTask({
       id: 'checkRefTweet',
       status: 'ok',
-        msg: `<a href="https://twitter.com/${screenName}/status/${imageRefId}">Reference tweet</a> found <a href="https://twitter.com/search?f=tweets&vertical=default&q=${encodeURIComponent(imageAnchor.href)}&qf=off">without</a> ` +
+        msg: `<a href="https://twitter.com/${screenName}/status/${imageRefId}">Reference tweet</a> found without ` +
           `as well as with quality filter.<br />@${screenName} is not shadowbanned!`
     });
 	return;
@@ -210,6 +210,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const tweet = userResponse.dom.querySelector('.tweet');
+    window.ui.updateTask({
+      id: 'checkUser',
+      status: 'ok',
+      msg: `Found <a href="https://twitter.com/${screenName}">@${screenName}</a>.`
+    });
+
     // user found, but has no tweets
     if (!tweet) {
       return window.ui.updateTask({
@@ -221,10 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // user found and has tweets
     window.ui.updateTask({
-      id: 'checkUser',
-      status: 'ok',
-      msg: `Found <a href="https://twitter.com/${screenName}">@${screenName}</a>.`
-    }, {
       id: 'checkSearch',
       status: 'running',
       msg: 'Testing search ban...'

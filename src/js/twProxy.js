@@ -5,8 +5,8 @@ export default class TwitterProxy {
     const url = `/search.php?ua=${encodeURIComponent(ua)}&q=${encodeURIComponent(query)}${qf ? '' : '&noqf=1'}`;
     return fetch(url)
       .then(TwitterProxy.checkSuccess)
-      .then(TwitterProxy.parseDOMString)
-      .catch(TwitterProxy.handleError);
+      .then(TwitterProxy.parseSearchDOMString)
+	  .catch(TwitterProxy.handleError);
   }
 
   static user(screenName) {
@@ -51,9 +51,20 @@ export default class TwitterProxy {
     twpResponse.dom = parser.parseFromString(body.items_html, 'text/html');
     return twpResponse;
   }
-
+  
   /* eslint-disable no-param-reassign */
   static parseDOMString = async (res) => {
+    const body = await res.text();
+    const parser = new DOMParser();
+    const twpResponse = new TWPResponse(res);
+    twpResponse.bodyText = body;
+    twpResponse.dom = parser.parseFromString(twpResponse.bodyText, 'text/html');
+    return twpResponse;
+  }
+  /* eslint-enable no-param-reassign */
+
+  /* eslint-disable no-param-reassign */
+  static parseSearchDOMString = async (res) => {
     const body = await res.text();
     const parser = new DOMParser();
     const twpResponse = new TWPResponse(res);
