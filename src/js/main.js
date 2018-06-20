@@ -168,7 +168,7 @@ const bannedInThread = async (screenName, id) => {
 
 const conventionalBanTest = async (screenName) => {
   const findRepliedTweet = async r => {
-    const tweets = r.dom.querySelectorAll('.tweet');
+    const tweets = r.dom.querySelectorAll(`.tweet[data-screen-name="${screenName}"]`);
     for(let i = 0; i < tweets.length; i++) {
       const tweet = tweets[i];
       const count = tweet.querySelector('.ProfileTweet-actionCountForPresentation');
@@ -200,7 +200,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Check whether user exists at all
     const userResponse = await TwitterProxy.user(screenName);
-    if (!userResponse.dom.querySelector(".ProfileHeaderCard")) {
+    const nameEl = userResponse.dom.querySelector(".ProfileHeaderCard .username .u-linkComplex-target");
+    if (!nameEl) {
       // user not found
       return window.ui.updateTask({
         id: ['checkUser', 'checkSearch', 'checkConventional', 'getRefTweet', 'checkRefTweet'],
@@ -208,6 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
         msg: `User <a href="https://twitter.com/${screenName}">@${screenName}</a> does not exist.`
       });
     }
+    screenName = nameEl.textContent;
 
     const tweet = userResponse.dom.querySelector('.tweet');
     window.ui.updateTask({
