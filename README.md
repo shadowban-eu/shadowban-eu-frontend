@@ -2,6 +2,8 @@
 
 One-page web app, testing Twitter users for conventional and QFD shadowbans.
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/6986eb7e8da272eb9d1f/maintainability)](https://codeclimate.com/github/shadowban-eu/TwitterShadowBanV2/maintainability)
+
 ## Setup
 
 Browser compatibility needs transpiling. Nothing fancy, just the usual babel magic.
