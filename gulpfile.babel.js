@@ -9,6 +9,7 @@ import { spawn } from 'child_process';
 
 import rollupConfig from './config/rollup.config';
 
+const _v = require('./package.json').version;
 const rollup = require('rollup');
 
 const production = process.env.NODE_ENV === 'production';
@@ -40,9 +41,12 @@ gulp.task('copy', () =>
     // .pipe(plugins.newer('dist'))
     .pipe(gulp.dest((file) => {
       if (file.history[0].endsWith('src/index.html')) {
-        const contents = file._contents.toString()
-          .replace(/\{\{useMinified\}\}/g, production ? '.min' : '');
-        file._contents = new Buffer(contents); // eslint-disable-line no-param-reassign
+        const contents = file._contents.toString();
+        file._contents = new Buffer(// eslint-disable-line no-param-reassign
+          contents
+            .replace(/\{\{useMinified\}\}/g, production ? '.min' : '')
+            .replace(/\{\{devBanner\}\}/g, production ? '' : `<div class="dev-banner">${_v}</div>`)
+        );
       }
       return `dist/${file.base.replace(`${file.cwd}/src`, '')}`;
     }))
