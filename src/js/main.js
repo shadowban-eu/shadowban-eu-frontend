@@ -6,9 +6,11 @@
 import UI from './ui';
 import TwitterProxy from './twProxy';
 
+const tweetSearchSel = '.tweet.js-stream-tweet';
+
 const findUserTweet = async (query, name, qf, ua = 0) => {
   const testResponse = await TwitterProxy.search(query, qf, ua);
-  const tweets = Array.from(testResponse.dom.querySelectorAll('.tweet'));
+  const tweets = Array.from(testResponse.dom.querySelectorAll(tweetSearchSel));
   const usersTweets = tweets.filter(el =>
     el.dataset.screenName.toLowerCase() === name.toLowerCase()
   );
@@ -54,7 +56,7 @@ const searchTimeline = async (user, success, pages = 10) => {
 // Tests quality filter (v2) shadowban
 const qfBanTest = async (screenName, prefUA = 0) => {
   const linkTest = r => r.dom.querySelector(
-    '.tweet-text a[href^="https://t.co/"],.tweet-text a[href^="http://t.co/"]'
+    tweetSearchSel + ' a[href^="https://t.co/"],.tweet-text a[href^="http://t.co/"]'
   );
   const linkQuery = `from:${screenName} filter:links`;
   const [linkUA, linkAnchor] = await multiTest(linkQuery, true, linkTest, prefUA);
@@ -67,7 +69,7 @@ const qfBanTest = async (screenName, prefUA = 0) => {
     });
     return;
   }
-  const linkRefId = linkAnchor.closest('.tweet').dataset.tweetId;
+  const linkRefId = linkAnchor.closest(tweetSearchSel).dataset.tweetId;
 
   window.ui.updateTask({
     id: 'getRefTweet',
@@ -103,7 +105,7 @@ const qfBanTest = async (screenName, prefUA = 0) => {
 	return;
   }
   
-  const imageTest = r => r.dom.querySelector('.tweet-text a.u-hidden');
+  const imageTest = r => r.dom.querySelector(tweetSearchSel + ' a.u-hidden');
   const [imageUA, imageAnchor] = await multiTest(`from:${screenName} filter:images`, true, imageTest, linkUA);
   if(!imageAnchor) {
     window.ui.updateTask({
@@ -114,7 +116,7 @@ const qfBanTest = async (screenName, prefUA = 0) => {
 	return;
   }
 
-  const imageRefId = imageAnchor.closest('.tweet').dataset.tweetId;
+  const imageRefId = imageAnchor.closest(tweetSearchSel).dataset.tweetId;
   const imageFoundNoQf = await findUserTweet(imageAnchor.innerText, screenName, false, imageUA);
   if(imageFoundNoQf) {
     const imageFoundQf = await findUserTweet(imageAnchor.innerText, screenName, true, imageUA);
@@ -148,7 +150,7 @@ const qfBanTest = async (screenName, prefUA = 0) => {
 
 // Tests conventional (v1) shadowban
 const searchBanTest = async (screenName) => {
-  const tweetTest = r => r.dom.querySelector('.tweet');
+  const tweetTest = r => r.dom.querySelector(tweetSearchSel);
   const [userUA, tweet] = await multiTest(`from:${screenName}`, false, tweetTest);
   return [userUA, !tweet];
 };
@@ -211,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     screenName = nameEl.textContent;
 
-    const tweet = userResponse.dom.querySelector('.tweet');
+    const tweet = userResponse.dom.querySelector(tweetSearchSel);
     window.ui.updateTask({
       id: 'checkUser',
       status: 'ok',
