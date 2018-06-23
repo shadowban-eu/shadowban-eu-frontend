@@ -8,13 +8,22 @@ import TwitterProxy from './twProxy';
 
 const tweetSearchSel = '.tweet.js-stream-tweet';
 
-const findUserTweet = async (query, name, qf, ua = 0) => {
-  const testResponse = await TwitterProxy.search(query, qf, ua);
+const findUserTweetLogin = async (query, name, qf, ua = 0, login = false) => {
+  const testResponse = await TwitterProxy.search(query, qf, ua, login);
   const tweets = Array.from(testResponse.dom.querySelectorAll(tweetSearchSel));
   const usersTweets = tweets.filter(el =>
     el.dataset.screenName.toLowerCase() === name.toLowerCase()
   );
   return usersTweets.length > 0;
+}
+
+const findUserTweet = async (query, name, qf, ua = 0) => {
+  const foundLoggedOut = await findUserTweetLogin(query, name, qf, ua);
+  if(foundLoggedOut) {
+    return [false, foundLoggedOut];
+  }
+  const foundLoggedIn = await findUserTweetLogin(query, name, qf, ua, true);
+  return [true, foundLoggedIn];
 }
 
 // Test with multiple user agents
@@ -81,9 +90,9 @@ const qfBanTest = async (screenName, prefUA = 0) => {
     msg: `Trying to find <a href="https://twitter.com/${screenName}/status/${linkRefId}">reference tweet</a>...`
   });
 
-  const linkFoundNoQf = await findUserTweet(linkAnchor.href, screenName, false, linkUA);
+  const [linkLogin, linkFoundNoQf] = await findUserTweet(linkAnchor.href, screenName, false, linkUA);
   if(linkFoundNoQf) {
-    const linkFoundQf = await findUserTweet(linkAnchor.href, screenName, true, linkUA);
+    const linkFoundQf = await findUserTweetLogin(linkAnchor.href, screenName, true, linkUA, linkLogin);
     if(!linkFoundQf) {
       // tweet not fount - shadowban
 
@@ -117,9 +126,9 @@ const qfBanTest = async (screenName, prefUA = 0) => {
   }
 
   const imageRefId = imageAnchor.closest(tweetSearchSel).dataset.tweetId;
-  const imageFoundNoQf = await findUserTweet(imageAnchor.innerText, screenName, false, imageUA);
+  const [imageLogin, imageFoundNoQf] = await findUserTweet(imageAnchor.innerText, screenName, false, imageUA);
   if(imageFoundNoQf) {
-    const imageFoundQf = await findUserTweet(imageAnchor.innerText, screenName, true, imageUA);
+    const imageFoundQf = await findUserTweetLogin(imageAnchor.innerText, screenName, true, imageUA, imageLogin);
     if(!imageFoundQf) {
       // tweet not fount - shadowban
 

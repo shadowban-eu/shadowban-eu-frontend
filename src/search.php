@@ -52,7 +52,12 @@ if(isset($_GET['ua'])) {
 $uai = $uai % count($uas);
 $ua = $uas[$uai];
 
-$session_headers = isset($_GET['login']) || isset($_GET['replies']) ? @file_get_contents(SESSION_HEADER_FILE) : '';
+$session_headers = isset($_GET['login']) || isset($_GET['replies']) ?
+  @file_get_contents(SESSION_HEADER_FILE) : '';
+
+if($session_headers !== false && $session_headers != '') {
+  $session_headers = "Cookie: " . $session_headers . "\r\nReferer: https://twitter.com/search\r\n";
+}
 
 $opts = array(
   "http" => array(

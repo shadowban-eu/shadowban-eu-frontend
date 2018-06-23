@@ -2,7 +2,7 @@ import TWPResponse from './twpResponse';
 
 export default class TwitterProxy {
   static search(query, qf = true, ua = 0, login = false) {
-    const url = `/search.php?ua=${encodeURIComponent(ua)}&q=${encodeURIComponent(query)}${qf ? '' : '&noqf=1'}${login ? '' : '&login=1'}`;
+    const url = `/search.php?ua=${encodeURIComponent(ua)}&q=${encodeURIComponent(query)}${qf ? '' : '&noqf=1'}${login ? '&login=1' : ''}`;
     return fetch(url)
       .then(TwitterProxy.checkSuccess)
       .then(TwitterProxy.parseSearchDOMString)
