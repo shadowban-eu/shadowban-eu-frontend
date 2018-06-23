@@ -18,9 +18,10 @@ const plugins = gulpLoadPlugins();
 const paths = {
   js: ['src/js/**/*.js', 'node_modules/materialize-css/js/*.js'],
   scss: ['src/scss/*.scss'],
+  templating: 'src/*.html',
   copyOnly: [
-    'src/*.html', 'src/*.php',
-    'src/img/**', 'src/vendor/**/*.+(css|js)'
+    'src/*.php', 'src/img/**', 'src/vendor/**/*.+(css|js)',
+    'src/favicon.png', 'src/sm_preview.png'
   ]
 };
 
@@ -36,8 +37,14 @@ gulp.task('clean', () =>
 );
 
 // Copy non-js files to dist
-gulp.task('copy', () =>
-  gulp.src(paths.copyOnly)
+gulp.task('copy', () => {
+  gulp.src(paths.copyOnly, { base: './src' })
+    .pipe(gulp.dest('./dist/'));
+});
+
+// parse html files for insertions
+gulp.task('templates', () =>
+  gulp.src(paths.templating)
     // .pipe(plugins.newer('dist'))
     .pipe(gulp.dest((file) => {
       if (file.history[0].endsWith('src/index.html')) {
@@ -53,8 +60,8 @@ gulp.task('copy', () =>
 );
 
 // Start server with restart on file changes
-gulp.task('dev', ['rollup', 'styles', 'copy', 'serve'], () =>
-  plugins.watch('src/**/*.*', () => runSequence('rollup', 'styles', 'copy'))
+gulp.task('dev', ['rollup', 'styles', 'templates', 'copy', 'serve'], () =>
+  plugins.watch('src/**/*.*', () => runSequence('rollup', 'styles', 'templates', 'copy'))
 );
 
 gulp.task('rollup', async () => {
@@ -83,7 +90,7 @@ gulp.task('serve', (done) => {
   done();
 });
 
-gulp.task('build', ['clean', 'rollup', 'styles', 'copy']);
+gulp.task('build', ['clean', 'rollup', 'styles', 'templates', 'copy']);
 
 // default task: clean dist, compile js files and copy non-js files.
 gulp.task('default', ['dev']);
