@@ -6,6 +6,8 @@
 import UI from './ui';
 import TwitterProxy from './twProxy';
 
+const enableDummyAccount = true;
+
 const tweetSearchSel = '.tweet.js-stream-tweet';
 
 const findUserTweetLogin = async (query, name, qf, ua = 0, login = false) => {
@@ -19,7 +21,7 @@ const findUserTweetLogin = async (query, name, qf, ua = 0, login = false) => {
 
 const findUserTweet = async (query, name, qf, ua = 0) => {
   const foundLoggedOut = await findUserTweetLogin(query, name, qf, ua);
-  if(foundLoggedOut) {
+  if(foundLoggedOut || !enableDummyAccount) {
     return [false, foundLoggedOut];
   }
   const foundLoggedIn = await findUserTweetLogin(query, name, qf, ua, true);
