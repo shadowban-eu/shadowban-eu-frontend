@@ -6,6 +6,8 @@
 ** 2018 @raphaelbeerlin (V2 modifications)
 */
 
+define('SESSION_HEADER_FILE', '.htsession');
+
 // bail if neither query nor screenName are supplied
 if (empty($_GET['q']) && empty($_GET['screenName']) && empty($_GET['timeline']) && empty($_GET['status'])) {
     header('HTTP/1.1 500 Internal Server Booboo');
@@ -26,9 +28,10 @@ if (isset($_GET['q'])) {
   $url = 'https://twitter.com/anyone/status/' .
     urlencode(filter_var($_GET['status'], FILTER_SANITIZE_NUMBER_INT)) . '?lang=en';
 } else {
+  $tweetEp = isset($_GET['replies']) ? 'with_replies' : 'tweets';
   $url = 'https://twitter.com/i/profiles/show/'.
     urlencode(filter_var($_GET['timeline'], FILTER_SANITIZE_STRING)) .
-	'/timeline/tweets?include_available_features=1&include_entities=1&lang=en'
+	'/timeline/' . $tweetEp . '?include_available_features=1&include_entities=1&lang=en'
     . (isset($_GET['pos']) ? '&max_position=' .
     urlencode(filter_var($_GET['pos'], FILTER_SANITIZE_NUMBER_INT)) : '');
 }
@@ -40,7 +43,9 @@ $uas = array(
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/601.3.9 (KHTML, like Gecko) Version/9.0.2 Safari/601.3.9",
   "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36",
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.1 Safari/605.1.15",
-  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36"
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36",
+  "Some Agent",
+  "Another Additional Agent"
 );
 $uai = 0;
 if(isset($_GET['ua'])) {
@@ -49,11 +54,19 @@ if(isset($_GET['ua'])) {
 $uai = $uai % count($uas);
 $ua = $uas[$uai];
 
+$session_headers = isset($_GET['login']) || isset($_GET['replies']) ?
+  @file_get_contents(SESSION_HEADER_FILE) : '';
+
+if($session_headers !== false && $session_headers != '') {
+  $session_headers = "Cookie: " . $session_headers . "\r\nReferer: https://twitter.com/search\r\n";
+}
+
 $opts = array(
   "http" => array(
     "method" => "GET",
     "header" => "User-Agent: " . $ua . "\r\n" .
-      "Accept: */*\r\n"
+      "Accept: */*\r\n" .
+      $session_headers ? $session_headers : ''
   )
 );
 

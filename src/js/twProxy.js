@@ -1,8 +1,8 @@
 import TWPResponse from './twpResponse';
 
 export default class TwitterProxy {
-  static search(query, qf = true, ua = 0) {
-    const url = `/search.php?ua=${encodeURIComponent(ua)}&q=${encodeURIComponent(query)}${qf ? '' : '&noqf=1'}`;
+  static search(query, qf = true, ua = 0, login = false) {
+    const url = `/search.php?ua=${encodeURIComponent(ua)}&q=${encodeURIComponent(query)}${qf ? '' : '&noqf=1'}${login ? '&login=1' : ''}`;
     return fetch(url)
       .then(TwitterProxy.checkSuccess)
       .then(TwitterProxy.parseSearchDOMString)
@@ -25,8 +25,8 @@ export default class TwitterProxy {
       .catch(TwitterProxy.handleError);
   }
   
-  static timelinePage(screenName, pos) {
-    const url = `/search.php?timeline=${screenName}${pos ? '&pos=' + pos : ''}`;
+  static timelinePage(screenName, pos, replies = false) {
+    const url = `/search.php?timeline=${screenName}${pos ? '&pos=' + pos : ''}${replies ? '' : '&replies=1'}`;
     return fetch(url)
       .then(TwitterProxy.checkSuccess)
       .then(TwitterProxy.parseInfinity)
