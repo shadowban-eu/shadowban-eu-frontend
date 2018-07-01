@@ -92,13 +92,11 @@ export default class UI {
     ));
     //console.log(incompleteTasks.map(x => x));
     window._tsk = incompleteTasks;
-    const taskUpdates = incompleteTasks.map(x => {
-      return {
-        id: x.dataset.taskId,
-        status: 'warn',
-        msg: 'A server error occured. Failed to test. Please try again later.'
-      };
-    });
+    const taskUpdates = incompleteTasks.map(x => ({
+      id: x.dataset.taskId,
+      status: 'warn',
+      msg: 'A server error occured. Failed to test. Please try again later.'
+    }));
     this.updateTask(...taskUpdates);
   };
 
@@ -106,7 +104,7 @@ export default class UI {
   updateTask = (...tasks) => {
     tasks.forEach((task) => {
       const taskEls = Array.isArray(task.id) ? task.id : [task.id];
-	  for(let i = 0; i < taskEls.length; i++) {
+      for (let i = 0; i < taskEls.length; i++) {
         const taskEl = this.stage.querySelector(`[data-task-id="${taskEls[i]}"]`);
         const taskIcon = taskEl.querySelector('.material-icons');
         const taskIconClasses = taskIcon.classList;
@@ -147,7 +145,7 @@ export default class UI {
         }
         // -task-status
         taskEl.dataset.taskStatus = task.status;
-	  }
+      }
     });
   };
 
