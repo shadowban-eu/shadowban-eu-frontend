@@ -91,7 +91,6 @@ export default class UI {
     const incompleteTasks = Array.from(document.querySelectorAll(
       '[data-task-status="pending"],[data-task-status="running"]'
     ));
-    //console.log(incompleteTasks.map(x => x));
     window._tsk = incompleteTasks;
     const taskUpdates = incompleteTasks.map(x => ({
       id: x.dataset.taskId,
@@ -105,7 +104,7 @@ export default class UI {
   updateTask = (...tasks) => {
     tasks.forEach((task) => {
       const taskEls = Array.isArray(task.id) ? task.id : [task.id];
-      for (let i = 0; i < taskEls.length; i++) {
+      for (let i = 0; i < taskEls.length; i += 1) {
         const taskEl = this.stage.querySelector(`[data-task-id="${taskEls[i]}"]`);
         const taskIcon = taskEl.querySelector('.material-icons');
         const taskIconClasses = taskIcon.classList;
