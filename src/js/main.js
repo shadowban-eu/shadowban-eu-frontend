@@ -7,6 +7,7 @@ import UI from './ui';
 import TwitterProxy from './twProxy';
 
 const enableDummyAccount = true;
+const userAgentCount = 7; // Number of user agents defined in search.php
 
 const tweetSearchSel = '.tweet.js-stream-tweet';
 
@@ -35,7 +36,7 @@ const multiTest = async (query, qf, success, prefUA = 0) => {
   if(prefResult) {
     return [prefUA, prefResult];
   }
-  for(let ua = 0; ua < 5; ua++) {
+  for(let ua = 0; ua < userAgentCount; ua++) {
     if(ua == prefUA) {
       continue;
     }
