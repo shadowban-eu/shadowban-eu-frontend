@@ -61,6 +61,7 @@ export default class UI {
     }
 
     if (this.screenName.validity.valid) {
+      this.checkButton.focus(); // remove focus from input field, to close mobile screen kbd
       this.showTasks();
       this.reset(this.screenName);
       this.lock();
