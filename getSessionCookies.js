@@ -161,8 +161,8 @@ getTwitterPage('/login').then(([headers, data]) => {
   ).then((newCookies) => {
     Object.assign(cookies, newCookies);
     const cookieString = cookiesToString(cookies);
-    writeFile('./.htsession', cookieString, () => {
-      console.log('Cookie stored in .htsession');
+    writeFile(process.env.COOKIE_FILE, cookieString, () => {
+      console.log(`Cookie stored in ${process.env.COOKIE_FILE}`);
       console.log('Done.');
     });
   });
