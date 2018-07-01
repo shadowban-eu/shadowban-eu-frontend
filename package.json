@@ -1,6 +1,6 @@
 {
   "name": "twitter-shadowban-tests",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Twitter ShadowBan Tests",
   "main": "gulpfile.babel.js",
   "author": "Raphael Beer <raphael.beer@protonmail.com>",
@@ -37,6 +37,7 @@
     "gulp-sourcemaps": "^1.6.0",
     "gulp-watch": "^5.0.0",
     "http-server": "^0.11.1",
+    "jsdom": "^11.11.0",
     "lodash": "^4.5.1",
     "materialize-css": "^1.0.0-rc.1",
     "mocha": "^5.0.0",
@@ -47,7 +48,8 @@
     "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-uglify": "^3.0.0",
     "run-sequence": "^2.2.0",
-    "twitter-text": "^2.0.4"
+    "twitter-text": "^2.0.4",
+    "xmlhttprequest": "^1.8.0"
   },
   "babel": {
     "presets": [
@@ -76,5 +78,8 @@
   "scripts": {
     "start": "gulp dev",
     "build": "cross-env NODE_ENV=production gulp build"
+  },
+  "dependencies": {
+    "dotenv": "^6.0.0"
   }
 }
