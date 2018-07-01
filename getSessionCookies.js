@@ -132,7 +132,7 @@ const getTwitterCookies = (username, password, formData, cookies) =>
             }
             let value = e.value || '';
             if (e.name === 'challenge_response') {
-              value = process.argv[process.argv.length - 2];
+              value = process.env.EMAIL;
             }
             challengeData[e.name] = value;
           });
