@@ -247,6 +247,7 @@ const fullTest = async (screenName) => {
 
   const tweet = userResponse.dom.querySelector(tweetSearchSel);
   result.hasTweets = !!tweet;
+  result.canonicalName = screenName;
   window.ui.updateTask({
     id: 'checkUser',
     status: 'ok',
