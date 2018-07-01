@@ -46,7 +46,7 @@ const multiTest = async (query, qf, success, prefUA = 0) => {
       return [ua, result];
     }
   }
-  return [-1, false];
+  return [0, false];
 }
 
 const searchTimeline = async (user, success, pages = 10) => {
@@ -124,9 +124,9 @@ const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
   result.QFD.foundTweets = !!imageAnchor;
   if(!imageAnchor) {
     window.ui.updateTask({
-      id: 'checkRefTweet',
+      id: ['checkRefTweet', 'getRefTweet'],
       status: 'warn',
-      msg: `Link and image tests failed.<br />@${screenName} could not be tested for QFD.`
+      msg: `The QFD test needs least one tweet containing a link or an image.<br />@${screenName} could not be tested for QFD.`
     });
     delete result.QFD.login;
     delete result.QFD.tweetId;
@@ -166,7 +166,7 @@ const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
   }
 
   window.ui.updateTask({
-    id: 'checkRefTweet',
+    id: ['checkRefTweet', 'getRefTweet'],
     status: 'warn',
     msg: `QFD tests failed.<br />@${screenName} could not be tested for QFD.`
   });
