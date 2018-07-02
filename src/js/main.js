@@ -117,7 +117,7 @@ const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
       return result;
     }
   }
-  
+
   result.QFD.method = 'image';
   const imageTest = r => r.dom.querySelector(tweetSearchSel + ' a.u-hidden');
   const [imageUA, imageAnchor] = await multiTest(`from:${screenName} filter:images`, true, imageTest, linkUA);
@@ -278,7 +278,7 @@ const fullTest = async (screenName) => {
     window.ui.updateTask({
       id: ['checkSearch', 'getRefTweet', 'checkRefTweet'],
       status: 'ban',
-      msg: `${screenName} has a 
+      msg: `${screenName} has a
         <a href="https://twitter.com/search/?f=tweets&vertical=default&q=` +
         `${encodeURIComponent('from:' + screenName)}">search ban</a>!`
     }, {
@@ -331,9 +331,11 @@ const fullTest = async (screenName) => {
 
   // Check v2 shadowban; UI updates inside (POLA violation, I know :P)
   return qfBanTest(screenName, result, userUA);
-}
+};
 
 document.addEventListener('DOMContentLoaded', () => {
   window.ui = new UI(fullTest);
   window.fullTest = fullTest;
+  // init test by /?screenName
+  window.ui.initFromLocation(window.location);
 });

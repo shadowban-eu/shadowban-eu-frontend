@@ -48,6 +48,7 @@
                   pattern="^(?!@)([A-Za-z0-9_]){1,15}$"
                   data-position="bottom"
                   data-tooltip="Please provide a valid Twitter @handle!"
+                  maxlength="15"
                 >
                 <label for="screenName">Username</label>
               </div>
@@ -118,7 +119,7 @@
       </div>
     </footer>
     {{devBanner}}
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="//code.jquery.com/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="vendor/materialize/js/materialize{{useMinified}}.js"></script>
     <script src='js/main.bundle.js'></script>
   </body>
