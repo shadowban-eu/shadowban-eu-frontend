@@ -1,6 +1,6 @@
 {
   "name": "twitter-shadowban-tests",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Twitter ShadowBan Tests",
   "main": "gulpfile.babel.js",
   "author": "Raphael Beer <raphael.beer@protonmail.com>",
@@ -77,7 +77,9 @@
   },
   "scripts": {
     "start": "gulp dev",
-    "build": "cross-env NODE_ENV=production gulp build"
+    "dev": "gulp dev",
+    "build": "cross-env NODE_ENV=production gulp build",
+    "build:dev": "cross-env NODE_ENV=development gulp build"
   },
   "dependencies": {
     "dotenv": "^6.0.0"
