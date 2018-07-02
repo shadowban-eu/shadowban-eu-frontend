@@ -2,6 +2,7 @@ export default class UI {
   constructor(test) {
     // user handle input and title synchronisation
     this.screenName = document.getElementById('screenName');
+    this.screenNameLabel = document.querySelector('label[for="screenName"]');
     this.screenNamePrefix = document.querySelector('.controls .input-field .prefix');
     this.headerScreenName = document.querySelector('.header-screen_name');
     this.screenName.addEventListener('keyup', this.updateHeaderScreenName, true);
@@ -147,6 +148,19 @@ export default class UI {
         taskEl.dataset.taskStatus = task.status;
       }
     });
+  };
+
+  initFromLocation = (location) => {
+    const isRoot = location.pathname === '/';
+    const searchMatch = location.search.match(/^(\?(?:@|%40)?)([A-Za-z0-9_]{1,15})$/);
+    if (isRoot && searchMatch) {
+      this.screenName.value = searchMatch[2];
+      this.screenNameLabel.classList.add('active');
+      this.updateHeaderScreenName({
+        stopPropagation: () => {},
+        which: 20
+      });
+    }
   };
 
   // resets tasks to initial state (do this before each test!)
