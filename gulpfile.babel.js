@@ -53,6 +53,7 @@ gulp.task('templates', () =>
           contents
             .replace(/\{\{useMinified\}\}/g, production ? '.min' : '')
             .replace(/\{\{devBanner\}\}/g, production ? '' : `<div class="dev-banner">${_v}</div>`)
+            .replace(/\{\{bundleVersion\}\}/g, process.env.bundleVersion)
         );
       }
       return `dist/${file.base.replace(`${file.cwd}/src`, '')}`;
