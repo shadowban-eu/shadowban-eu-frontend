@@ -6,7 +6,7 @@ export default class TwitterProxy {
     return fetch(url)
       .then(TwitterProxy.checkSuccess)
       .then(TwitterProxy.parseSearchDOMString)
-	  .catch(TwitterProxy.handleError);
+      .catch(TwitterProxy.handleError);
   }
 
   static user(screenName) {
@@ -16,7 +16,7 @@ export default class TwitterProxy {
       .then(TwitterProxy.parseDOMString)
       .catch(TwitterProxy.handleError);
   }
-  
+
   static status(id) {
     const url = `/search.php?status=${id}`;
     return fetch(url)
@@ -24,9 +24,10 @@ export default class TwitterProxy {
       .then(TwitterProxy.parseDOMString)
       .catch(TwitterProxy.handleError);
   }
-  
+
   static timelinePage(screenName, pos, replies = false) {
-    const url = `/search.php?timeline=${screenName}${pos ? '&pos=' + pos : ''}${replies ? '' : '&replies=1'}`;
+    const posParam = pos ? `&pos=${pos}` : '';
+    const url = `/search.php?timeline=${screenName}${posParam}${replies ? '' : '&replies=1'}`;
     return fetch(url)
       .then(TwitterProxy.checkSuccess)
       .then(TwitterProxy.parseInfinity)
@@ -51,7 +52,7 @@ export default class TwitterProxy {
     twpResponse.dom = parser.parseFromString(body.items_html, 'text/html');
     return twpResponse;
   }
-  
+
   /* eslint-disable no-param-reassign */
   static parseDOMString = async (res) => {
     const body = await res.text();
@@ -70,9 +71,9 @@ export default class TwitterProxy {
     const twpResponse = new TWPResponse(res);
     twpResponse.bodyText = body;
     twpResponse.dom = parser.parseFromString(twpResponse.bodyText, 'text/html');
-    if(!twpResponse.dom.querySelector('.SidebarCommonModules')) {
+    if (!twpResponse.dom.querySelector('.SidebarCommonModules')) {
       window.ui.unhandledError();
-      throw new Error("Unexpected response from Twitter proxy");
+      throw new Error('Unexpected response from Twitter proxy');
     }
     return twpResponse;
   }
