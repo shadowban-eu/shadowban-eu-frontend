@@ -284,7 +284,7 @@ const fullTest = async (screenName) => {
     }, {
       id: 'checkConventional',
       status: 'running',
-      msg: 'Testing conventional shadowban...'
+      msg: 'Testing thread shadowban...'
     });
 
     const [isConventionalBanned, convTweet, convReply] = await conventionalBanTest(screenName);
@@ -292,14 +292,14 @@ const fullTest = async (screenName) => {
       window.ui.updateTask({
         id: 'checkConventional',
         status: 'ok',
-        msg: `${screenName} doesn't have a conventional shadowban.`
+        msg: `${screenName} doesn't have a thread shadowban.`
       });
       result.hasConventionalBan = false;
     } else if (isConventionalBanned === 1) {
       window.ui.updateTask({
         id: 'checkConventional',
         status: 'ban',
-        msg: `${screenName} has a conventional shadowban! Have a look at ` +
+        msg: `${screenName} has a thread shadowban! Have a look at ` +
           `<a href="https://twitter.com/${screenName}/status/${convReply}">this tweet</a> ` +
           `within <a href="https://twitter.com/${screenName}/status/${convTweet}">this thread</a>.`
       });
@@ -308,7 +308,7 @@ const fullTest = async (screenName) => {
       window.ui.updateTask({
         id: 'checkConventional',
         status: 'warn',
-        msg: `${screenName} couldn't be tested for a conventional shadowban.`
+        msg: `${screenName} couldn't be tested for a thread shadowban.`
       });
     }
     return result;
@@ -326,7 +326,7 @@ const fullTest = async (screenName) => {
   }, {
     id: 'checkConventional',
     status: 'ok',
-    msg: `${screenName} doesn't have a conventional shadowban.`
+    msg: `${screenName} doesn't have a thread shadowban.`
   });
 
   // Check v2 shadowban; UI updates inside (POLA violation, I know :P)
