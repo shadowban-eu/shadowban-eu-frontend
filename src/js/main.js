@@ -243,6 +243,7 @@ const fullTest = async (screenName) => {
     });
     return result;
   }
+  screenName = nameEl.textContent; // Ensure correct case
 
   const tweet = userResponse.dom.querySelector(tweetSearchSel);
   result.hasTweets = !!tweet;
