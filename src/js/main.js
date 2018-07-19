@@ -193,7 +193,7 @@ const bannedInThread = async (screenName, id) => {
   }
   const replyId = tweets[0].dataset.tweetId;
   const replyResponse = await TwitterProxy.status(replyId);
-  return [!replyResponse.dom.querySelector(`.permalink-inner .tweet[data-tweet-id="${id}"]`),
+  return [replyResponse.dom.querySelector(`.permalink-inner .tweet[data-tweet-id="${id}"]`) ? 0 : 1,
     replyId];
 };
 
@@ -212,7 +212,7 @@ const conventionalBanTest = async (screenName) => {
         return [banned, tweetId, replyId];
       }
     }
-    return false;
+    return [-1, null, null];
   };
   const response = await searchTimeline(screenName, findRepliedTweet);
   if (response === false) {
