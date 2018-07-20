@@ -48,8 +48,10 @@ export default class TwitterProxy {
     const parser = new DOMParser();
     const twpResponse = new TWPResponse(res);
     twpResponse.more = body.has_more_items;
-    twpResponse.pos = body.min_position;
     twpResponse.dom = parser.parseFromString(body.items_html, 'text/html');
+    const items = Array.from(twpResponse.dom.querySelectorAll('.js-stream-item'));
+    const lastId = items.length > 0 ? items[items.length - 1].dataset.itemId : undefined;
+    twpResponse.pos = body.min_position || lastId;
     return twpResponse;
   }
 

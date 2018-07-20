@@ -187,14 +187,20 @@ const searchBanTest = async (screenName) => {
 
 const bannedInThread = async (screenName, id) => {
   const response = await TwitterProxy.status(id);
-  const tweets = response.dom.querySelectorAll(`.permalink-inner .tweet:not([data-tweet-id="${id}"])`);
-  if (tweets.length === 0) {
-    return [-1, null];
-  }
-  const replyId = tweets[0].dataset.tweetId;
-  const replyResponse = await TwitterProxy.status(replyId);
-  return [replyResponse.dom.querySelector(`.permalink-inner .tweet[data-tweet-id="${id}"]`) ? 0 : 1,
+  const tweets = Array.from(response.dom.querySelectorAll(`.permalink-inner .tweet`));
+  const tweetIds = tweets.map(t => t.dataset.tweetId);
+  for(let i = 0; i < tweetIds.length; i++) {
+    if(tweetIds[i] == id) {
+      if(i >= tweetIds.length - 1) {
+        break;
+      }
+      const replyId = tweetIds[i + 1];
+      const replyResponse = await TwitterProxy.status(replyId);
+      return [replyResponse.dom.querySelector(`.permalink-inner .tweet[data-tweet-id="${id}"]`) ? 0 : 1,
     replyId];
+    }
+  }
+  return [-1, null];
 };
 
 const conventionalBanTest = async (screenName) => {
@@ -212,7 +218,7 @@ const conventionalBanTest = async (screenName) => {
         return [banned, tweetId, replyId];
       }
     }
-    return [-1, null, null];
+    return false;
   };
   const response = await searchTimeline(screenName, findRepliedTweet);
   if (response === false) {
