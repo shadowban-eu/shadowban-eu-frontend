@@ -72,7 +72,7 @@ const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
   const linkTest = r => r.dom.querySelector(
     `${tweetSearchSel} a[href^="https://t.co/"],.tweet-text a[href^="http://t.co/"]`
   );
-  const linkQuery = `from:${screenName} filter:links`;
+  const linkQuery = `from:@${screenName} filter:links`;
   const [linkUA, linkAnchor] = await multiTest(linkQuery, true, linkTest, prefUA);
   _result.QFD.method = 'link';
   _result.QFD.foundTweets = !!linkAnchor;
@@ -121,7 +121,7 @@ const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
 
   _result.QFD.method = 'image';
   const imageTest = r => r.dom.querySelector(`${tweetSearchSel} a.u-hidden`);
-  const [imageUA, imageAnchor] = await multiTest(`from:${screenName} filter:images`, true, imageTest, linkUA);
+  const [imageUA, imageAnchor] = await multiTest(`from:@${screenName} filter:images`, true, imageTest, linkUA);
   _result.QFD.foundTweets = !!imageAnchor;
   if (!imageAnchor) {
     window.ui.updateTask({
@@ -181,7 +181,7 @@ const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
 // Tests conventional (v1) shadowban
 const searchBanTest = async (screenName) => {
   const tweetTest = r => r.dom.querySelector(tweetSearchSel);
-  const [userUA, tweet] = await multiTest(`from:${screenName}`, false, tweetTest);
+  const [userUA, tweet] = await multiTest(`from:@${screenName}`, false, tweetTest);
   return [userUA, !tweet];
 };
 
@@ -275,7 +275,7 @@ const fullTest = async (screenName) => {
   const [userUA, isSearchBanned] = await searchBanTest(screenName);
   result.hasSearchBan = isSearchBanned;
   if (isSearchBanned) {
-    const qParam = encodeURIComponent(`from:${screenName}`);
+    const qParam = encodeURIComponent(`from:@${screenName}`);
     const uri = `https://twitter.com/search/?f=tweets&vertical=default&q=${qParam}`;
     window.ui.updateTask({
       id: ['checkSearch', 'getRefTweet', 'checkRefTweet'],
