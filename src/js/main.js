@@ -72,7 +72,7 @@ const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
   const linkTest = r => r.dom.querySelector(
     `${tweetSearchSel} a[href^="https://t.co/"],.tweet-text a[href^="http://t.co/"]`
   );
-  const linkQuery = `from:${screenName} filter:links`;
+  const linkQuery = `from:@${screenName} filter:links`;
   const [linkUA, linkAnchor] = await multiTest(linkQuery, true, linkTest, prefUA);
   _result.QFD.method = 'link';
   _result.QFD.foundTweets = !!linkAnchor;
@@ -121,7 +121,7 @@ const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
 
   _result.QFD.method = 'image';
   const imageTest = r => r.dom.querySelector(`${tweetSearchSel} a.u-hidden`);
-  const [imageUA, imageAnchor] = await multiTest(`from:${screenName} filter:images`, true, imageTest, linkUA);
+  const [imageUA, imageAnchor] = await multiTest(`from:@${screenName} filter:images`, true, imageTest, linkUA);
   _result.QFD.foundTweets = !!imageAnchor;
   if (!imageAnchor) {
     window.ui.updateTask({
@@ -181,20 +181,26 @@ const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
 // Tests conventional (v1) shadowban
 const searchBanTest = async (screenName) => {
   const tweetTest = r => r.dom.querySelector(tweetSearchSel);
-  const [userUA, tweet] = await multiTest(`from:${screenName}`, false, tweetTest);
+  const [userUA, tweet] = await multiTest(`from:@${screenName}`, false, tweetTest);
   return [userUA, !tweet];
 };
 
 const bannedInThread = async (screenName, id) => {
   const response = await TwitterProxy.status(id);
-  const tweets = response.dom.querySelectorAll(`.permalink-inner .tweet:not([data-tweet-id="${id}"])`);
-  if (tweets.length === 0) {
-    return [-1, null];
-  }
-  const replyId = tweets[0].dataset.tweetId;
-  const replyResponse = await TwitterProxy.status(replyId);
-  return [replyResponse.dom.querySelector(`.permalink-inner .tweet[data-tweet-id="${id}"]`) ? 0 : 1,
+  const tweets = Array.from(response.dom.querySelectorAll(`.permalink-inner .tweet`));
+  const tweetIds = tweets.map(t => t.dataset.tweetId);
+  for(let i = 0; i < tweetIds.length; i++) {
+    if(tweetIds[i] == id) {
+      if(i >= tweetIds.length - 1) {
+        break;
+      }
+      const replyId = tweetIds[i + 1];
+      const replyResponse = await TwitterProxy.status(replyId);
+      return [replyResponse.dom.querySelector(`.permalink-inner .tweet[data-tweet-id="${id}"]`) ? 0 : 1,
     replyId];
+    }
+  }
+  return [-1, null];
 };
 
 const conventionalBanTest = async (screenName) => {
@@ -212,7 +218,7 @@ const conventionalBanTest = async (screenName) => {
         return [banned, tweetId, replyId];
       }
     }
-    return [-1, null, null];
+    return false;
   };
   const response = await searchTimeline(screenName, findRepliedTweet);
   if (response === false) {
@@ -275,7 +281,7 @@ const fullTest = async (screenName) => {
   const [userUA, isSearchBanned] = await searchBanTest(screenName);
   result.hasSearchBan = isSearchBanned;
   if (isSearchBanned) {
-    const qParam = encodeURIComponent(`from:${screenName}`);
+    const qParam = encodeURIComponent(`from:@${screenName}`);
     const uri = `https://twitter.com/search/?f=tweets&vertical=default&q=${qParam}`;
     window.ui.updateTask({
       id: ['checkSearch', 'getRefTweet', 'checkRefTweet'],
