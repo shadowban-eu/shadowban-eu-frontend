@@ -187,17 +187,19 @@ const searchBanTest = async (screenName) => {
 
 const bannedInThread = async (screenName, id) => {
   const response = await TwitterProxy.status(id);
-  const tweets = Array.from(response.dom.querySelectorAll(`.permalink-inner .tweet`));
+  const tweets = Array.from(response.dom.querySelectorAll('.permalink-inner .tweet'));
   const tweetIds = tweets.map(t => t.dataset.tweetId);
-  for(let i = 0; i < tweetIds.length; i++) {
-    if(tweetIds[i] == id) {
-      if(i >= tweetIds.length - 1) {
+  for (let i = 0; i < tweetIds.length; i += 1) {
+    if (tweetIds[i] === id) {
+      if (i >= tweetIds.length - 1) {
         break;
       }
       const replyId = tweetIds[i + 1];
       const replyResponse = await TwitterProxy.status(replyId);
-      return [replyResponse.dom.querySelector(`.permalink-inner .tweet[data-tweet-id="${id}"]`) ? 0 : 1,
-    replyId];
+      return [
+        replyResponse.dom.querySelector(`.permalink-inner .tweet[data-tweet-id="${id}"]`) ? 0 : 1,
+        replyId
+      ];
     }
   }
   return [-1, null];
