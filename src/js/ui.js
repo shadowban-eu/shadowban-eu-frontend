@@ -14,16 +14,38 @@ export default class UI {
 
     // results
     this.stage = document.querySelector('#stage .collapsible');
-    // crow bar approach to disable click and keydown handlers on Collapsible
-    // BEWARE: This disables handlers for all instances of Collapsibles.
-    //         Explicit opening (.open) still works, but you will have to find another
-    //         approach, if you need interactive ones
-    M.Collapsible.prototype._handleCollapsibleClick = () => {};
+
+    // custom click handler for Materialize Collapsibles
+    const handleCollapsibleClick = M.Collapsible.prototype._handleCollapsibleClick;
+    M.Collapsible.prototype._handleCollapsibleClick = function _handleCollapsibleClick(evt) {
+      evt.stopPropagation();
+      // ignore link clicks
+      if (evt.target.tagName === 'A') {
+        return;
+      }
+      // ignore everything that's not child of #tasks
+      const taskElement = evt.path.filter(element => element.id === 'tasks')[0];
+      if (!taskElement) {
+        return;
+      }
+
+      for (const element of evt.path) {
+        const taskId = element.dataset.taskId;
+        if (taskId && taskId !== 'checkUser' && taskId !== 'getRefTweet') {
+          handleCollapsibleClick.call(this, evt);
+          break;
+        }
+      }
+    };
+    // Keyboard events disabled entirely
     M.Collapsible.prototype._handleCollapsibleKeydown = () => {};
 
-    this.taskCollapsible = M.Collapsible.init(this.stage);
-    this.taskCollapsible._removeEventHandlers();
+    this.resultsCollapsible = M.Collapsible.init(this.stage);
     this.stageOpen = false;
+
+    // ban type explanations
+    this.tasks = document.querySelector('#tasks');
+    this.tasksCollapsible = M.Collapsible.init(this.tasks);
 
     // actual test function
     this.test = test;
@@ -84,7 +106,7 @@ export default class UI {
   showTasks = () => {
     if (!this.stageOpen) {
       this.stageOpen = true;
-      this.taskCollapsible.open(0);
+      this.resultsCollapsible.open(0);
     }
   };
 
@@ -139,7 +161,7 @@ export default class UI {
           const messageElement = taskEl.querySelector('.task-message');
           // messageElement.children.forEach(child => messageElement.removeChild(child));
           let htmlMessage = `<span>${task.msg}</span>`;
-          htmlMessage = htmlMessage.replace('QFD', '<abbr title="Quality Filter Discrimination">QFD <i class="material-icons qfd-hint">contact_support</i></abbr>');
+          htmlMessage = htmlMessage.replace('QFD', '<abbr title="Quality Filter Discrimination">QFD <i class="material-icons qfd-hint notranslate">contact_support</i></abbr>');
           // Yes, innerHTML is a security issue.
           // But this is ok since we are using hardcoded values, only.
           messageElement.innerHTML = htmlMessage;

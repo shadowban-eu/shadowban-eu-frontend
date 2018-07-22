@@ -57,7 +57,7 @@
               </div>
             </div>
             <div class="collapsible-body results">
-              <ul id="tasks">
+              <ul id="tasks" class="collapsible popout">
                 <li>
                   <div class="collapsible-header" data-task-id="checkUser">
                     <i class="material-icons gears notranslate"></i>
@@ -70,8 +70,20 @@
                   <div class="collapsible-header" data-task-id="checkSearch">
                     <i class="material-icons notranslate">access_time</i>
                     <div class="task-message">
-                      <span>Waiting for user.</span>
+                      <span><a href="#">Waiting</a> for user.</span>
                     </div>
+                    <div class="description-trigger">
+                      <i class="material-icons notranslate">contact_support</i>
+                    </div>
+                  </div>
+                  <div class="collapsible-body left-align">
+                    <h5>Search Ban</h5>
+                    <p>
+                      This type of ban causes your tweets to be hidden from the search results
+                      entirely, no matter whether the quality filter is turned on or off.
+                      This behavior includes hashtags as well. This type of ban seems to be
+                      temporally limited for active accounts.
+                    </p>
                   </div>
                 </li>
                 <li>
@@ -80,6 +92,21 @@
                     <div class="task-message">
                       <span>Waiting for user.</span>
                     </div>
+                    <div class="description-trigger">
+                      <i class="material-icons notranslate">contact_support</i>
+                    </div>
+                  </div>
+                  <div class="collapsible-body left-align">
+                    <h5>Thread Ban</h5>
+                    <p>
+                      This is what is referred to as conventional shadowban as well. It comprises a
+                      search ban while threads are completely ripped apart by hiding reply tweets
+                      of the affected user to others. Everything will look perfectly normal to the
+                      affected user but many others will not be able to see reply tweets of the
+                      affected user at all. Reasons for this ban include behavior like excessive
+                      tweeting or following. Again, this type of ban seems to be temporally limited
+                      for active accounts.
+                    </p>
                   </div>
                 </li>
                 <li>
@@ -96,6 +123,20 @@
                     <div class="task-message">
                       <span>Waiting for reference tweet.</span>
                     </div>
+                    <div class="description-trigger">
+                      <i class="material-icons notranslate">contact_support</i>
+                    </div>
+                  </div>
+                  <div class="collapsible-body left-align">
+                    <h5>QFD</h5>
+                    <p>
+                      QFD causes your tweets to be invisible within the latest section of the
+                      search, including hashtags, when the quality filter is turned on. Note that
+                      this quality filter is located on the search page, is turned on by default
+                      and will be reset for each search anew. It differs from the quality filter
+                      controlling your notifications. QFD was introduced on 15 May 2018 as part of
+                      Twitter's so-called <a href="https://blog.twitter.com/official/en_us/topics/product/2018/Serving_Healthy_Conversation.html">healthy conversation project</a>.
+                    </p>
                   </div>
                 </li>
               </ul>
