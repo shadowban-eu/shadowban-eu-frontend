@@ -35,7 +35,7 @@
 
     <section id="stage" class="row">
       <div class="col s12 offset-m1 m10 offset-l2 l8 center-align">
-        <ul class="collapsible">
+        <ul class="collapsible" collapsible-non-interactive>
           <li>
             <div class="collapsible-header valign-wrapper controls">
               <div class="input-field">
@@ -59,7 +59,7 @@
             <div class="collapsible-body results">
               <ul id="tasks" class="collapsible popout">
                 <li>
-                  <div class="collapsible-header" data-task-id="checkUser">
+                  <div class="collapsible-header" data-task-id="checkUser" collapsible-non-interactive>
                     <i class="material-icons gears notranslate"></i>
                     <div class="task-message">
                       <span>...</span>
@@ -129,6 +129,81 @@
                       controlling your notifications. QFD was introduced on 15 May 2018 as part of
                       Twitter's so-called <a href="https://blog.twitter.com/official/en_us/topics/product/2018/Serving_Healthy_Conversation.html">healthy conversation project</a>.
                     </p>
+                    <ul id="qfdFAQ" class="collapsible">
+                      <li>
+                        <div class="collapsible-header">
+                          <span>Does turning off the quality filter within my notification settings help?</span>
+                        </div>
+                        <div class="collapsible-body">
+                          <p>
+                            The quality filter within your notification settings only controls the
+                            notification you receive. Turning it off is recommended and will cause you
+                            to see more notifications which you would not have received otherwise.
+                            However, turning it off will not cause your own tweets to be more visible.
+                          </p>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="collapsible-header">
+                          <span>How do I get into the QFD ban?</span>
+                        </div>
+                        <div class="collapsible-body">
+                          <p>
+                            A lot of interaction with accounts affected by QFD will likely cause your
+                            account to be affected by QFD soon, too. The absence of personal misbehavior
+                            does not guarantee an account to be unaffected.
+                          </p>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="collapsible-header">
+                          <span>How do I get out of the QFD ban?</span>
+                        </div>
+                        <div class="collapsible-body">
+                          <p>
+                            Several German Twitter users that were affected by QFD have been
+                            experimenting with an Arabic follow-back botnet.
+                            The botnet generated a lot of followers for those who followed some
+                            accounts from this botnet. By accumulating many new followers that were not
+                            affected by QFD, at least 30 accounts were able to escape this type of ban.
+                            This is a strong hint that guilt by association is a major concept of the
+                            classifying algorithm.
+                          </p>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="collapsible-header">
+                          <span>Is there a political bias?</span>
+                        </div>
+                        <div class="collapsible-body">
+                          <p>
+                            The quality filter indeed seems to mainly affect conservative and right-wing
+                            accounts. Testing over 2,000 contacts of two German left-wing extremist
+                            accounts did not yield a single account affected by QFD that would not be
+                            considered politically right. Testing 509 Twitter accounts from German
+                            members of Parliament yielded 14 affected accounts. All of them belong to
+                            the AfD, which is a German right-wing party.
+                          </p>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="collapsible-header">
+                          <span>Does it only affect hashtags and the search? Why is it so bad then?</span>
+                        </div>
+                        <div class="collapsible-body">
+                          <p>
+                            We cannot tell whether the effects of QFD are limited to hashtags and the
+                            search. These are only the symptoms making the ban visible to us. It shows
+                            that Twitter is capable and willing to discriminate accounts with certain
+                            political opinions. Since shadowbanning is a very unethical way to silence
+                            people already, it is possible for Twitter to apply methods that are harder
+                            to detect. Think of more subtle ways of banning by limiting the share of
+                            followers who a user's tweets are shown to. This would be a censorship
+                            method that could only be detected collectively by their followers.
+                          </p>
+                        </div>
+                      </li>
+                    </ul>
                   </div>
                 </li>
               </ul>

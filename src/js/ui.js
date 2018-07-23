@@ -23,33 +23,32 @@ export default class UI {
       if (evt.target.tagName === 'A') {
         return;
       }
-      // ignore everything that's not child of #tasks
-      const taskElement = evt.path.filter(element => element.id === 'tasks')[0];
-      if (!taskElement) {
-        return;
-      }
 
-      for (const element of evt.path) {
-        const taskId = element.dataset.taskId;
-        if (taskId && taskId !== 'checkUser' && taskId !== 'getRefTweet') {
-          handleCollapsibleClick.call(this, evt);
-          break;
-        }
+      // ignore where attribute 'collapsible-non-interactive' is set
+      const collapsibleNI = $(evt.target)
+        .closest('.collapsible')
+        .attr('collapsible-non-interactive');
+      const headerNI = $(evt.target)
+        .closest('.collapsible-header')
+        .attr('collapsible-non-interactive');
+
+      const isInteractive = collapsibleNI === undefined && headerNI === undefined;
+      if (isInteractive) {
+        handleCollapsibleClick.call(this, evt);
       }
     };
     // Keyboard events disabled entirely
     M.Collapsible.prototype._handleCollapsibleKeydown = () => {};
 
+    // collapsible for results
     this.resultsCollapsible = M.Collapsible.init(this.stage);
     this.stageOpen = false;
 
-    // ban type explanations
-    this.tasks = document.querySelector('#tasks');
-    this.tasksCollapsible = M.Collapsible.init(this.tasks);
+    // all other collapsibles
+    this.tasksCollapsible = M.Collapsible.init(document.querySelectorAll('#tasks, #qfdFAQ'));
 
     // actual test function
     this.test = test;
-    this.showTasks();
   }
 
   // user handle input, title sync
