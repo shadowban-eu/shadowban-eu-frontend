@@ -91,6 +91,9 @@ body {
   h5 {
     margin-top: 0;
   }
+  .description-indicator {
+    color: rgb(0, 0, 0);
+  }
 }
 
 [data-task-id] {
@@ -113,13 +116,6 @@ body {
     background: transparent url('../img/gears.svg') bottom center no-repeat;
     background-size: contain;
     margin-right: 7px;
-  }
-  .qfd-hint {
-    font-size: 1rem;
-    margin-right: 0;
-    width: unset;
-    text-align: unset;
-    color: $TWITTER_BLUE;
   }
 }
 

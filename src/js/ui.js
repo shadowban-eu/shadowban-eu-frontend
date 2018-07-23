@@ -49,7 +49,7 @@ export default class UI {
 
     // actual test function
     this.test = test;
-    // this.showTasks();
+    this.showTasks();
   }
 
   // user handle input, title sync
