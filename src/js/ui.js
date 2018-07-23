@@ -49,6 +49,7 @@ export default class UI {
 
     // actual test function
     this.test = test;
+    // this.showTasks();
   }
 
   // user handle input, title sync
@@ -160,8 +161,7 @@ export default class UI {
         if (task.msg) {
           const messageElement = taskEl.querySelector('.task-message');
           // messageElement.children.forEach(child => messageElement.removeChild(child));
-          let htmlMessage = `<span>${task.msg}</span>`;
-          htmlMessage = htmlMessage.replace('QFD', '<abbr title="Quality Filter Discrimination">QFD <i class="material-icons qfd-hint notranslate">contact_support</i></abbr>');
+          const htmlMessage = `<span>${task.msg}</span>`;
           // Yes, innerHTML is a security issue.
           // But this is ok since we are using hardcoded values, only.
           messageElement.innerHTML = htmlMessage;
@@ -191,7 +191,7 @@ export default class UI {
     status: 'running',
     msg: `Looking up user @${screenName}`
   }, {
-    id: ['checkSearch', 'checkConventional', 'getRefTweet', 'checkRefTweet'],
+    id: ['checkSearch', 'checkConventional', 'checkRefTweet'],
     status: 'pending',
     msg: 'Waiting for user.'
   });
