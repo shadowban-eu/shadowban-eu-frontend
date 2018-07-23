@@ -8,7 +8,7 @@
   },
   "globals": {
     "M": true,
-    "$": true
+    "cash": true
   },
   "parserOptions": {
     "ecmaVersion": 6,

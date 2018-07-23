@@ -25,10 +25,10 @@ export default class UI {
       }
 
       // ignore where attribute 'collapsible-non-interactive' is set
-      const collapsibleNI = $(evt.target)
+      const collapsibleNI = cash(evt.target)
         .closest('.collapsible')
         .attr('collapsible-non-interactive');
-      const headerNI = $(evt.target)
+      const headerNI = cash(evt.target)
         .closest('.collapsible-header')
         .attr('collapsible-non-interactive');
 
