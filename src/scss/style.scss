@@ -15,8 +15,6 @@ body {
   font-weight: 500;
 }
 
-h1, h2, h3, p { margin: 0; padding: 0; }
-
 .btn {
   color: $TWITTER_BLUE;
   border: 1px solid $TWITTER_BLUE;
@@ -77,15 +75,32 @@ h1, h2, h3, p { margin: 0; padding: 0; }
 }
 
 .collapsible-header {
-  cursor: unset;
+  &.controls, &[data-task-id="checkUser"], &[data-task-id="getRefTweet"] {
+    cursor: unset;
+  }
   text-align: left;
   &:focus {
     background-color: rgb(255, 255, 255) !important;
   }
 }
 
+.collapsible-body {
+  &:not(.results) {
+    background-color: rgb(255, 255, 255);
+  }
+  h5 {
+    margin-top: 0;
+  }
+  .description-indicator {
+    color: rgb(0, 0, 0);
+  }
+}
+
 [data-task-id] {
   transition: color 0.6s ease-out;
+  .task-message {
+    flex-grow: 1;
+  }
   &[data-task-status="ok"] {
     color: $ACCENT_SUCCESS;
   }
@@ -101,13 +116,6 @@ h1, h2, h3, p { margin: 0; padding: 0; }
     background: transparent url('../img/gears.svg') bottom center no-repeat;
     background-size: contain;
     margin-right: 7px;
-  }
-  .qfd-hint {
-    font-size: 1rem;
-    margin-right: 0;
-    width: unset;
-    text-align: unset;
-    color: $TWITTER_BLUE;
   }
 }
 

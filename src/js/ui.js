@@ -14,16 +14,38 @@ export default class UI {
 
     // results
     this.stage = document.querySelector('#stage .collapsible');
-    // crow bar approach to disable click and keydown handlers on Collapsible
-    // BEWARE: This disables handlers for all instances of Collapsibles.
-    //         Explicit opening (.open) still works, but you will have to find another
-    //         approach, if you need interactive ones
-    M.Collapsible.prototype._handleCollapsibleClick = () => {};
+
+    // custom click handler for Materialize Collapsibles
+    const handleCollapsibleClick = M.Collapsible.prototype._handleCollapsibleClick;
+    M.Collapsible.prototype._handleCollapsibleClick = function _handleCollapsibleClick(evt) {
+      evt.stopPropagation();
+      // ignore link clicks
+      if (evt.target.tagName === 'A') {
+        return;
+      }
+
+      // ignore where attribute 'collapsible-non-interactive' is set
+      const collapsibleNI = $(evt.target)
+        .closest('.collapsible')
+        .attr('collapsible-non-interactive');
+      const headerNI = $(evt.target)
+        .closest('.collapsible-header')
+        .attr('collapsible-non-interactive');
+
+      const isInteractive = collapsibleNI === undefined && headerNI === undefined;
+      if (isInteractive) {
+        handleCollapsibleClick.call(this, evt);
+      }
+    };
+    // Keyboard events disabled entirely
     M.Collapsible.prototype._handleCollapsibleKeydown = () => {};
 
-    this.taskCollapsible = M.Collapsible.init(this.stage);
-    this.taskCollapsible._removeEventHandlers();
+    // collapsible for results
+    this.resultsCollapsible = M.Collapsible.init(this.stage);
     this.stageOpen = false;
+
+    // all other collapsibles
+    this.tasksCollapsible = M.Collapsible.init(document.querySelectorAll('#tasks, #qfdFAQ'));
 
     // actual test function
     this.test = test;
@@ -84,7 +106,7 @@ export default class UI {
   showTasks = () => {
     if (!this.stageOpen) {
       this.stageOpen = true;
-      this.taskCollapsible.open(0);
+      this.resultsCollapsible.open(0);
     }
   };
 
@@ -138,8 +160,7 @@ export default class UI {
         if (task.msg) {
           const messageElement = taskEl.querySelector('.task-message');
           // messageElement.children.forEach(child => messageElement.removeChild(child));
-          let htmlMessage = `<span>${task.msg}</span>`;
-          htmlMessage = htmlMessage.replace('QFD', '<abbr title="Quality Filter Discrimination">QFD <i class="material-icons qfd-hint">contact_support</i></abbr>');
+          const htmlMessage = `<span>${task.msg}</span>`;
           // Yes, innerHTML is a security issue.
           // But this is ok since we are using hardcoded values, only.
           messageElement.innerHTML = htmlMessage;
@@ -169,7 +190,7 @@ export default class UI {
     status: 'running',
     msg: `Looking up user @${screenName}`
   }, {
-    id: ['checkSearch', 'checkConventional', 'getRefTweet', 'checkRefTweet'],
+    id: ['checkSearch', 'checkConventional', 'checkRefTweet'],
     status: 'pending',
     msg: 'Waiting for user.'
   });
