@@ -98,6 +98,15 @@ gulp.task('serve', (done) => {
   done();
 });
 
+process.on('SIGINT', () => {
+  if (httpServerProcess) {
+    log('Killing php-cli server...');
+    httpServerProcess.kill();
+    log('Done');
+  }
+  process.exit();
+});
+
 gulp.task('build', ['clean', 'rollup', 'styles', 'templates', 'copy']);
 
 // default task: clean dist, compile js files and copy non-js files.
