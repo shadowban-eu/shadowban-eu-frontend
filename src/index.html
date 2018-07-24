@@ -215,8 +215,15 @@
               <p>
                 The Twitter search features several search modifiers. One of them is the prefix from:
                 which allows to search for tweets from a specific user. For example, when checking
-                whether the @shadowban_eu has a shadowban, we query the Twitter search for from:@shadowban_eu with
-                the quality filter disabled. If we do not find any tweets although the user has
+                whether
+                <a href="https://twitter.com/shadowban_eu">
+                  @shadowban_eu
+                </a>
+                has a shadowban, we query the Twitter search for
+                <a href="https://twitter.com/search?f=tweets&vertical=default&q=from%3A%40shadowban_eu&src=typd&qf=off">
+                  from:@shadowban_eu
+                </a>.
+                If we do not find any tweets although the user has
                 tweeted in the past, the account is subject to a search ban.
               </p>
               <h5>Thread Ban</h5>
@@ -229,19 +236,41 @@
               </p>
               <h5>QFD</h5>
               <p>
-                When you upload an image, link to an external page or re-tweet someone Twitter generates a unique shortlinks
-                like https://t.co/vRBIQq8NgF. We first find a reference tweet using a combination of
-                from: and filter: search modifiers. For example, from:@shadowban_eu filter:links returns all
-                tweets from @shadowban_eu containing a link. We simply pick one result tweet as reference
-                tweet and extract the shortlink. We then query the Twitter search for the tweet
-                using the search link with the quality filter turned on and off. If the reference
-                tweet is found in both cases, the account is not affected by QFD. In case it is
-                found only when the filter is turned on, it is affected.
+                When you upload an image, re-tweet or link to an external page, Twitter generates
+                a shortlink for that content.
+              </p>
+              <p>
+                We first find a reference tweet using a combination of from: and filter: search
+                modifiers. For example,
+                <a href="https://twitter.com/search?f=tweets&q=from%3A%40shadowban_eu%20filter%3Alinks&src=typd">
+                  from:@shadowban_eu filter:links
+                </a>
+                returns all tweets from
+                <a href="https://twitter.com/shadowban_eu">
+                  @shadowban_eu
+                </a>
+                containing a link.
+              </p>
+              <p>
+                We simply pick one result tweet as
+                reference and extract the shortlink, e.g.
+                <a href="https://t.co/5Vzu63ypQJ">
+                  https://t.co/5Vzu63ypQJ
+                </a>.<br />
+                (This link points to a tweet, quoted <a href="https://twitter.com/shadowban_eu/status/1019242190277697538">here</a>).
+              </p>
+              <p>
+                We then query the Twitter search for the tweet using the shortlink's URL
+                with the quality filter turned on and off.
+                If the reference tweet is found in both
+                cases, the account is not affected by QFD. In case it is found only when the filter
+                is turned off, it is affected.
               </p>
               <p>
                 We chose this method because shortlinks are unique. Methodically, it does not differ
                 from searching for text or a hashtag but the uniqueness of shortlinks is a technical
                 advantage.
+              </p>
               </p>
             </div>
           </li>
