@@ -10,6 +10,12 @@
   },
   "license": "GPL-3.0-only",
   "private": true,
+  "scripts": {
+    "start": "cross-env NODE_ENV=development gulp dev",
+    "dev": "cross-env NODE_ENV=development gulp dev",
+    "build": "cross-env NODE_ENV=production gulp build",
+    "build:dev": "cross-env NODE_ENV=development gulp build"
+  },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.3",
@@ -74,12 +80,6 @@
       "transform-class-properties",
       "transform-object-rest-spread"
     ]
-  },
-  "scripts": {
-    "start": "gulp dev",
-    "dev": "gulp dev",
-    "build": "cross-env NODE_ENV=production gulp build",
-    "build:dev": "cross-env NODE_ENV=development gulp build"
   },
   "dependencies": {
     "dotenv": "^6.0.0"

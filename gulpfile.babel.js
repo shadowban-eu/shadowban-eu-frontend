@@ -1,3 +1,4 @@
+import { existsSync, mkdirSync } from 'fs';
 import chalk from 'chalk';
 import del from 'del';
 import gulp from 'gulp';
@@ -33,7 +34,7 @@ const log = function log(...str) {
   return true;
 };
 
-// Clean up dist and coverage directory
+// Clean up dist directory
 gulp.task('clean', () =>
   del.sync(['dist/**', 'dist/.*'])
 );
@@ -98,6 +99,17 @@ gulp.task('serve', (done) => {
   done();
 });
 
+
+gulp.task('build', ['clean', 'rollup', 'styles', 'templates', 'copy']);
+
+// default task: clean dist, compile js files and copy non-js files.
+gulp.task('default', ['dev']);
+
+// templates task fails without ./dist directory
+if (!existsSync('./dist')) {
+  mkdirSync('./dist');
+}
+
 process.on('SIGINT', () => {
   if (httpServerProcess) {
     log('Killing php-cli server...');
@@ -106,8 +118,3 @@ process.on('SIGINT', () => {
   }
   process.exit();
 });
-
-gulp.task('build', ['clean', 'rollup', 'styles', 'templates', 'copy']);
-
-// default task: clean dist, compile js files and copy non-js files.
-gulp.task('default', ['dev']);
