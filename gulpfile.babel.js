@@ -25,6 +25,8 @@ const paths = {
   ]
 };
 
+let httpServerProcess = null; // php-cli dev server process
+
 const log = function log(...str) {
   const tag = this || find(gulp.tasks, { running: true }).name;
   flog(`[${chalk.cyan(tag)}] ${str.join(' ')}`);
@@ -62,7 +64,12 @@ gulp.task('templates', () =>
 
 // Start server with restart on file changes
 gulp.task('dev', ['rollup', 'styles', 'templates', 'copy', 'serve'], () =>
-  plugins.watch('src/**/*.*', () => runSequence('rollup', 'styles', 'templates', 'copy'))
+  plugins.watch('src/**/*.*', () => {
+    log('Killing php-cli server...');
+    httpServerProcess.kill();
+    log('Done');
+    runSequence('rollup', 'styles', 'templates', 'copy', 'serve');
+  })
 );
 
 gulp.task('rollup', async () => {
@@ -82,7 +89,7 @@ gulp.task('styles', async () => {
 
 gulp.task('serve', (done) => {
   const args = ['-S', 'localhost:8080', '-t', './dist/'];
-  const httpServerProcess = spawn('php', args);
+  httpServerProcess = spawn('php', args);
   httpServerProcess.stdout.on('data', data =>
     data.toString().trim().split('\n')
       .forEach(line => log.call('serve', line.includes('http') ? chalk.green(line) : line))
