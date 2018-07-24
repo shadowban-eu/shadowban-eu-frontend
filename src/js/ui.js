@@ -3,17 +3,17 @@ export default class UI {
     // user handle input and title synchronisation
     this.screenName = document.getElementById('screenName');
     this.screenNameLabel = document.querySelector('label[for="screenName"]');
-    this.screenNamePrefix = document.querySelector('.controls .input-field .prefix');
+    this.screenNamePrefix = document.querySelector('#controls .input-field .prefix');
     this.headerScreenName = document.querySelector('.header-screen_name');
     this.screenName.addEventListener('keyup', this.updateHeaderScreenName, true);
     this.screenName.addEventListener('click', evt => evt.stopPropagation());
 
+    // results
+    this.results = document.querySelector('#results');
+
     // button, initiating test
     this.checkButton = document.getElementById('check');
     this.checkButton.addEventListener('click', this.handleCheckClick);
-
-    // results
-    this.stage = document.querySelector('#stage .collapsible');
 
     // custom click handler for Materialize Collapsibles
     const handleCollapsibleClick = M.Collapsible.prototype._handleCollapsibleClick;
@@ -23,6 +23,7 @@ export default class UI {
       if (evt.target.tagName === 'A') {
         return;
       }
+      console.log(evt);
 
       // ignore where attribute 'collapsible-non-interactive' is set
       const collapsibleNI = cash(evt.target)
@@ -40,15 +41,14 @@ export default class UI {
     // Keyboard events disabled entirely
     M.Collapsible.prototype._handleCollapsibleKeydown = () => {};
 
-    // collapsible for results
-    this.resultsCollapsible = M.Collapsible.init(this.stage);
-    this.stageOpen = false;
-
     // all other collapsibles
-    this.tasksCollapsible = M.Collapsible.init(document.querySelectorAll('#tasks, #qfdFAQ'));
+    this.tasksCollapsible = M.Collapsible.init(document.querySelectorAll(
+      '#tasks, #qfdFAQ, #functionality'
+    ));
 
     // actual test function
     this.test = test;
+    // this.showTasks();
   }
 
   // user handle input, title sync
@@ -85,7 +85,6 @@ export default class UI {
 
     if (this.screenName.validity.valid) {
       this.checkButton.focus(); // remove focus from input field, to close mobile screen kbd
-      this.showTasks();
       this.reset(this.screenName);
       this.lock();
       this.test(this.screenName.value)
@@ -99,14 +98,6 @@ export default class UI {
         toolTip.close();
         toolTip.destroy();
       }, 5000);
-    }
-  };
-
-  // open/show results list
-  showTasks = () => {
-    if (!this.stageOpen) {
-      this.stageOpen = true;
-      this.resultsCollapsible.open(0);
     }
   };
 
@@ -128,7 +119,7 @@ export default class UI {
     tasks.forEach((task) => {
       const taskEls = Array.isArray(task.id) ? task.id : [task.id];
       for (let i = 0; i < taskEls.length; i += 1) {
-        const taskEl = this.stage.querySelector(`[data-task-id="${taskEls[i]}"]`);
+        const taskEl = this.results.querySelector(`[data-task-id="${taskEls[i]}"]`);
         const taskIcon = taskEl.querySelector('.material-icons');
         const taskIconClasses = taskIcon.classList;
         // icon
