@@ -23,6 +23,7 @@ export default class UI {
       if (evt.target.tagName === 'A') {
         return;
       }
+      console.log(evt);
 
       // ignore where attribute 'collapsible-non-interactive' is set
       const collapsibleNI = cash(evt.target)
@@ -45,10 +46,13 @@ export default class UI {
     this.stageOpen = false;
 
     // all other collapsibles
-    this.tasksCollapsible = M.Collapsible.init(document.querySelectorAll('#tasks, #qfdFAQ'));
+    this.tasksCollapsible = M.Collapsible.init(document.querySelectorAll(
+      '#tasks, #qfdFAQ, #functionality'
+    ));
 
     // actual test function
     this.test = test;
+    // this.showTasks();
   }
 
   // user handle input, title sync

@@ -211,7 +211,52 @@
           </li>
         </ul>
       </div>
-    </div>
+    </section>
+
+    <section class="row">
+      <div class="col s12 offset-m1 m10 offset-l2 l8">
+        <ul id="functionality" class="collapsible">
+          <li>
+            <div class="collapsible-header valign-wrapper">
+              How This Test Works
+            </div>
+            <div class="collapsible-body results">
+              <h5>Search ban</h5>
+              <p>
+                The Twitter search features several search modifiers. One of them is the prefix from:
+                which allows to search for tweets from a specific user. For example, when checking
+                whether the @shadowban_eu has a shadowban, we query the Twitter search for from:@shadowban_eu with
+                the quality filter disabled. If we do not find any tweets although the user has
+                tweeted in the past, the account is subject to a search ban.
+              </p>
+              <h5>Thread shadowban</h5>
+              <p>
+                When the user has a search ban, the tester searches their profile for the latest
+                tweet with at least one reply. It then visits the direct URL of the tweet and
+                selects some reply tweet. Afterwards, the direct URL of the reply tweet is visited.
+                If the tweet that the user replied to is not visible, the likelihood that the
+                account is affected by a thread shadowban is very high.
+              </p>
+              <h5>QFD</h5>
+              <p>
+                When you upload an image, link to an external page or re-tweet someone Twitter generates a unique shortlinks
+                like https://t.co/vRBIQq8NgF. We first find a reference tweet using a combination of
+                from: and filter: search modifiers. For example, from:@shadowban_eu filter:links returns all
+                tweets from @shadowban_eu containing a link. We simply pick one result tweet as reference
+                tweet and extract the shortlink. We then query the Twitter search for the tweet
+                using the search link with the quality filter turned on and off. If the reference
+                tweet is found in both cases, the account is not affected by QFD. In case it is
+                found only when the filter is turned on, it is affected.
+              </p>
+              <p>
+                We chose this method because shortlinks are unique. Methodically, it does not differ
+                from searching for text or a hashtag but the uniqueness of shortlinks is a technical
+                advantage.
+              </p>
+            </div>
+          </li>
+        </ul>
+      </div>
     </section>
 
     <footer class="section">
