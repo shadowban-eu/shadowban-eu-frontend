@@ -32,7 +32,7 @@ export default class UI {
         .closest('.collapsible-header')
         .attr('collapsible-non-interactive');
 
-      const isInteractive = collapsibleNI === undefined && headerNI === undefined;
+      const isInteractive = collapsibleNI === null && headerNI === null;
       if (isInteractive) {
         handleCollapsibleClick.call(this, evt);
       }
