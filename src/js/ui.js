@@ -25,7 +25,6 @@ export default class UI {
       if (evt.target.tagName === 'A') {
         return;
       }
-      console.log(evt);
 
       // ignore where attribute 'collapsible-non-interactive' is set
       const collapsibleNI = cash(evt.target)
@@ -44,15 +43,18 @@ export default class UI {
     M.Collapsible.prototype._handleCollapsibleKeydown = () => {};
 
     // all other collapsibles
-    this.tasksCollapsible = M.Collapsible.init(document.querySelectorAll(
-      '#tasks, #qfdFAQ, #functionality'
-    ));
+    this.tasksCollapsible = M.Collapsible.init(document.getElementById('tasks'));
+    this.qfdFaqCollapsible = M.Collapsible.init(document.getElementById('qfdFAQ'));
+    this.functionalityCollapsible = M.Collapsible.init(document.getElementById('functionality'));
 
     // toast warning about qf option in notification settings
     this.qfSettingToastInstance = qfSettingToast();
 
     // actual test function
     this.test = test;
+    document.addEventListener('click', () => {
+      console.log(this.qfdFaqCollapsible.$headers.get(0).scrollHeight);
+    });
   }
 
   // user handle input, title sync
@@ -203,5 +205,8 @@ export default class UI {
   }
   qfSettingToastShowMore() {
     this.qfSettingToastDimsmiss();
+    this.tasksCollapsible.open(3);
+    this.qfdFaqCollapsible.open(0);
+    this.qfdFaqCollapsible.$headers.get(0).classList.add('highlight');
   }
 }
