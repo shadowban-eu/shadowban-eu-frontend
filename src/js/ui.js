@@ -1,3 +1,5 @@
+import qfSettingToast from './ui/qfSettingToast';
+
 export default class UI {
   constructor(test) {
     // user handle input and title synchronisation
@@ -46,9 +48,11 @@ export default class UI {
       '#tasks, #qfdFAQ, #functionality'
     ));
 
+    // toast warning about qf option in notification settings
+    this.qfSettingToastInstance = qfSettingToast();
+
     // actual test function
     this.test = test;
-    // this.showTasks();
   }
 
   // user handle input, title sync
@@ -192,4 +196,12 @@ export default class UI {
 
   // Enable button/{Enter} event
   release = () => { this.checkButton.disabled = false; };
+
+  qfSettingToastDimsmiss() {
+    // set local storage flag to suppress on following visits
+    this.qfSettingToastInstance.dismiss();
+  }
+  qfSettingToastShowMore() {
+    this.qfSettingToastDimsmiss();
+  }
 }

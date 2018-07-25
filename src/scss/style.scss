@@ -143,3 +143,22 @@ footer {
       margin-bottom: 0.25em;
   }
 }
+
+@media only screen and (min-width: 993px) {
+  #toast-container {
+    top: unset;
+    bottom: 7%;
+    max-width: 90%;
+  }
+}
+#toast-container {
+  .toast {
+    &.qf-setting-toast {
+      background-color: $ACCENT_ERROR;
+      color: rgb(238, 255, 65);
+      font-size: unset;
+      font-weight: unset;
+    }
+  }
+}
+

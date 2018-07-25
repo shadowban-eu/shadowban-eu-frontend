@@ -308,6 +308,24 @@
         </div>
       </div>
     </footer>
+    <div id="qf-setting-toast-template" class="hide">
+      <div class="row">
+        <div class="col s12">
+          PLEASE NOTE: The "quality filter" option in the <i>notification settings</i> does
+          <b>not</b> disable the quality filter responsible for QFD.
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 center">
+          <button
+            class="btn-flat toast-action"
+            onClick="ui.qfSettingToastDimsmiss();">OK</button>
+          <button
+            class="btn-flat toast-action"
+            onClick="ui.qfSettingToastShowMore();">MORE</button>
+        </div>
+      </div>
+    </div>
     {{devBanner}}
     <script type="text/javascript" src="vendor/materialize/js/materialize{{useMinified}}.js"></script>
     <script src='js/main.bundle-{{bundleVersion}}.js'></script>
