@@ -44,7 +44,9 @@ export default class UI {
 
     // all other collapsibles
     this.tasksCollapsible = M.Collapsible.init(document.getElementById('tasks'));
-    this.qfdFaqCollapsible = M.Collapsible.init(document.getElementById('qfdFAQ'));
+    this.qfdFaqCollapsible = M.Collapsible.init(document.getElementById('qfdFAQ'), {
+      onOpenEnd: UI.scrollToTop
+    });
     this.functionalityCollapsible = M.Collapsible.init(document.getElementById('functionality'));
 
     // toast warning about qf option in notification settings
@@ -52,9 +54,6 @@ export default class UI {
 
     // actual test function
     this.test = test;
-    document.addEventListener('click', () => {
-      console.log(this.qfdFaqCollapsible.$headers.get(0).scrollHeight);
-    });
   }
 
   // user handle input, title sync
@@ -207,6 +206,28 @@ export default class UI {
     this.qfSettingToastDimsmiss();
     this.tasksCollapsible.open(3);
     this.qfdFaqCollapsible.open(0);
-    this.qfdFaqCollapsible.$headers.get(0).classList.add('highlight');
+    const headerElement = this.qfdFaqCollapsible.$headers.get(0);
+    headerElement.classList.add('highlight');
+    headerElement.addEventListener('animationend', () => {
+      headerElement.classList.remove('highlight');
+    }, {}, true);
+  }
+
+  static scrollToTop(element) {
+    if (!element.querySelector('.collapsible-header').classList.contains('highlight')) {
+      return;
+    }
+    const targetY = element.offsetTop - 20;
+    const stepY = 15;
+    let currentY = window.pageYOffset;
+    const direction = currentY > targetY ? 'up' : 'down';
+
+    const scrollInterval = window.setInterval(() => {
+      currentY = direction === 'up' ? currentY - stepY : currentY + stepY;
+      window.scrollTo(0, currentY);
+      if (currentY >= targetY || currentY === window.innerHeight) {
+        window.clearInterval(scrollInterval);
+      }
+    }, 10);
   }
 }
