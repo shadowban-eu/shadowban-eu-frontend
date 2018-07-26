@@ -85,7 +85,7 @@ gulp.task('styles', async () => {
   log.call('styles', 'Compiling styles...');
   return gulp.src('./src/scss/**/*.scss')
     .pipe(plugins.sass().on('error', plugins.sass.logError))
-    .pipe(gulp.dest(`./dist/css/style-${process.env.bundleVersion}.css`));
+    .pipe(gulp.dest(`./dist/css/${process.env.bundleVersion}`));
 });
 
 gulp.task('serve', (done) => {
