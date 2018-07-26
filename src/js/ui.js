@@ -50,7 +50,9 @@ export default class UI {
     this.functionalityCollapsible = M.Collapsible.init(document.getElementById('functionality'));
 
     // toast warning about qf option in notification settings
-    this.qfSettingToastInstance = qfSettingToast();
+    if (!localStorage.getItem('qf-option-toast')) {
+      this.qfSettingToastInstance = qfSettingToast(() => this.qfSettingToastDimsmiss(true));
+    }
 
     // actual test function
     this.test = test;
@@ -198,9 +200,11 @@ export default class UI {
   // Enable button/{Enter} event
   release = () => { this.checkButton.disabled = false; };
 
-  qfSettingToastDimsmiss() {
-    // set local storage flag to suppress on following visits
-    this.qfSettingToastInstance.dismiss();
+  qfSettingToastDimsmiss(swiped) {
+    localStorage.setItem('qf-option-toast', true);
+    if (!swiped) {
+      this.qfSettingToastInstance.dismiss();
+    }
   }
   qfSettingToastShowMore() {
     this.qfSettingToastDimsmiss();
