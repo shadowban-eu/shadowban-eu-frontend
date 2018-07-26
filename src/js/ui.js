@@ -1,3 +1,4 @@
+import TechInfo from './ui/TechInfo';
 import qfSettingToast from './ui/qfSettingToast';
 
 export default class UI {
@@ -189,7 +190,7 @@ export default class UI {
   };
 
   // resets tasks to initial state (do this before each test!)
-  reset = screenName => {
+  reset = (screenName) => {
     this.updateTask({
       id: 'checkUser',
       status: 'running',
@@ -199,7 +200,7 @@ export default class UI {
       status: 'pending',
       msg: 'Waiting for user.'
     });
-    document.querySelectorAll('.techInfo').forEach(x => x.style.display = 'none');
+    TechInfo.reset();
   }
 
   // Prevents running multiple tests at the same time (disables button/{Enter} on handle <input>);

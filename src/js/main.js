@@ -4,6 +4,7 @@
 */
 
 import UI from './ui';
+import TechInfo from './ui/TechInfo.js';
 import TwitterProxy from './twProxy';
 
 const enableDummyAccount = true;
@@ -100,7 +101,7 @@ const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
           msg: 'QFD Ban!'
         });
         _result.QFD.isBanned = true;
-        updateTechnicalInfoQFD(_result);
+        TechInfo.updateQFD(_result);
         return _result;
       }
       // tweet found - no shadowban
@@ -110,7 +111,7 @@ const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
         msg: 'No QFD Ban'
       });
       _result.QFD.isBanned = false;
-      updateTechnicalInfoQFD(_result);
+      TechInfo.updateQFD(_result);
       return _result;
     }
   }
@@ -129,7 +130,7 @@ const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
     delete _result.QFD.tweetId;
     delete _result.QFD.query;
     delete _result.QFD.method;
-    updateTechnicalInfoQFD(_result);
+    TechInfo.updateQFD(_result);
     return _result;
   }
 
@@ -149,7 +150,7 @@ const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
         msg: 'QFD Ban!'
       });
       _result.QFD.isBanned = true;
-      updateTechnicalInfoQFD(_result);
+      TechInfo.updateQFD(_result);
       return _result;
     }
     // tweet found - no shadowban
@@ -159,7 +160,7 @@ const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
       msg: 'No QFD Ban'
     });
     _result.QFD.isBanned = false;
-    updateTechnicalInfoQFD(_result);
+    TechInfo.updateQFD(_result);
     return _result;
   }
 
@@ -172,7 +173,7 @@ const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
   delete _result.QFD.tweetId;
   delete _result.QFD.query;
   delete _result.QFD.method;
-  updateTechnicalInfoQFD(_result);
+  TechInfo.updateQFD(_result);
   return _result;
 };
 
@@ -227,35 +228,6 @@ const conventionalBanTest = async (screenName) => {
   return [response[0] || 0, response[1], response[2]];
 };
 
-const makeSearchLink = (query, qf = false, text = undefined) => {
-  return `<a href="https://twitter.com/search?f=tweets&src=typd&vertical=default&lang=en&q=${encodeURIComponent(query)}&qf=${qf ? 'on' : 'off'}">${text ? text : query}</a>`;
-}
-
-const updateTechnicalInfoSearch = r => {
-  document.querySelector('#searchFAQ.techInfo').style.display = 'block';
-  const e = document.querySelector('#searchFAQ .techContent');
-  e.innerHTML = `We ${r.hasSearchBan ? 'did not find' : 'found'} a tweet by searching for ${makeSearchLink(`from:@${r.canonicalName}`)}.`;
-}
-
-const updateTechnicalInfoThread = r => {
-  document.querySelector('#threadFAQ.techInfo').style.display = 'block';
-  const e = document.querySelector('#threadFAQ .techContent');
-  if(r.thread.isBanned == undefined || !r.thread.tweet || !r.thread.reply) {
-    return;
-  }
-  e.innerHTML = `We found <a href="https://twitter.com/${r.canonicalName}/status/${r.thread.tweet}">a tweet with at least one reply</a> on the user's profile. A <a href="https://twitter.com/_/status/${r.thread.reply}">reply tweet</a> is ${r.thread.isBanned ? '': 'not '}detached.`;
-}
-
-const updateTechnicalInfoQFD = r => {
-  document.querySelector('#qfdFAQ .techInfo').style.display = 'block';
-  const e = document.querySelector('#qfdFAQ .techContent');
-  const m = makeSearchLink;
-  if(r.QFD.isBanned != undefined) {
-    e.innerHTML = `We found <a href="https://twitter.com/${r.canonicalName}/status/${r.QFD.tweetId}">this reference tweet</a> by searching for ${m(`from:@${r.canonicalName} filter:${r.QFD.method}s`)} and extracted the shortlink <a href="${r.QFD.query}">${r.QFD.query}</a> from this tweet. We found this tweet with the quality filter ${m(r.QFD.query, false, 'turned off')} ${r.QFD.isBanned ? 'but we did not find' : 'and we found'} it with the quality filter ${m(r.QFD.query, true, 'turned on')}.`;
-  }
-  //.textContent = JSON.stringify(result);
-}
-
 const fullTest = async (screenName) => {
   const result = {};
 
@@ -309,7 +281,7 @@ const fullTest = async (screenName) => {
   // Check whether user is v1 banned; no need to test v2, if so
   const [userUA, isSearchBanned] = await searchBanTest(screenName);
   result.hasSearchBan = isSearchBanned;
-  updateTechnicalInfoSearch(result);
+  TechInfo.updateSearch(result);
   if (isSearchBanned) {
     window.ui.updateTask({
       id: ['checkSearch', 'checkRefTweet'],
@@ -348,7 +320,7 @@ const fullTest = async (screenName) => {
         msg: `${screenName} couldn't be tested for a thread shadowban.`
       });
     }
-    updateTechnicalInfoThread(result);
+    TechInfo.updateThread(result);
     return result;
   }
 
