@@ -58,6 +58,15 @@ export default class UI {
     this.test = test;
   }
 
+  runTest() {
+    this.checkButton.focus(); // remove focus from input field, to close mobile screen kbd
+    this.reset(this.screenName);
+    this.lock();
+    this.test(this.screenName.value)
+      .then(this.release)
+      .catch(this.release);
+  }
+
   // user handle input, title sync
   updateHeaderScreenName = (evt) => {
     evt.stopPropagation();
@@ -91,12 +100,7 @@ export default class UI {
     }
 
     if (this.screenName.validity.valid) {
-      this.checkButton.focus(); // remove focus from input field, to close mobile screen kbd
-      this.reset(this.screenName);
-      this.lock();
-      this.test(this.screenName.value)
-        .then(this.release)
-        .catch(this.release);
+      this.runTest();
     } else {
       const toolTip = M.Tooltip.init(this.screenName);
       toolTip.isHovered = true;
@@ -170,15 +174,15 @@ export default class UI {
   };
 
   initFromLocation = (location) => {
-    const isRoot = location.pathname === '/';
-    const searchMatch = location.search.match(/^(\?(?:@|%40)?)([A-Za-z0-9_]{1,15})$/);
-    if (isRoot && searchMatch) {
-      this.screenName.value = searchMatch[2];
+    const pathMatch = location.pathname.match(/^(\/(?:@|%40)?)([A-Za-z0-9_]{1,15})$/);
+    if (pathMatch) {
+      this.screenName.value = pathMatch[2];
       this.screenNameLabel.classList.add('active');
       this.updateHeaderScreenName({
         stopPropagation: () => {},
         which: 20
       });
+      this.runTest();
     }
   };
 
