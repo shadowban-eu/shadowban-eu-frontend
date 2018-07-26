@@ -15,8 +15,6 @@ body {
   font-weight: 500;
 }
 
-h1, h2, h3, p { margin: 0; padding: 0; }
-
 .btn {
   color: $TWITTER_BLUE;
   border: 1px solid $TWITTER_BLUE;
@@ -27,7 +25,7 @@ h1, h2, h3, p { margin: 0; padding: 0; }
   }
 }
 
-.header, .controls span.prefix {
+.header, #controls span.prefix {
     font-family: 'Lobster', cursive;
     text-align: center;
     color: $TWITTER_BLUE;
@@ -37,55 +35,97 @@ h1, h2, h3, p { margin: 0; padding: 0; }
     color: $ACCENT_PURPLE;
 }
 
-.input-field {
-  /* label color */
-  label { color: $TWITTER_BLUE !important; }
-  input {
-    font-weight: 500;
-    color: $ACCENT_PURPLE;
+#controls .card {
+  justify-content: space-around;
+  padding: 1rem;
 
-    &[type=text] {
-      /* label underline focus color */
-      &:focus {
-        border-bottom: 1px solid $TWITTER_BLUE !important;
-        box-shadow: 0 1px 0 0 $TWITTER_BLUE !important;
-        /* label focus color */
-        & + label {
-          color: $TWITTER_BLUE !important;
+  .input-field {
+    /* label color */
+    label { color: $TWITTER_BLUE !important; }
+    input {
+      font-weight: 500;
+      color: $ACCENT_PURPLE;
+
+      &[type=text] {
+        /* label underline focus color */
+        &:focus {
+          border-bottom: 1px solid $TWITTER_BLUE !important;
+          box-shadow: 0 1px 0 0 $TWITTER_BLUE !important;
+          /* label focus color */
+          & + label {
+            color: $TWITTER_BLUE !important;
+          }
+        }
+      }
+    }
+    /* icon prefix focus color */
+    .prefix {
+      color: $TWITTER_BLUE;
+      &.active, &.valid {
+        color: $ACCENT_PURPLE;
+      }
+      &.invalid {
+        color: $ACCENT_ERROR;
+        & + input {
+          color: $ACCENT_ERROR;
+          border-bottom: 1px solid $ACCENT_ERROR !important;
+          box-shadow: 0 1px 0 0 $ACCENT_ERROR !important;
         }
       }
     }
   }
-  /* icon prefix focus color */
-  .prefix {
-    &.active, &.valid {
-      color: $ACCENT_PURPLE;
-    }
-    &.invalid {
-      color: $ACCENT_ERROR;
-      & + input {
-        color: $ACCENT_ERROR;
-        border-bottom: 1px solid $ACCENT_ERROR !important;
-        box-shadow: 0 1px 0 0 $ACCENT_ERROR !important;
-      }
-    }
+}
+
+#tasks {
+  li {
+    margin: 0;
   }
 }
 
-.controls {
-  justify-content: space-around;
-}
-
 .collapsible-header {
-  cursor: unset;
   text-align: left;
+  transition: 0.5s background-color ease-in-out 2s;
+  &[data-task-id="checkUser"] {
+    cursor: unset;
+  }
   &:focus {
     background-color: rgb(255, 255, 255) !important;
+  }
+  &.highlight {
+    animation: highlight-animation 1s cubic-bezier(0.24, 0, 0.38, 1) 3;
+  }
+}
+@keyframes highlight-animation {
+  0% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  50% {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+  }
+
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+.collapsible-body {
+  background-color: rgb(255, 255, 255);
+  h5 {
+    margin-top: 0;
+  }
+  .description-indicator {
+    color: rgb(0, 0, 0);
   }
 }
 
 [data-task-id] {
   transition: color 0.6s ease-out;
+  .task-message {
+    flex-grow: 1;
+  }
   &[data-task-status="ok"] {
     color: $ACCENT_SUCCESS;
   }
@@ -102,13 +142,12 @@ h1, h2, h3, p { margin: 0; padding: 0; }
     background-size: contain;
     margin-right: 7px;
   }
-  .qfd-hint {
-    font-size: 1rem;
-    margin-right: 0;
-    width: unset;
-    text-align: unset;
-    color: $TWITTER_BLUE;
-  }
+}
+
+.emoji {
+  width: 1em;
+  height: 1em;
+  vertical-align: text-top;
 }
 
 footer {
@@ -123,3 +162,22 @@ footer {
       margin-bottom: 0.25em;
   }
 }
+
+@media only screen and (min-width: 993px) {
+  #toast-container {
+    top: unset;
+    bottom: 7%;
+    max-width: 90%;
+  }
+}
+#toast-container {
+  .toast {
+    &.qf-setting-toast {
+      background-color: $ACCENT_ERROR;
+      color: rgb(238, 255, 65);
+      font-size: unset;
+      font-weight: unset;
+    }
+  }
+}
+

@@ -9,7 +9,7 @@ One-page web app, testing Twitter users for conventional and QFD shadowbans.
 Browser compatibility needs transpiling. Nothing fancy, just the usual babel magic.
 
 ```bash
-git clone https://github.com/rbeer/TwitterShadowBanV2 && cd TwitterShadowBanV2
+git clone https://github.com/shadowban-eu/TwitterShadowBanV2 && cd TwitterShadowBanV2
 npm install
 ```
 

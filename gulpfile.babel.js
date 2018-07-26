@@ -1,3 +1,4 @@
+import { existsSync, mkdirSync } from 'fs';
 import chalk from 'chalk';
 import del from 'del';
 import gulp from 'gulp';
@@ -25,13 +26,15 @@ const paths = {
   ]
 };
 
+let httpServerProcess = null; // php-cli dev server process
+
 const log = function log(...str) {
   const tag = this || find(gulp.tasks, { running: true }).name;
   flog(`[${chalk.cyan(tag)}] ${str.join(' ')}`);
   return true;
 };
 
-// Clean up dist and coverage directory
+// Clean up dist directory
 gulp.task('clean', () =>
   del.sync(['dist/**', 'dist/.*'])
 );
@@ -62,7 +65,12 @@ gulp.task('templates', () =>
 
 // Start server with restart on file changes
 gulp.task('dev', ['rollup', 'styles', 'templates', 'copy', 'serve'], () =>
-  plugins.watch('src/**/*.*', () => runSequence('rollup', 'styles', 'templates', 'copy'))
+  plugins.watch('src/**/*.*', () => {
+    log('Killing php-cli server...');
+    httpServerProcess.kill();
+    log('Done');
+    runSequence('rollup', 'styles', 'templates', 'copy', 'serve');
+  })
 );
 
 gulp.task('rollup', async () => {
@@ -82,7 +90,7 @@ gulp.task('styles', async () => {
 
 gulp.task('serve', (done) => {
   const args = ['-S', 'localhost:8080', '-t', './dist/'];
-  const httpServerProcess = spawn('php', args);
+  httpServerProcess = spawn('php', args);
   httpServerProcess.stdout.on('data', data =>
     data.toString().trim().split('\n')
       .forEach(line => log.call('serve', line.includes('http') ? chalk.green(line) : line))
@@ -91,7 +99,22 @@ gulp.task('serve', (done) => {
   done();
 });
 
+
 gulp.task('build', ['clean', 'rollup', 'styles', 'templates', 'copy']);
 
 // default task: clean dist, compile js files and copy non-js files.
 gulp.task('default', ['dev']);
+
+// templates task fails without ./dist directory
+if (!existsSync('./dist')) {
+  mkdirSync('./dist');
+}
+
+process.on('SIGINT', () => {
+  if (httpServerProcess) {
+    log('Killing php-cli server...');
+    httpServerProcess.kill();
+    log('Done');
+  }
+  process.exit();
+});

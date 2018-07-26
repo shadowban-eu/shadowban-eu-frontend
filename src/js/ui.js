@@ -1,32 +1,70 @@
+import qfSettingToast from './ui/qfSettingToast';
+
 export default class UI {
   constructor(test) {
     // user handle input and title synchronisation
     this.screenName = document.getElementById('screenName');
     this.screenNameLabel = document.querySelector('label[for="screenName"]');
-    this.screenNamePrefix = document.querySelector('.controls .input-field .prefix');
+    this.screenNamePrefix = document.querySelector('#controls .input-field .prefix');
     this.headerScreenName = document.querySelector('.header-screen_name');
     this.screenName.addEventListener('keyup', this.updateHeaderScreenName, true);
     this.screenName.addEventListener('click', evt => evt.stopPropagation());
+
+    // results
+    this.results = document.querySelector('#results');
 
     // button, initiating test
     this.checkButton = document.getElementById('check');
     this.checkButton.addEventListener('click', this.handleCheckClick);
 
-    // results
-    this.stage = document.querySelector('#stage .collapsible');
-    // crow bar approach to disable click and keydown handlers on Collapsible
-    // BEWARE: This disables handlers for all instances of Collapsibles.
-    //         Explicit opening (.open) still works, but you will have to find another
-    //         approach, if you need interactive ones
-    M.Collapsible.prototype._handleCollapsibleClick = () => {};
+    // custom click handler for Materialize Collapsibles
+    const handleCollapsibleClick = M.Collapsible.prototype._handleCollapsibleClick;
+    M.Collapsible.prototype._handleCollapsibleClick = function _handleCollapsibleClick(evt) {
+      evt.stopPropagation();
+      // ignore link clicks
+      if (evt.target.tagName === 'A') {
+        return;
+      }
+
+      // ignore where attribute 'collapsible-non-interactive' is set
+      const collapsibleNI = cash(evt.target)
+        .closest('.collapsible')
+        .attr('collapsible-non-interactive');
+      const headerNI = cash(evt.target)
+        .closest('.collapsible-header')
+        .attr('collapsible-non-interactive');
+
+      const isInteractive = collapsibleNI === null && headerNI === null;
+      if (isInteractive) {
+        handleCollapsibleClick.call(this, evt);
+      }
+    };
+    // Keyboard events disabled entirely
     M.Collapsible.prototype._handleCollapsibleKeydown = () => {};
 
-    this.taskCollapsible = M.Collapsible.init(this.stage);
-    this.taskCollapsible._removeEventHandlers();
-    this.stageOpen = false;
+    // all other collapsibles
+    this.tasksCollapsible = M.Collapsible.init(document.getElementById('tasks'));
+    this.qfdFaqCollapsible = M.Collapsible.init(document.getElementById('qfdFAQ'), {
+      onOpenEnd: UI.scrollToTop
+    });
+    this.functionalityCollapsible = M.Collapsible.init(document.getElementById('functionality'));
+
+    // toast warning about qf option in notification settings
+    if (!localStorage.getItem('qf-option-toast')) {
+      this.qfSettingToastInstance = qfSettingToast(() => this.qfSettingToastDimsmiss(true));
+    }
 
     // actual test function
     this.test = test;
+  }
+
+  runTest() {
+    this.checkButton.focus(); // remove focus from input field, to close mobile screen kbd
+    this.reset(this.screenName);
+    this.lock();
+    this.test(this.screenName.value)
+      .then(this.release)
+      .catch(this.release);
   }
 
   // user handle input, title sync
@@ -62,13 +100,7 @@ export default class UI {
     }
 
     if (this.screenName.validity.valid) {
-      this.checkButton.focus(); // remove focus from input field, to close mobile screen kbd
-      this.showTasks();
-      this.reset(this.screenName);
-      this.lock();
-      this.test(this.screenName.value)
-        .then(this.release)
-        .catch(this.release);
+      this.runTest();
     } else {
       const toolTip = M.Tooltip.init(this.screenName);
       toolTip.isHovered = true;
@@ -77,14 +109,6 @@ export default class UI {
         toolTip.close();
         toolTip.destroy();
       }, 5000);
-    }
-  };
-
-  // open/show results list
-  showTasks = () => {
-    if (!this.stageOpen) {
-      this.stageOpen = true;
-      this.taskCollapsible.open(0);
     }
   };
 
@@ -106,7 +130,7 @@ export default class UI {
     tasks.forEach((task) => {
       const taskEls = Array.isArray(task.id) ? task.id : [task.id];
       for (let i = 0; i < taskEls.length; i += 1) {
-        const taskEl = this.stage.querySelector(`[data-task-id="${taskEls[i]}"]`);
+        const taskEl = this.results.querySelector(`[data-task-id="${taskEls[i]}"]`);
         const taskIcon = taskEl.querySelector('.material-icons');
         const taskIconClasses = taskIcon.classList;
         // icon
@@ -138,8 +162,7 @@ export default class UI {
         if (task.msg) {
           const messageElement = taskEl.querySelector('.task-message');
           // messageElement.children.forEach(child => messageElement.removeChild(child));
-          let htmlMessage = `<span>${task.msg}</span>`;
-          htmlMessage = htmlMessage.replace('QFD', '<abbr title="Quality Filter Discrimination">QFD <i class="material-icons qfd-hint">contact_support</i></abbr>');
+          const htmlMessage = `<span>${task.msg}</span>`;
           // Yes, innerHTML is a security issue.
           // But this is ok since we are using hardcoded values, only.
           messageElement.innerHTML = htmlMessage;
@@ -151,15 +174,15 @@ export default class UI {
   };
 
   initFromLocation = (location) => {
-    const isRoot = location.pathname === '/';
-    const searchMatch = location.search.match(/^(\?(?:@|%40)?)([A-Za-z0-9_]{1,15})$/);
-    if (isRoot && searchMatch) {
-      this.screenName.value = searchMatch[2];
+    const pathMatch = location.pathname.match(/^(\/(?:@|%40)?)([A-Za-z0-9_]{1,15})$/);
+    if (pathMatch) {
+      this.screenName.value = pathMatch[2];
       this.screenNameLabel.classList.add('active');
       this.updateHeaderScreenName({
         stopPropagation: () => {},
         which: 20
       });
+      this.runTest();
     }
   };
 
@@ -169,7 +192,7 @@ export default class UI {
     status: 'running',
     msg: `Looking up user @${screenName}`
   }, {
-    id: ['checkSearch', 'checkConventional', 'getRefTweet', 'checkRefTweet'],
+    id: ['checkSearch', 'checkConventional', 'checkRefTweet'],
     status: 'pending',
     msg: 'Waiting for user.'
   });
@@ -180,4 +203,39 @@ export default class UI {
 
   // Enable button/{Enter} event
   release = () => { this.checkButton.disabled = false; };
+
+  qfSettingToastDimsmiss(swiped) {
+    localStorage.setItem('qf-option-toast', true);
+    if (!swiped) {
+      this.qfSettingToastInstance.dismiss();
+    }
+  }
+  qfSettingToastShowMore() {
+    this.qfSettingToastDimsmiss();
+    this.tasksCollapsible.open(3);
+    this.qfdFaqCollapsible.open(0);
+    const headerElement = this.qfdFaqCollapsible.$headers.get(0);
+    headerElement.classList.add('highlight');
+    headerElement.addEventListener('animationend', () => {
+      headerElement.classList.remove('highlight');
+    }, {}, true);
+  }
+
+  static scrollToTop(element) {
+    if (!element.querySelector('.collapsible-header').classList.contains('highlight')) {
+      return;
+    }
+    const targetY = element.offsetTop - 20;
+    const stepY = 15;
+    let currentY = window.pageYOffset;
+    const direction = currentY > targetY ? 'up' : 'down';
+
+    const scrollInterval = window.setInterval(() => {
+      currentY = direction === 'up' ? currentY - stepY : currentY + stepY;
+      window.scrollTo(0, currentY);
+      if (currentY >= targetY || currentY === window.innerHeight) {
+        window.clearInterval(scrollInterval);
+      }
+    }, 10);
+  }
 }
