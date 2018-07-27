@@ -4,6 +4,7 @@
 */
 
 import UI from './ui';
+import TechInfo from './ui/TechInfo.js';
 import TwitterProxy from './twProxy';
 
 const enableDummyAccount = true;
@@ -100,6 +101,7 @@ const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
           msg: 'QFD Ban!'
         });
         _result.QFD.isBanned = true;
+        TechInfo.updateQFD(_result);
         return _result;
       }
       // tweet found - no shadowban
@@ -109,6 +111,7 @@ const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
         msg: 'No QFD Ban'
       });
       _result.QFD.isBanned = false;
+      TechInfo.updateQFD(_result);
       return _result;
     }
   }
@@ -127,6 +130,7 @@ const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
     delete _result.QFD.tweetId;
     delete _result.QFD.query;
     delete _result.QFD.method;
+    TechInfo.updateQFD(_result);
     return _result;
   }
 
@@ -146,6 +150,7 @@ const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
         msg: 'QFD Ban!'
       });
       _result.QFD.isBanned = true;
+      TechInfo.updateQFD(_result);
       return _result;
     }
     // tweet found - no shadowban
@@ -155,6 +160,7 @@ const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
       msg: 'No QFD Ban'
     });
     _result.QFD.isBanned = false;
+    TechInfo.updateQFD(_result);
     return _result;
   }
 
@@ -167,6 +173,7 @@ const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
   delete _result.QFD.tweetId;
   delete _result.QFD.query;
   delete _result.QFD.method;
+  TechInfo.updateQFD(_result);
   return _result;
 };
 
@@ -274,6 +281,7 @@ const fullTest = async (screenName) => {
   // Check whether user is v1 banned; no need to test v2, if so
   const [userUA, isSearchBanned] = await searchBanTest(screenName);
   result.hasSearchBan = isSearchBanned;
+  TechInfo.updateSearch(result);
   if (isSearchBanned) {
     window.ui.updateTask({
       id: ['checkSearch', 'checkRefTweet'],
@@ -286,20 +294,25 @@ const fullTest = async (screenName) => {
     });
 
     const [isConventionalBanned, convTweet, convReply] = await conventionalBanTest(screenName);
+    result.thread = {};
     if (isConventionalBanned === 0) {
       window.ui.updateTask({
         id: 'checkConventional',
         status: 'ok',
         msg: 'No Thread Ban.'
       });
-      result.hasConventionalBan = false;
+      result.thread.isBanned = false;
+      result.thread.tweet = convTweet;
+      result.thread.reply = convReply;
     } else if (isConventionalBanned === 1) {
       window.ui.updateTask({
         id: 'checkConventional',
         status: 'ban',
         msg: 'Thread Ban!'
       });
-      result.hasConventionalBan = true;
+      result.thread.isBanned = true;
+      result.thread.tweet = convTweet;
+      result.thread.reply = convReply;
     } else {
       window.ui.updateTask({
         id: 'checkConventional',
@@ -307,10 +320,13 @@ const fullTest = async (screenName) => {
         msg: `${screenName} couldn't be tested for a thread shadowban.`
       });
     }
+    TechInfo.updateThread(result);
     return result;
   }
 
-  result.hasConventionalBan = false;
+  result.thread = {
+    isBanned: false
+  };
   window.ui.updateTask({
     id: 'checkSearch',
     status: 'ok',

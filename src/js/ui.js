@@ -1,3 +1,4 @@
+import TechInfo from './ui/TechInfo';
 import qfSettingToast from './ui/qfSettingToast';
 
 export default class UI {
@@ -44,6 +45,8 @@ export default class UI {
 
     // all other collapsibles
     this.tasksCollapsible = M.Collapsible.init(document.getElementById('tasks'));
+    this.searchFaqCollapsible = M.Collapsible.init(document.getElementById('searchFAQ'));
+    this.threadFaqCollapsible = M.Collapsible.init(document.getElementById('threadFAQ'));
     this.qfdFaqCollapsible = M.Collapsible.init(document.getElementById('qfdFAQ'), {
       onOpenEnd: UI.scrollToTop
     });
@@ -187,15 +190,18 @@ export default class UI {
   };
 
   // resets tasks to initial state (do this before each test!)
-  reset = screenName => this.updateTask({
-    id: 'checkUser',
-    status: 'running',
-    msg: `Looking up user @${screenName}`
-  }, {
-    id: ['checkSearch', 'checkConventional', 'checkRefTweet'],
-    status: 'pending',
-    msg: 'Waiting for user.'
-  });
+  reset = (screenName) => {
+    this.updateTask({
+      id: 'checkUser',
+      status: 'running',
+      msg: `Looking up user @${screenName}`
+    }, {
+      id: ['checkSearch', 'checkConventional', 'checkRefTweet'],
+      status: 'pending',
+      msg: 'Waiting for user.'
+    });
+    TechInfo.reset();
+  }
 
   // Prevents running multiple tests at the same time (disables button/{Enter} on handle <input>);
   // otherwise the updateTask() calls would mess up the results
