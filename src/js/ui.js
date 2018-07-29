@@ -84,6 +84,8 @@ export default class UI {
       return false;
     }
 
+    this.screenName.value = this.screenName.value.trim();
+
     if (!this.screenName.validity.patternMismatch) {
       classes.remove('invalid');
       classes.add('valid');
