@@ -1,6 +1,8 @@
 export default class TechInfo {
-  static makeSearchLink(query, qf = false, text = undefined, mobile = false) {
-    return `<a href="https://${mobile ? 'mobile.' : ''}twitter.com/search?f=${mobile ? 'live' : 'tweets'}&src=typd&vertical=default&lang=en&q=${encodeURIComponent(query)}&qf=${qf ? 'on' : 'off'}">${text || query}</a>`;
+  static isMobile = !!(("ontouchstart" in window) || window.navigator && window.navigator.msPointerEnabled && window.MSGesture || window.DocumentTouch && document instanceof DocumentTouch);
+  static makeSearchLink(query, qf, text) {
+    const href = `https://${TechInfo.isMobile ? 'mobile.' : ''}twitter.com/search?f=${TechInfo.isMobile ? 'live' : 'tweets'}&src=typd&vertical=default&lang=en&q=${encodeURIComponent(query)}&qf=${qf ? 'on' : 'off'}`;
+    return `<a href="${href}">${text || query}</a>`;
   }
 
   static updateSearch(results) {
@@ -28,13 +30,11 @@ export default class TechInfo {
       const searchForLink = TechInfo.makeSearchLink(`from:@${results.canonicalName} filter:${results.QFD.method}s`);
       const qfOffLink = TechInfo.makeSearchLink(results.QFD.query, false, 'turned off');
       const qfOnLink = TechInfo.makeSearchLink(results.QFD.query, true, 'turned on');
-      const qfOffLinkMobi = TechInfo.makeSearchLink(results.QFD.query, false, 'Twitter Lite', true);
-      const qfOnLinkMobi = TechInfo.makeSearchLink(results.QFD.query, true, 'Twitter Lite', true);
       contentElement.innerHTML = `We found <a href="https://twitter.com/${results.canonicalName}/status/${results.QFD.tweetId}">this
         reference tweet</a> by searching for ${searchForLink} and
         extracted the shortlink <a href="${results.QFD.query}">${results.QFD.query}</a> from this tweet. We found this
-        tweet with the quality filter ${qfOffLink} (${qfOffLinkMobi}) ${results.QFD.isBanned ? 'but we did not find' : 'and we found'}
-        it with the quality filter ${qfOnLink} (${qfOnLinkMobi}).`;
+        tweet with the quality filter ${qfOffLink} ${results.QFD.isBanned ? 'but we did not find' : 'and we found'}
+        it with the quality filter ${qfOnLink}.`;
         if (results.QFD.login) {
           contentElement.innerHTML += ` We did not find the reference tweet without being logged into Twitter.`;
         }
