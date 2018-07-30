@@ -1,6 +1,8 @@
 export default class TechInfo {
-  static makeSearchLink(query, qf = false, text = undefined) {
-    return `<a href="https://twitter.com/search?f=tweets&src=typd&vertical=default&lang=en&q=${encodeURIComponent(query)}&qf=${qf ? 'on' : 'off'}">${text || query}</a>`;
+  static isMobile = !!(("ontouchstart" in window) || window.navigator && window.navigator.msPointerEnabled && window.MSGesture || window.DocumentTouch && document instanceof DocumentTouch);
+  static makeSearchLink(query, qf, text) {
+    const href = `https://${TechInfo.isMobile ? 'mobile.' : ''}twitter.com/search?f=${TechInfo.isMobile ? 'live' : 'tweets'}&src=typd&vertical=default&lang=en&q=${encodeURIComponent(query)}&qf=${qf ? 'on' : 'off'}`;
+    return `<a href="${href}">${text || query}</a>`;
   }
 
   static updateSearch(results) {
@@ -33,6 +35,9 @@ export default class TechInfo {
         extracted the shortlink <a href="${results.QFD.query}">${results.QFD.query}</a> from this tweet. We found this
         tweet with the quality filter ${qfOffLink} ${results.QFD.isBanned ? 'but we did not find' : 'and we found'}
         it with the quality filter ${qfOnLink}.`;
+        if (results.QFD.login) {
+          contentElement.innerHTML += ` We did not find the reference tweet without being logged into Twitter.`;
+        }
     }
   }
 
