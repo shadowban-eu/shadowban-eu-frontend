@@ -58,6 +58,9 @@ export default class UI {
 
     // actual test function
     this.test = test;
+    const donateModalElement = document.getElementById('donate-modal');
+    const donateModal = M.Modal.init(donateModalElement);
+    donateModal.open();
   }
 
   runTest() {
