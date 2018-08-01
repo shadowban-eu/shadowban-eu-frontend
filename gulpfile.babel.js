@@ -89,7 +89,7 @@ gulp.task('styles', async () => {
 });
 
 gulp.task('serve', (done) => {
-  const args = ['-S', 'localhost:8080', '-t', './dist/'];
+  const args = ['-S', '0.0.0.0:8080', '-t', './dist/'];
   httpServerProcess = spawn('php', args);
   httpServerProcess.stdout.on('data', data =>
     data.toString().trim().split('\n')
