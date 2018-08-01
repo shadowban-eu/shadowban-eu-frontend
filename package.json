@@ -1,6 +1,6 @@
 {
   "name": "twitter-shadowban-tests",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "Twitter ShadowBan Tests",
   "main": "gulpfile.babel.js",
   "author": "Raphael Beer <raphael.beer@protonmail.com>",
