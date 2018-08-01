@@ -9,7 +9,6 @@ export default class UI {
     this.screenNamePrefix = document.querySelector('#controls .input-field .prefix');
     this.headerScreenName = document.querySelector('.header-screen_name');
     this.screenName.addEventListener('keyup', this.updateHeaderScreenName, true);
-    this.screenName.addEventListener('click', evt => evt.stopPropagation());
 
     // results
     this.results = document.querySelector('#results');
@@ -84,7 +83,7 @@ export default class UI {
       return false;
     }
 
-    this.screenName.value = this.screenName.value.trim();
+    this.screenName.value = this.screenName.value.replace('@', '').trim();
 
     if (!this.screenName.validity.patternMismatch) {
       classes.remove('invalid');
