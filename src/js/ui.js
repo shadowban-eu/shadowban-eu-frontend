@@ -65,6 +65,7 @@ export default class UI {
   runTest() {
     this.checkButton.focus(); // remove focus from input field, to close mobile screen kbd
     this.reset(this.screenName);
+    this.setLocationForScreenName();
     this.lock();
     this.test(this.screenName.value)
       .then(this.release)
@@ -188,9 +189,19 @@ export default class UI {
         stopPropagation: () => {},
         which: 20
       });
+      window.history.replaceState(...this.screenNameHistoryState);
       this.runTest();
     }
   };
+
+  setLocationForScreenName = () => {
+    window.history.replaceState(...this.screenNameHistoryState);
+  };
+
+  get screenNameHistoryState() {
+    const screenName = this.screenName.value;
+    return [{ screenName }, `Testing ${screenName}`, `/${screenName}`];
+  }
 
   // resets tasks to initial state (do this before each test!)
   reset = (screenName) => {
