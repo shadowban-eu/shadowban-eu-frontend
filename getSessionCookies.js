@@ -163,7 +163,11 @@ getTwitterPage('/login').then(([headers, data]) => {
     const cookieString = cookiesToString(cookies);
     writeFile(process.env.COOKIE_FILE, cookieString, () => {
       console.log(`Cookie stored in ${process.env.COOKIE_FILE}`);
-      console.log('Done.');
     });
+    if(process.env.TOKEN_FILE) {
+      writeFile(process.env.TOKEN_FILE, formData.authenticity_token, () => {
+        console.log(`Authenticity token stored in ${process.env.TOKEN_FILE}`);
+      });
+    }
   });
 });
