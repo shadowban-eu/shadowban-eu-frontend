@@ -170,6 +170,7 @@ footer {
     max-width: 90%;
   }
 }
+
 #toast-container {
   .toast {
     &.qf-setting-toast {
@@ -177,6 +178,27 @@ footer {
       color: rgb(238, 255, 65);
       font-size: unset;
       font-weight: unset;
+    }
+  }
+}
+
+#donate-modal {
+  h4, h6 {
+    color: $ACCENT_PURPLE;
+  }
+  ul {
+    padding-left: 1.5em;
+    list-style-type: none;
+    > li {
+      padding-bottom: 1em;
+      text-indent: -0.9em;
+      &:last-child {
+        padding: 0;
+      }
+      i.material-icons {
+        font-size: 16px;
+        padding-right: 0.3em;
+      }
     }
   }
 }

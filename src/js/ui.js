@@ -9,7 +9,6 @@ export default class UI {
     this.screenNamePrefix = document.querySelector('#controls .input-field .prefix');
     this.headerScreenName = document.querySelector('.header-screen_name');
     this.screenName.addEventListener('keyup', this.updateHeaderScreenName, true);
-    this.screenName.addEventListener('click', evt => evt.stopPropagation());
 
     // results
     this.results = document.querySelector('#results');
@@ -59,11 +58,14 @@ export default class UI {
 
     // actual test function
     this.test = test;
+    const donateModalElement = document.getElementById('donate-modal');
+    M.Modal.init(donateModalElement);
   }
 
   runTest() {
     this.checkButton.focus(); // remove focus from input field, to close mobile screen kbd
     this.reset(this.screenName);
+    this.setLocationForScreenName();
     this.lock();
     this.test(this.screenName.value)
       .then(this.release)
@@ -83,6 +85,8 @@ export default class UI {
       this.headerScreenName.innerText = '@username';
       return false;
     }
+
+    this.screenName.value = this.screenName.value.replace('@', '').trim();
 
     if (!this.screenName.validity.patternMismatch) {
       classes.remove('invalid');
@@ -185,9 +189,19 @@ export default class UI {
         stopPropagation: () => {},
         which: 20
       });
+      window.history.replaceState(...this.screenNameHistoryState);
       this.runTest();
     }
   };
+
+  setLocationForScreenName = () => {
+    window.history.replaceState(...this.screenNameHistoryState);
+  };
+
+  get screenNameHistoryState() {
+    const screenName = this.screenName.value;
+    return [{ screenName }, `Testing ${screenName}`, `/${screenName}`];
+  }
 
   // resets tasks to initial state (do this before each test!)
   reset = (screenName) => {

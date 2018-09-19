@@ -31,6 +31,7 @@
       <div class="col s12">
         <h2>Is <span class="header-screen_name">@username</span><br> shadowbanned on Twitter?</h2>
       </div>
+      <button data-target="donate-modal" class="btn modal-trigger waves-effect waves white">Support Us</button>
     </section>
 
     <section id="controls" class="row">
@@ -43,10 +44,10 @@
               type="text"
               autocomplete="username"
               required
-              pattern="^(?!@)([A-Za-z0-9_]){1,15}$"
+              pattern="^[A-Za-z0-9_]{1,15}$"
               data-position="bottom"
               data-tooltip="Please provide a valid Twitter @handle!"
-              maxlength="15"
+              maxlength="16"
             >
             <label for="screenName">Username</label>
           </div>
@@ -209,7 +210,7 @@
                     <p>
                       We cannot tell whether the effects of QFD are limited to hashtags and the
                       search. These are only the symptoms making the ban visible to us. It shows
-                      that Twitter is capable and willing to discriminate accounts with certain
+                      that Twitter is capable and willing to discriminate against accounts with certain
                       political opinions. Since shadowbanning is a very unethical way to silence
                       people already, it is possible for Twitter to apply methods that are harder
                       to detect. Think of more subtle ways of banning by limiting the share of
@@ -356,6 +357,50 @@
             class="btn-flat toast-action"
             onClick="ui.qfSettingToastShowMore();">MORE</button>
         </div>
+      </div>
+    </div>
+    <div id="donate-modal" class="modal modal-fixed-footer">
+      <div class="modal-content">
+        <h4>Support Us</h4>
+        <p>Shadowban.eu is an open-source project, created and run in the spirit of Benjamin Franklin's</p>
+        <p>
+          <i>“Knowledge is in every country the surest basis of public happiness.”</i>
+        </p>
+        <p>
+          We hope to have brought you some clarity about what is going on with your Twitter account.
+          If you feel like supporting us, you can do so by donating to our PayPal.
+        </p>
+        <h6>
+          We aren't done, there's more to come
+        </h6>
+        <p>
+          Your donation would help
+        </p>
+        <ul class="browser-default">
+          <li>
+            <i class="material-icons notranslate">search</i>
+            <span>
+              us to look further into other ways Twitter has implemented to lower your reach,
+            </span>
+          </li>
+          <li>
+            <i class="material-icons notranslate">build</i>
+            <span>
+              the development of this site and an API to test multiple accounts at the same time
+              or all of your followers,
+            </span>
+          </li>
+          <li>
+            <i class="material-icons notranslate">extension</i>
+            <span>
+              the development of TwitterNinja, a browser extension that disables the quality filter
+              for you.
+            </span>
+          </li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <a href="https://www.paypal.me/shadowban" class="waves-effect waves white btn">Donate via PayPal</a>
       </div>
     </div>
     {{devBanner}}
