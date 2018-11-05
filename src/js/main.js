@@ -290,7 +290,7 @@ const fullTest = async (screenName) => {
     window.ui.updateTask({
       id: 'checkSuggest',
       status: 'ok',
-      msg: 'No Search Suggestion Ban.'
+      msg: 'No Search Suggestion Ban'
     });
   } else {
     window.ui.updateTask({
