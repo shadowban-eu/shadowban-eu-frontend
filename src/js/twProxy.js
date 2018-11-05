@@ -16,6 +16,14 @@ export default class TwitterProxy {
       .then(TwitterProxy.parseDOMString)
       .catch(TwitterProxy.handleError);
   }
+  
+  static suggestions(screenName) {
+    const url = `/search.php?suggest=${screenName}`;
+    return fetch(url)
+      .then(TwitterProxy.checkSuccess)
+      .then(TwitterProxy.parseJSON)
+      .catch(TwitterProxy.handleError);
+  }
 
   static status(id) {
     const url = `/search.php?status=${id}`;
@@ -40,6 +48,13 @@ export default class TwitterProxy {
       throw res; // throwing response object to make it available to catch()
     }
     return res;
+  }
+
+  static parseJSON = async (res) => {
+    const json = await res.json();
+    const twpResponse = new TWPResponse(res);
+    twpResponse.json = json;
+    return twpResponse;
   }
 
   static parseInfinity = async (res) => {
