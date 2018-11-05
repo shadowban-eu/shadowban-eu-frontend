@@ -9,7 +9,7 @@
 define('SESSION_HEADER_FILE', '.htsession');
 
 // bail if neither query nor screenName are supplied
-if (empty($_GET['q']) && empty($_GET['screenName']) && empty($_GET['timeline']) && empty($_GET['status'])) {
+if (empty($_GET['q']) && empty($_GET['screenName']) && empty($_GET['timeline']) && empty($_GET['status']) && empty($_GET['suggest'])) {
     header('HTTP/1.1 500 Internal Server Booboo');
     header('Content-Type: application/json; charset=UTF-8');
     die(json_encode(array('error' => 'Missing query or username')));
@@ -27,6 +27,9 @@ if (isset($_GET['q'])) {
 } else if(isset($_GET['status'])) {
   $url = 'https://twitter.com/anyone/status/' .
     urlencode(filter_var($_GET['status'], FILTER_SANITIZE_NUMBER_INT)) . '?lang=en';
+} else if(isset($_GET['suggest'])) {
+  $url = 'https://twitter.com/i/search/typeahead.json?count=10&filters=false&q=%40' .
+    urlencode(filter_var($_GET['suggest'], FILTER_SANITIZE_STRING)) . '&result_type=users&src=SEARCH_BOX';
 } else {
   $tweetEp = isset($_GET['replies']) ? 'with_replies' : 'tweets';
   $url = 'https://twitter.com/i/profiles/show/'.

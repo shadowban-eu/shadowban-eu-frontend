@@ -228,6 +228,12 @@ const conventionalBanTest = async (screenName) => {
   return [response[0] || 0, response[1], response[2]];
 };
 
+const suggestionTest = async (screenName) => {
+  const response = await TwitterProxy.suggestions(screenName);
+  const users = response.json.users.filter(x => x.screen_name.toLowerCase() == screenName.toLowerCase());
+  return users.length > 0;
+};
+
 const fullTest = async (screenName) => {
   const result = {};
 
@@ -244,7 +250,7 @@ const fullTest = async (screenName) => {
   if (!nameEl) {
     // user not found
     window.ui.updateTask({
-      id: ['checkUser', 'checkSearch', 'checkConventional', 'checkRefTweet'],
+      id: ['checkUser', 'checkSearch', 'checkConventional', 'checkRefTweet', 'checkSuggest'],
       status: 'ban',
       msg: `User <a href="https://twitter.com/${screenName}">@${screenName}</a> does not exist.`
     });
@@ -264,7 +270,7 @@ const fullTest = async (screenName) => {
   // user found, but has no tweets
   if (!tweet) {
     window.ui.updateTask({
-      id: ['checkSearch', 'checkConventional', 'checkRefTweet'],
+      id: ['checkSearch', 'checkConventional', 'checkRefTweet', 'checkSuggest'],
       status: 'ban',
       msg: `<a href="https://twitter.com/${screenName}">@${screenName}</a> hasn't made any tweets!<br />This test needs at least one tweet.`
     });
@@ -272,6 +278,28 @@ const fullTest = async (screenName) => {
   }
 
   // user found and has tweets
+  window.ui.updateTask({
+    id: 'checkSuggest',
+    status: 'running',
+    msg: 'Testing search suggestion ban...'
+  });
+  
+  const foundSuggestion = await suggestionTest(screenName);
+  
+  if(foundSuggestion) {
+    window.ui.updateTask({
+      id: 'checkSuggest',
+      status: 'ok',
+      msg: 'No Search Suggestion Ban.'
+    });
+  } else {
+    window.ui.updateTask({
+      id: 'checkSuggest',
+      status: 'ban',
+      msg: 'Search Suggestion Ban!'
+    });
+  }
+
   window.ui.updateTask({
     id: 'checkSearch',
     status: 'running',

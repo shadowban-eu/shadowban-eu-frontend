@@ -210,7 +210,7 @@ export default class UI {
       status: 'running',
       msg: `Looking up user @${screenName}`
     }, {
-      id: ['checkSearch', 'checkConventional', 'checkRefTweet'],
+      id: ['checkSearch', 'checkConventional', 'checkRefTweet', 'checkSuggest'],
       status: 'pending',
       msg: 'Waiting for user.'
     });
