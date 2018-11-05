@@ -85,7 +85,7 @@ body {
 .collapsible-header {
   text-align: left;
   transition: 0.5s background-color ease-in-out 2s;
-  &[data-task-id="checkUser"] {
+  &[data-task-id="checkUser"], &[data-task-id="checkSuggest"] {
     cursor: unset;
   }
   &:focus {
