@@ -15,6 +15,13 @@ body {
   font-weight: 500;
 }
 
+.material-icons {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 .btn {
   color: $TWITTER_BLUE;
   border: 1px solid $TWITTER_BLUE;
@@ -85,9 +92,6 @@ body {
 .collapsible-header {
   text-align: left;
   transition: 0.5s background-color ease-in-out 2s;
-  &[data-task-id="checkUser"], &[data-task-id="checkSuggest"] {
-    cursor: unset;
-  }
   &:focus {
     background-color: rgb(255, 255, 255) !important;
   }
