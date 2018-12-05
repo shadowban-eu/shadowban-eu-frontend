@@ -179,7 +179,7 @@ const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
 
 // Tests conventional (v1) shadowban
 const searchBanTest = async (screenName) => {
-  const tweetTest = r => r.dom.querySelector(tweetSearchSel);
+  const tweetTest = r => r.dom.querySelector(`${tweetSearchSel}[data-screen-name="${screenName}"]`);
   const [userUA, tweet] = await multiTest(`from:@${screenName}`, false, tweetTest);
   return [userUA, !tweet];
 };
