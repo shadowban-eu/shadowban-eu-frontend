@@ -69,7 +69,7 @@ $opts = array(
     "method" => "GET",
     "header" => "User-Agent: " . $ua . "\r\n" .
       "Accept: */*\r\n" .
-      $session_headers ? $session_headers : ''
+      ($session_headers ? $session_headers : '')
   )
 );
 
