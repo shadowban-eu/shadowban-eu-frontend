@@ -52,7 +52,7 @@ export default class UI {
     this.functionalityCollapsible = M.Collapsible.init(document.getElementById('functionality'));
 
     // toast warning about qf option in notification settings
-    if (!localStorage.getItem('qf-option-toast')) {
+    if (!localStorage.getItem('testing-toast')) {
       this.qfSettingToastInstance = qfSettingToast(() => this.qfSettingToastDimsmiss(true));
     }
 
@@ -210,7 +210,7 @@ export default class UI {
       status: 'running',
       msg: `Looking up user @${screenName}`
     }, {
-      id: ['checkSearch', 'checkConventional', 'checkRefTweet', 'checkSuggest'],
+      id: ['checkSearch', 'checkConventional', 'checkSuggest'],
       status: 'pending',
       msg: 'Waiting for user.'
     });
@@ -225,20 +225,10 @@ export default class UI {
   release = () => { this.checkButton.disabled = false; };
 
   qfSettingToastDimsmiss(swiped) {
-    localStorage.setItem('qf-option-toast', true);
+    localStorage.setItem('testing-toast', true);
     if (!swiped) {
       this.qfSettingToastInstance.dismiss();
     }
-  }
-  qfSettingToastShowMore() {
-    this.qfSettingToastDimsmiss();
-    this.tasksCollapsible.open(3);
-    this.qfdFaqCollapsible.open(0);
-    const headerElement = this.qfdFaqCollapsible.$headers.get(0);
-    headerElement.classList.add('highlight');
-    headerElement.addEventListener('animationend', () => {
-      headerElement.classList.remove('highlight');
-    }, {}, true);
   }
 
   static scrollToTop(element) {

@@ -12,24 +12,6 @@ const userAgentCount = 7; // Number of user agents defined in search.php
 
 const tweetSearchSel = '.tweet.js-stream-tweet';
 
-const findUserTweetLogin = async (query, name, qf, ua = 0, login = false) => {
-  const testResponse = await TwitterProxy.search(query, qf, ua, login);
-  const tweets = Array.from(testResponse.dom.querySelectorAll(tweetSearchSel));
-  const usersTweets = tweets.filter(el =>
-    el.dataset.screenName.toLowerCase() === name.toLowerCase()
-  );
-  return usersTweets.length > 0;
-};
-
-const findUserTweet = async (query, name, qf, ua = 0) => {
-  const foundLoggedOut = await findUserTweetLogin(query, name, qf, ua);
-  if (foundLoggedOut || !enableDummyAccount) {
-    return [false, foundLoggedOut];
-  }
-  const foundLoggedIn = await findUserTweetLogin(query, name, qf, ua, true);
-  return [true, foundLoggedIn];
-};
-
 // Test with multiple user agents
 const multiTest = async (query, qf, success, prefUA = 0) => {
   const prefResponse = await TwitterProxy.search(query, qf, prefUA);
@@ -64,117 +46,6 @@ const searchTimeline = async (user, success, pages = 10) => {
     }
   }
   return false;
-};
-
-// Tests quality filter (v2) shadowban
-const qfBanTest = async (screenName, result = {}, prefUA = 0) => {
-  window.ui.updateTask({
-    id: 'checkRefTweet',
-    status: 'running',
-    msg: ' Testing for QFD Ban...'
-  });
-
-  const _result = result;
-  _result.QFD = {};
-  const linkTest = r => r.dom.querySelector(
-    `${tweetSearchSel} a[href^="https://t.co/"],.tweet-text a[href^="http://t.co/"]`
-  );
-  const linkQuery = `from:@${screenName} filter:links`;
-  const [linkUA, linkAnchor] = await multiTest(linkQuery, true, linkTest, prefUA);
-  _result.QFD.method = 'link';
-  _result.QFD.foundTweets = !!linkAnchor;
-  if (linkAnchor) {
-    const linkRefId = linkAnchor.closest(tweetSearchSel).dataset.tweetId;
-    _result.QFD.tweetId = linkRefId;
-    _result.QFD.query = linkAnchor.href;
-
-    const [linkLogin, linkFoundNoQf] = await findUserTweet(linkAnchor.href, screenName, false, linkUA);
-    _result.QFD.login = linkLogin;
-    if (linkFoundNoQf) {
-      const linkFoundQf = await findUserTweetLogin(linkAnchor.href, screenName, true, linkUA, linkLogin);
-      if (!linkFoundQf) {
-        // tweet not fount - shadowban
-
-        window.ui.updateTask({
-          id: 'checkRefTweet',
-          status: 'ban',
-          msg: 'QFD Ban!'
-        });
-        _result.QFD.isBanned = true;
-        TechInfo.updateQFD(_result);
-        return _result;
-      }
-      // tweet found - no shadowban
-      window.ui.updateTask({
-        id: 'checkRefTweet',
-        status: 'ok',
-        msg: 'No QFD Ban'
-      });
-      _result.QFD.isBanned = false;
-      TechInfo.updateQFD(_result);
-      return _result;
-    }
-  }
-
-  _result.QFD.method = 'image';
-  const imageTest = r => r.dom.querySelector(`${tweetSearchSel} a.u-hidden`);
-  const [imageUA, imageAnchor] = await multiTest(`from:@${screenName} filter:images`, true, imageTest, linkUA);
-  _result.QFD.foundTweets = !!imageAnchor;
-  if (!imageAnchor) {
-    window.ui.updateTask({
-      id: ['checkRefTweet'],
-      status: 'warn',
-      msg: `@${screenName} could not be tested for QFD.<br />The QFD test needs least one tweet containing a link or an image.`
-    });
-    delete _result.QFD.login;
-    delete _result.QFD.tweetId;
-    delete _result.QFD.query;
-    delete _result.QFD.method;
-    TechInfo.updateQFD(_result);
-    return _result;
-  }
-
-  const imageRefId = imageAnchor.closest(tweetSearchSel).dataset.tweetId;
-  _result.QFD.tweetId = imageRefId;
-  _result.QFD.query = imageAnchor.innerText;
-  const [imageLogin, imageFoundNoQf] = await findUserTweet(imageAnchor.innerText, screenName, false, imageUA);
-  _result.QFD.login = imageLogin;
-  if (imageFoundNoQf) {
-    const imageFoundQf = await findUserTweetLogin(imageAnchor.innerText, screenName, true, imageUA, imageLogin);
-    if (!imageFoundQf) {
-      // tweet not fount - shadowban
-
-      window.ui.updateTask({
-        id: 'checkRefTweet',
-        status: 'ban',
-        msg: 'QFD Ban!'
-      });
-      _result.QFD.isBanned = true;
-      TechInfo.updateQFD(_result);
-      return _result;
-    }
-    // tweet found - no shadowban
-    window.ui.updateTask({
-      id: 'checkRefTweet',
-      status: 'ok',
-      msg: 'No QFD Ban'
-    });
-    _result.QFD.isBanned = false;
-    TechInfo.updateQFD(_result);
-    return _result;
-  }
-
-  window.ui.updateTask({
-    id: ['checkRefTweet'],
-    status: 'warn',
-    msg: `QFD tests failed.<br />@${screenName} could not be tested for QFD.`
-  });
-  delete _result.QFD.login;
-  delete _result.QFD.tweetId;
-  delete _result.QFD.query;
-  delete _result.QFD.method;
-  TechInfo.updateQFD(_result);
-  return _result;
 };
 
 // Tests conventional (v1) shadowban
@@ -246,13 +117,15 @@ const fullTest = async (screenName) => {
   // Check whether user exists at all
   const userResponse = await TwitterProxy.user(screenName);
   const nameEl = userResponse.dom.querySelector('.ProfileHeaderCard .username .u-linkComplex-target');
+  const canonicalLink = userResponse.dom.querySelector('link[rel="canonical"]');
+  const suspended = canonicalLink && canonicalLink.href == 'https://twitter.com/account/suspended';
   result.exists = !!nameEl;
   if (!nameEl) {
     // user not found
     window.ui.updateTask({
-      id: ['checkUser', 'checkSearch', 'checkConventional', 'checkRefTweet', 'checkSuggest'],
+      id: ['checkUser', 'checkSearch', 'checkConventional', 'checkSuggest'],
       status: 'ban',
-      msg: `User <a href="https://twitter.com/${screenName}">@${screenName}</a> does not exist.`
+      msg: `<a href="https://twitter.com/${screenName}">@${screenName}</a> ${suspended ? "has been suspended" : "does not exist"}.`
     });
     return result;
   }
@@ -270,7 +143,7 @@ const fullTest = async (screenName) => {
   // user found, but has no tweets
   if (!tweet) {
     window.ui.updateTask({
-      id: ['checkSearch', 'checkConventional', 'checkRefTweet', 'checkSuggest'],
+      id: ['checkSearch', 'checkConventional', 'checkSuggest'],
       status: 'ban',
       msg: `<a href="https://twitter.com/${screenName}">@${screenName}</a> hasn't made any tweets!<br />This test needs at least one tweet.`
     });
@@ -312,7 +185,7 @@ const fullTest = async (screenName) => {
   TechInfo.updateSearch(result);
   if (isSearchBanned) {
     window.ui.updateTask({
-      id: ['checkSearch', 'checkRefTweet'],
+      id: ['checkSearch'],
       status: 'ban',
       msg: 'Search Ban!'
     }, {
@@ -364,9 +237,8 @@ const fullTest = async (screenName) => {
     status: 'ok',
     msg: 'No Thread Ban'
   });
-
-  // Check v2 shadowban; UI updates inside (POLA violation, I know :P)
-  return qfBanTest(screenName, result, userUA);
+  
+  return result;
 };
 
 document.addEventListener('DOMContentLoaded', () => {
