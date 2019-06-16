@@ -1,8 +1,10 @@
 import TWPResponse from './twpResponse';
 
+let nginx = false;
+
 export default class TwitterProxy {
   static search(query, qf = true, ua = 0, login = false) {
-    const url = `/search.php?ua=${encodeURIComponent(ua)}&q=${encodeURIComponent(query)}${qf ? '' : '&noqf=1'}${login ? '&login=1' : ''}`;
+    const url = nginx ? `/.proxy/search?f=tweets&src=typd&vertical=default&lang=en&ua=${encodeURIComponent(ua)}&q=${encodeURIComponent(query)}` : `/search.php?ua=${encodeURIComponent(ua)}&q=${encodeURIComponent(query)}${qf ? '' : '&noqf=1'}${login? '&login=1' : ''}`;
     return fetch(url)
       .then(TwitterProxy.checkSuccess)
       .then(TwitterProxy.parseSearchDOMString)
@@ -10,7 +12,7 @@ export default class TwitterProxy {
   }
 
   static user(screenName) {
-    const url = `/search.php?screenName=${screenName}`;
+    const url = nginx ? `/.proxy/${screenName}` : `/search.php?screenName=${screenName}`;
     return fetch(url)
       .then(TwitterProxy.checkSuccess)
       .then(TwitterProxy.parseDOMString)
@@ -18,24 +20,24 @@ export default class TwitterProxy {
   }
   
   static suggestions(screenName) {
-    const url = `/search.php?suggest=${screenName}`;
+    const url = nginx ? `/.proxy/i/search/typeahead.json?count=10&filters=false&q=%40${screenName}&result_type=users&src=SEARCH_BOX` : `/search.php?suggest=${screenName}`;
     return fetch(url)
       .then(TwitterProxy.checkSuccess)
       .then(TwitterProxy.parseJSON)
       .catch(TwitterProxy.handleError);
   }
 
-  static status(id) {
-    const url = `/search.php?status=${id}`;
+  static status(id, screenName) {
+    const url = nginx ? `/.proxy/${screenName}/status/${id}` : `/search.php?status=${id}`;
     return fetch(url)
       .then(TwitterProxy.checkSuccess)
       .then(TwitterProxy.parseDOMString)
       .catch(TwitterProxy.handleError);
   }
 
-  static timelinePage(screenName, pos, replies = false) {
-    const posParam = pos ? `&pos=${pos}` : '';
-    const url = `/search.php?timeline=${screenName}${posParam}${replies ? '' : '&replies=1'}`;
+  static timelinePage(screenName, pos) {
+    const posParam = pos ? (nginx ? `&max_position=${pos}` : `&pos=${pos}`) : '';
+    const url = `/.proxy/i/profiles/show/${screenName}/timeline/tweets?include_available_features=1&include_entities=1&lang=en${posParam}`;
     return fetch(url)
       .then(TwitterProxy.checkSuccess)
       .then(TwitterProxy.parseInfinity)
@@ -44,7 +46,7 @@ export default class TwitterProxy {
 
   static checkSuccess(res) {
     // res.ok === (res.status in the range 200-299)
-    if (!res.ok) {
+    if (nginx && !res.ok && res.status != 404 || !nginx && !res.ok) {
       throw res; // throwing response object to make it available to catch()
     }
     return res;
@@ -101,7 +103,6 @@ export default class TwitterProxy {
     switch (err.status) {
       case 404:
         console.warn(`[TwitterProxy|search] ${err.statusText}`);
-        // ui.resetOrSo()...
         break;
       case 500:
         console.warn(`[TwitterProxy|search] ${err.statusText}`);

@@ -56,16 +56,16 @@ const searchBanTest = async (screenName) => {
 };
 
 const bannedInThread = async (screenName, id) => {
-  const response = await TwitterProxy.status(id);
+  const response = await TwitterProxy.status(id, screenName);
   const tweets = Array.from(response.dom.querySelectorAll('.permalink-inner .tweet'));
-  const tweetIds = tweets.map(t => t.dataset.tweetId);
+  const tweetIds = tweets.map(t => [t.dataset.tweetId, t.dataset.screenName]);
   for (let i = 0; i < tweetIds.length; i += 1) {
-    if (tweetIds[i] === id) {
+    if (tweetIds[i][0] === id) {
       if (i >= tweetIds.length - 1) {
         break;
       }
-      const replyId = tweetIds[i + 1];
-      const replyResponse = await TwitterProxy.status(replyId);
+      const replyId = tweetIds[i + 1][0];
+      const replyResponse = await TwitterProxy.status(replyId, tweetIds[i + 1][1]);
       return [
         replyResponse.dom.querySelector(`.permalink-inner .tweet[data-tweet-id="${id}"]`) ? 0 : 1,
         replyId
