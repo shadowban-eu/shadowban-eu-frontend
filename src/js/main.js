@@ -130,6 +130,14 @@ const fullTest = async (screenName) => {
     return result;
   }
   screenName = nameEl.textContent; // Ensure correct case
+  if (userResponse.dom.querySelector('.ProfileHeaderCard .Icon--protected')) {
+    window.ui.updateTask({
+      id: ['checkUser', 'checkSearch', 'checkConventional', 'checkSuggest'],
+      status: 'ban',
+      msg: `<a href="https://twitter.com/${screenName}">@${screenName}</a>'s tweets are protected. We cannot test protected accounts.`
+    });
+    return result;
+  }
 
   const tweet = userResponse.dom.querySelector(tweetSearchSel);
   result.hasTweets = !!tweet;

@@ -37,7 +37,7 @@ export default class TwitterProxy {
 
   static timelinePage(screenName, pos) {
     const posParam = pos ? (nginx ? `&max_position=${pos}` : `&pos=${pos}`) : '';
-    const url = `/.proxy/i/profiles/show/${screenName}/timeline/tweets?include_available_features=1&include_entities=1&lang=en${posParam}`;
+    const url = nginx ? `/.proxy/i/profiles/show/${screenName}/timeline/tweets?include_available_features=1&include_entities=1&lang=en${posParam}` : `/search.php?timeline=${screenName}${posParam}&replies=1`;
     return fetch(url)
       .then(TwitterProxy.checkSuccess)
       .then(TwitterProxy.parseInfinity)
