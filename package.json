@@ -5,8 +5,8 @@
   "main": "gulpfile.babel.js",
   "author": "Raphael Beer <raphael.beer@protonmail.com>",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/shadowban-eu/TwitterShadowBanV2"
+    "type": "git",
+    "url": "https://github.com/shadowban-eu/TwitterShadowBanV2"
   },
   "license": "GPL-3.0-only",
   "private": true,
@@ -38,7 +38,7 @@
     "gulp": "^3.9.1",
     "gulp-load-plugins": "^1.5.0",
     "gulp-newer": "^1.4.0",
-    "gulp-nodemon": "^2.2.1",
+    "gulp-nodemon": "^2.4.2",
     "gulp-sass": "^4.0.1",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-watch": "^5.0.0",
