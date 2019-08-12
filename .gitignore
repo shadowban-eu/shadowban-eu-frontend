@@ -52,4 +52,4 @@ node_modules
 # .env
 .env
 .env.*
-.htsession
+.ht*

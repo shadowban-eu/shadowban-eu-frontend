@@ -56,14 +56,14 @@ class TwitterSession:
                 for key, cookie in cookies.items():
                     if cookie.key == 'ct0':
                         self._headers['X-Csrf-Token'] = cookie.value
-        
+
         else:
             async with self._session.get("https://mobile.twitter.com/login", headers=self._headers) as r:
                 login_page = await r.text()
 
             self._guest_token = re.search(r'"gt=([a-zA-Z0-9_]+);', login_page).group(1)
             self._headers['X-Guest-Token'] = self._guest_token
-        
+
 
         self._headers['Authorization'] = 'Bearer ' + self._auth
 
@@ -76,14 +76,14 @@ class TwitterSession:
         #    js = await r.text()
         #m = re.search(r'[a-zA-Z0-9_]+\s*=\s*"Web-12"\s*,\s*[a-zA-Z0-9]+\s*=\s*"(.*?)"', js)
         #self._auth = m.group(1)
-    
+
     async def search_raw(self, query, live=True):
         additional_query = ""
         if live:
             additional_query = "&tweet_search_mode=live"
         async with self._session.get("https://api.twitter.com/2/search/adaptive.json?include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1&include_can_media_tag=1&skip_status=1&cards_platform=Web-12&include_cards=1&include_composer_source=true&include_ext_alt_text=true&include_reply_count=1&tweet_mode=extended&include_entities=true&include_user_entities=true&include_ext_media_color=true&include_ext_media_availability=true&send_error_codes=true&q="+urllib.parse.quote(query)+"&qf_abuse=false&count=20&query_source=typed_query&pc=1&spelling_corrections=0&ext=mediaStats%2ChighlightedLabel%2CcameraMoment" + additional_query, headers=self._headers) as r:
             return await r.json()
-    
+
     async def typeahead_raw(self, query):
         async with self._session.get("https://api.twitter.com/1.1/search/typeahead.json?src=search_box&result_type=users&q=" + urllib.parse.quote(query), headers=self._headers) as r:
             return await r.json()
@@ -104,7 +104,7 @@ class TwitterSession:
 
     async def test_detached_tweets():
         pass
-    
+
     async def tweet_raw(self, tweet_id, count=20, cursor=None):
         if cursor is None:
             cursor = ""
@@ -117,7 +117,7 @@ class TwitterSession:
                 debug_file.write('Tweet request ' + tweet_id + ':\n' + str(r) + '\n\n' + json.dumps(result) + '\n\n\n')
                 debug_file.flush()
             return result
-    
+
     @classmethod
     def flatten_timeline(cls, timeline_items):
         result = []
@@ -127,9 +127,9 @@ class TwitterSession:
             elif get_nested(item, ["content", "timelineModule", "items"]) is not None:
                 timeline_items = item["content"]["timelineModule"]["items"]
                 titems = [get_nested(x, ["item", "content", "tweet", "id"]) for x in timeline_items]
-                result += [x for x in titems if x is not None] 
+                result += [x for x in titems if x is not None]
         return result
-    
+
     @classmethod
     def get_ordered_tweet_ids(cls, obj, filtered=True):
         try:
@@ -137,7 +137,7 @@ class TwitterSession:
         except (IndexError, KeyError):
             return []
         entries.sort(key=lambda x: int(x["sortIndex"]))
-        flat = cls.flatten_timeline(entries) 
+        flat = cls.flatten_timeline(entries)
         return [x for x in flat if not filtered or x in obj["globalObjects"]["tweets"]]
 
     async def test_ghost_ban(self, user_id):
@@ -207,11 +207,11 @@ class TwitterSession:
                 if replied_tweet["reply_count"] > 500:
                     continue
 
-                
+
                 if debug_file is not None:
                     debug_file.write('Tban: ' + tid + ', ' + replied_to_id + '\n\n\n')
                     debug_file.flush()
-                
+
 
                 global account_sessions
                 global account_index
@@ -224,11 +224,11 @@ class TwitterSession:
                         debug_file.write('notweets\n')
                         debug_file.flush()
                     return
-                
-                
+
+
                 if tid in self.get_ordered_tweet_ids(before_barrier):
                     return {"ban": False, "tweet": tid, "in_reply_to": replied_to_id}
-                
+
 
                 cursors = ["ShowMoreThreads", "ShowMoreThreadsPrompt"]
                 last_result = before_barrier
@@ -242,7 +242,7 @@ class TwitterSession:
                         continue
 
                     after_barrier = await reference_session.tweet_raw(replied_to_id, 1000, cursor=cursor)
-                    
+
                     if get_nested(after_barrier, ["globalObjects", "tweets"]) is None:
                         if debug_file is not None:
                             debug_file.write('retinloop\n')
@@ -257,9 +257,9 @@ class TwitterSession:
                     debug_file.write('outer loop return\n')
                     debug_file.flush()
                 return
-                
 
-                
+
+
         except:
             if debug_file is not None:
                 debug_file.write('Exc\n')
@@ -276,7 +276,7 @@ class TwitterSession:
             user_id = str(profile_raw["data"]["user"]["rest_id"])
         except KeyError:
             user_id = None
-        
+
         try:
             profile["screen_name"] = profile_raw["data"]["user"]["legacy"]["screen_name"]
         except KeyError:
@@ -300,10 +300,10 @@ class TwitterSession:
         except KeyError:
             pass
         result["profile"] = profile
-        
+
         if not profile["exists"] or profile.get("suspended", False) or profile.get("protected", False):
             return result
-        
+
         result["tests"] = {}
 
         search_raw = await self.search_raw("from:@" + username)
@@ -329,7 +329,7 @@ class TwitterSession:
             result["tests"]["ghost"] = await self.test_ghost_ban(user_id)
         else:
             result["tests"]["ghost"] = {"ban": False}
-        
+
         if more_replies_test and not get_nested(result, ["tests", "ghost", "ban"], False):
             result["tests"]["more_replies"] = await self.test_barrier(user_id)
 
@@ -338,7 +338,7 @@ class TwitterSession:
 
     async def close(self):
         await self._session.close()
-    
+
 
 @routes.get('/{screen_name}')
 async def hello(request):
@@ -370,10 +370,10 @@ with open(args.account_file, "r") as f:
     accounts = json.loads(f.read())
 
 if args.log is not None:
-    log_file = open(args.log, "w")
+    log_file = open(args.log, "w+")
 
 if args.debug is not None:
-    debug_file = open(args.debug, "w")
+    debug_file = open(args.debug, "w+")
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(login_accounts(accounts))
