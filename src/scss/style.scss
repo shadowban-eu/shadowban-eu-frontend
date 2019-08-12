@@ -22,6 +22,10 @@ body {
   user-select: none;
 }
 
+[data-task-id=checkUser] {
+  cursor: default !important;
+}
+
 .btn {
   color: $TWITTER_BLUE;
   border: 1px solid $TWITTER_BLUE;

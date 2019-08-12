@@ -46,6 +46,7 @@ export default class UI {
     this.tasksCollapsible = M.Collapsible.init(document.getElementById('tasks'));
     this.searchFaqCollapsible = M.Collapsible.init(document.getElementById('searchFAQ'));
     this.threadFaqCollapsible = M.Collapsible.init(document.getElementById('threadFAQ'));
+    this.barrierFaqCollapsible = M.Collapsible.init(document.getElementById('barrierFAQ'));
     this.qfdFaqCollapsible = M.Collapsible.init(document.getElementById('qfdFAQ'), {
       onOpenEnd: UI.scrollToTop
     });
@@ -158,6 +159,10 @@ export default class UI {
             taskIconClasses.remove('gears');
             taskIcon.innerText = 'error_outline';
             break;
+          case 'reset':
+            taskIconClasses.remove('gears');
+            taskIcon.innerText = 'contact_support';
+            break;
           case 'warn':
             taskIconClasses.remove('gears');
             taskIcon.innerText = 'error_outline';
@@ -208,11 +213,23 @@ export default class UI {
     this.updateTask({
       id: 'checkUser',
       status: 'running',
-      msg: `Looking up user @${screenName}`
+      msg: `Running test for @${screenName}.`
     }, {
-      id: ['checkSearch', 'checkConventional', 'checkSuggest'],
-      status: 'pending',
-      msg: 'Waiting for user.'
+      id: 'checkSearch',
+      status: 'reset',
+      msg: 'Search Ban'
+    }, {
+      id: 'checkSuggest',
+      status: 'reset',
+      msg: 'Search Suggestion Ban'
+    }, {
+      id: 'checkConventional',
+      status: 'reset',
+      msg: 'Thread Ban'
+    }, {
+      id: 'checkBarrier',
+      status: 'reset',
+      msg: 'Reply Deboosting'
     });
     TechInfo.reset();
   }
