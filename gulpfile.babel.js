@@ -27,6 +27,7 @@ const paths = {
 };
 
 let httpServerProcess = null; // php-cli dev server process
+let backendServerProcess = null; // python backend server process
 
 const log = function log(...str) {
   const tag = this || find(gulp.tasks, { running: true }).name;
@@ -65,9 +66,10 @@ gulp.task('templates', () =>
 
 // Start server with restart on file changes
 gulp.task('dev', ['rollup', 'styles', 'templates', 'copy', 'serve'], () =>
-  plugins.watch('src/**/*.*', () => {
+  plugins.watch(['src/**/*.*', './backend.py'], () => {
     log('Killing php-cli server...');
     httpServerProcess.kill();
+    backendServerProcess.kill();
     log('Done');
     runSequence('rollup', 'styles', 'templates', 'copy', 'serve');
   })
@@ -89,12 +91,37 @@ gulp.task('styles', async () => {
 });
 
 gulp.task('serve', (done) => {
-  const args = ['-S', '0.0.0.0:8080', '-t', './dist/'];
-  httpServerProcess = spawn('php', args);
-  httpServerProcess.stdout.on('data', data =>
+  const printData = data =>
     data.toString().trim().split('\n')
-      .forEach(line => log.call('serve', line.includes('http') ? chalk.green(line) : line))
-  );
+      .forEach(line => log.call('serve', line.includes('http') ? chalk.green(line) : line));
+
+  const httpArgs = [
+    './dist/',
+    '-p',
+    '8080',
+    '-a',
+    '127.0.0.1'
+  ];
+  const args = [
+    './backend.py',
+    '--account-file',
+    './.htaccounts',
+    '--port',
+    '4000',
+    '--log',
+    './logs/development/results.log',
+    '--debug',
+    './logs/development/debug.log',
+  ];
+  log.call('serve', 'Spawning backend server...');
+  backendServerProcess = spawn('python3', args);
+  backendServerProcess.stdout.on('data', printData);
+  backendServerProcess.stderr.on('data', data => log(data.toString().trim()));
+
+  log.call('serve', 'Spawning http server...');
+  // ./node_modules/.bin/ should be in PATH, at this point;
+  httpServerProcess = spawn('http-server', httpArgs);
+  httpServerProcess.stdout.on('data', printData);
   httpServerProcess.stderr.on('data', data => log(data.toString().trim()));
   done();
 });
@@ -111,9 +138,10 @@ if (!existsSync('./dist')) {
 }
 
 process.on('SIGINT', () => {
-  if (httpServerProcess) {
-    log('Killing php-cli server...');
+  if (backendServerProcess) {
+    log('Killing backend...');
     httpServerProcess.kill();
+    backendServerProcess.kill();
     log('Done');
   }
   process.exit();
