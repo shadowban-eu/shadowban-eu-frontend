@@ -6,21 +6,47 @@ export default class TechInfo {
   }
 
   static updateSearch(results) {
+    if(!results.tests.search && results.tests.search !== false) {
+	    return;
+    }
     document.querySelector('#searchFAQ').classList.remove('hide');
     const contentElement = document.querySelector('#searchFAQ .techContent');
-    const searchLink = TechInfo.makeSearchLink(`from:@${results.canonicalName}`);
-    contentElement.innerHTML = `We ${results.hasSearchBan ? 'did not find' : 'found'} a tweet by searching for ${searchLink}.`;
+    const searchLink = TechInfo.makeSearchLink(`from:@${results.profile.screen_name}`);
+    contentElement.innerHTML = `We ${results.tests.search === false ? 'did not find a tweet' : `found <a href="https://twitter.com/i/status/${results.tests.search}">a tweet</a>`} by searching for ${searchLink}.`;
+  }
+
+  static updateBarrier(results) {
+    if (!results.tests.more_replies) {
+      return;
+    }
+    document.querySelector('#barrierFAQ').classList.remove('hide');
+    const contentElement = document.querySelector('#barrierFAQ .techContent');
+    if(!results.tests.more_replies.ban) {
+      var explanation = 'The tweet was not hidden.';
+    }
+    else {
+      explanation = 'We had to click "Show more replies" to view it';
+      if(results.tests.more_replies.stage == 1) {
+        explanation += ' and we had to click a second time because the account is rated as potentially offensive';
+      }
+      explanation += '.';
+    }
+    contentElement.innerHTML = `We found <a href="https://twitter.com/i/status/${results.tests.more_replies.in_reply_to}">a tweet</a> which the user <a href="https://twitter.com/i/status/${results.tests.more_replies.tweet}">replied to</a>. ` + explanation;
   }
 
   static updateThread(results) {
-    document.querySelector('#threadFAQ').classList.remove('hide');
-    const contentElement = document.querySelector('#threadFAQ .techContent');
-    if (results.thread.isBanned === undefined || !results.thread.tweet || !results.thread.reply) {
+    if (!results.tests.ghost) {
       return;
     }
-    contentElement.innerHTML = `We found <a href="https://twitter.com/${results.canonicalName}/status/${results.thread.tweet}">a tweet
-    with at least one reply</a> on the user's profile. A <a href="https://twitter.com/_/status/${results.thread.reply}">reply tweet</a>
-    is ${results.thread.isBanned ? '' : 'not '}detached.`;
+    document.querySelector('#threadFAQ').classList.remove('hide');
+    const contentElement = document.querySelector('#threadFAQ .techContent');
+    if(results.tests.search) {
+      contentElement.innerHTML = `A thread ban implies a search ban. Since the account is not search banned, it cannot be thread banned.`;
+      return;
+    }
+    contentElement.innerHTML = `We found <a href="https://twitter.com/i/status/${results.tests.ghost.tweet}">a tweet
+    with at least one reply</a> on the user's profile. A <a href="https://twitter.com/i/status/${results.tests.ghost.reply}">reply tweet</a>
+    is ${results.tests.ghost.ban ? '' : 'not '}detached.`;
   }
 
   static updateQFD(results) {
@@ -42,7 +68,7 @@ export default class TechInfo {
   }
 
   static reset() {
-    document.querySelectorAll('#searchFAQ, #threadFAQ, #qfdFAQ .techInfo')
+    document.querySelectorAll('#threadFAQ, #searchFAQ, #barrierFAQ, #qfdFAQ .techInfo')
       .forEach(element => element.classList.add('hide'));
   }
 }

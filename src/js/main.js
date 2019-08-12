@@ -106,14 +106,112 @@ const suggestionTest = async (screenName) => {
 };
 
 const fullTest = async (screenName) => {
-  const result = {};
+	const allTasks = ['checkUser', 'checkSearch', 'checkConventional', 'checkSuggest'];
+	let userLink = `<a href="https://twitter.com/${screenName}">@${screenName}</a>`;
+	window.ui.updateTask({
+		id: 'checkUser',
+		status: 'running',
+		msg: `Testing @${screenName}`
+	});
+	const response = await fetch('/.api/' + screenName);
+	if(!response.ok) {
+		window.ui.updateTask({
+			id: 'checkUser',
+			status: 'warn',
+			msg: `Server error. Please try again later.`
+		});
+		return;
+	}
+	const result = await response.json();
+	screenName = result.profile.screen_name;
+	userLink = `<a href="https://twitter.com/${screenName}">@${screenName}</a>`;
+	let failReason = null;
+	if(!result.profile.exists) {
+		failReason = "does not exist";
+	} else if(result.profile.protected) {
+		failReason = "is protected";
+	} else if(result.profile.suspended) {
+		failReason = "has been suspended";
+	}
+	if(failReason) {
+		window.ui.updateTask({
+			id: 'checkUser',
+			status: 'warn',
+			msg: `${userLink} ${failReason}.`
+		});
+		return;
+	}
+	window.ui.updateTask({
+		id: 'checkUser',
+		status: 'ok',
+		msg: `${userLink} exists.`
+	});
+	
+	let typeaheadResult = ['warn', `Search suggestion ban test failed.`];
+	if(result.tests.typeahead === true) {
+		typeaheadResult = ['ok', `No search suggestion ban.`];
+	}
+	if(result.tests.typeahead === false) {
+		typeaheadResult = ['ban', `Search suggestion ban.`];
+	}
+	window.ui.updateTask({
+		id: 'checkSuggest',
+		status: typeaheadResult[0],
+		msg: typeaheadResult[1]
+	});
+	
+	
+	let searchResult = ['warn', `Search ban test failed.`];
+	if(result.tests.search) {
+		searchResult = ['ok', `No search ban.`];
+	}
+	if(result.tests.search === false) {
+		searchResult = ['ban', `Search ban.`];
+	}
+	window.ui.updateTask({
+		id: 'checkSearch',
+		status: searchResult[0],
+		msg: searchResult[1]
+	});
+	TechInfo.updateSearch(result);
+	
+	if(!result.tests.ghost) {
+		var threadResult = ['warn', `Thread ban test failed.`];
+	}
+	else if(result.tests.ghost.ban == false) {
+		threadResult = ['ok', `No thread ban.`];
+	}
+	else if(result.tests.ghost.ban === true) {
+		threadResult = ['ban', `Thread ban.`];
+	}
+	window.ui.updateTask({
+		id: 'checkConventional',
+		status: threadResult[0],
+		msg: threadResult[1]
+	});
+	TechInfo.updateThread(result);
 
-  window.ui.updateTask({
-    id: 'checkUser',
-    status: 'running',
-    msg: `Looking up @${screenName}`
-  });
-
+	if(!result.tests.more_replies) {
+		var barrierResult = ['warn', `Reply deboosting test failed.`];
+	}
+	else if(result.tests.more_replies.ban == false) {
+		barrierResult = ['ok', `No reply deboosting detected.`];
+	}
+	else if(result.tests.more_replies.ban === true) {
+		let offensive = '';
+		if(result.tests.more_replies.stage > 0) {
+			offensive = ' Tweets are rated as potentially offensive.';
+		}
+		barrierResult = ['ban', `Reply deboosting detected.`+offensive];
+	}
+	window.ui.updateTask({
+		id: 'checkBarrier',
+		status: barrierResult[0],
+		msg: barrierResult[1]
+	});
+	TechInfo.updateBarrier(result);
+};
+/*
   // Check whether user exists at all
   const userResponse = await TwitterProxy.user(screenName);
   const nameEl = userResponse.dom.querySelector('.ProfileHeaderCard .username .u-linkComplex-target');
@@ -247,7 +345,7 @@ const fullTest = async (screenName) => {
   });
   
   return result;
-};
+};*/
 
 document.addEventListener('DOMContentLoaded', () => {
   window.ui = new UI(fullTest);
