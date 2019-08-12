@@ -112,10 +112,7 @@ class TwitterSession:
             cursor = "&cursor=" + urllib.parse.quote(cursor)
         async with self._session.get("https://api.twitter.com/2/timeline/conversation/" + tweet_id + ".json?include_reply_count=1&send_error_codes=true&count="+str(count)+ cursor, headers=self._headers) as r:
             result = await r.json()
-            global debug_file
-            if debug_file is not None:
-                debug_file.write('Tweet request ' + tweet_id + ':\n' + str(r) + '\n\n' + json.dumps(result) + '\n\n\n')
-                debug_file.flush()
+            debug('Tweet request ' + tweet_id + ':\n' + str(r) + '\n\n' + json.dumps(result) + '\n\n\n')
             return result
 
     @classmethod
@@ -182,12 +179,7 @@ class TwitterSession:
                     continue
                 filtered_ids.append(tid)
 
-            global debug_file
-            if debug_file is not None:
-                debug_file.write('Filtered ids for user ' + user_id + ': ' +  str(filtered_ids) + '\n\n\n')
-                debug_file.flush()
-
-
+            debug('Filtered ids for user ' + user_id + ': ' +  str(filtered_ids) + '\n\n\n')
 
             for tid in filtered_ids:
                 replied_to_id = tweets_replies["globalObjects"]["tweets"][tid].get("in_reply_to_status_id_str", None)
@@ -207,11 +199,9 @@ class TwitterSession:
                 if replied_tweet["reply_count"] > 500:
                     continue
 
-
-                if debug_file is not None:
-                    debug_file.write('Tban: ' + tid + ', ' + replied_to_id + '\n\n\n')
-                    debug_file.flush()
-
+                debug('Tban: ')
+                debug('Found:' + tid + '\n')
+                debug('In reply to:' + replied_to_id + '\n')
 
                 global account_sessions
                 global account_index
@@ -220,15 +210,11 @@ class TwitterSession:
 
                 before_barrier = await reference_session.tweet_raw(replied_to_id, 1000)
                 if get_nested(before_barrier, ["globalObjects", "tweets"]) is None:
-                    if debug_file is not None:
-                        debug_file.write('notweets\n')
-                        debug_file.flush()
+                    debug('notweets\n')
                     return
-
 
                 if tid in self.get_ordered_tweet_ids(before_barrier):
                     return {"ban": False, "tweet": tid, "in_reply_to": replied_to_id}
-
 
                 cursors = ["ShowMoreThreads", "ShowMoreThreadsPrompt"]
                 last_result = before_barrier
@@ -244,28 +230,18 @@ class TwitterSession:
                     after_barrier = await reference_session.tweet_raw(replied_to_id, 1000, cursor=cursor)
 
                     if get_nested(after_barrier, ["globalObjects", "tweets"]) is None:
-                        if debug_file is not None:
-                            debug_file.write('retinloop\n')
-                            debug_file.flush()
+                        debug('retinloop\n')
                         return
                     ids_after_barrier = self.get_ordered_tweet_ids(after_barrier)
                     if tid in self.get_ordered_tweet_ids(after_barrier):
                         return {"ban": True, "tweet": tid, "stage": stage, "in_reply_to": replied_to_id}
                     last_result = after_barrier
 
-                if debug_file is not None:
-                    debug_file.write('outer loop return\n')
-                    debug_file.flush()
+                debug('outer loop return\n')
                 return
-
-
-
         except:
-            if debug_file is not None:
-                debug_file.write('Exc\n')
-                debug_file.flush()
-            print(traceback.format_exc())
-
+            debug('Exc\n')
+            debug(traceback.format_exc())
 
     async def test(self, username, more_replies_test=True):
         await self.login()
@@ -339,15 +315,23 @@ class TwitterSession:
     async def close(self):
         await self._session.close()
 
+def debug(message):
+    global debug_file
+    if debug_file is not None:
+        debug_file.write(message)
+        debug_file.flush()
+
+def log(message):
+    if log_file is not None:
+        log_file.write(message)
+        log_file.flush()
 
 @routes.get('/{screen_name}')
 async def hello(request):
     global log_file
     session = TwitterSession()
     result = await session.test(request.match_info['screen_name'])
-    if log_file is not None:
-        log_file.write(json.dumps(result) + '\n')
-        log_file.flush()
+    log(json.dumps(result) + '\n')
     await session.close()
     return web.json_response(result)
 
@@ -370,10 +354,12 @@ with open(args.account_file, "r") as f:
     accounts = json.loads(f.read())
 
 if args.log is not None:
-    log_file = open(args.log, "w+")
+    print("Logging test results to %s", args.log)
+    log_file = open(args.log, "a")
 
 if args.debug is not None:
-    debug_file = open(args.debug, "w+")
+    print("Logging debug output to %s", args.debug)
+    debug_file = open(args.debug, "a")
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(login_accounts(accounts))
