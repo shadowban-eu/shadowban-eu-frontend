@@ -133,7 +133,7 @@ class TwitterSession:
             entries = [x for x in obj["timeline"]["instructions"] if "addEntries" in x][0]["addEntries"]["entries"]
         except (IndexError, KeyError):
             return []
-        entries.sort(key=lambda x: int(x["sortIndex"]))
+        entries.sort(key=lambda x: -int(x["sortIndex"]))
         flat = cls.flatten_timeline(entries)
         return [x for x in flat if not filtered or x in obj["globalObjects"]["tweets"]]
 
@@ -237,6 +237,7 @@ class TwitterSession:
                         return {"ban": True, "tweet": tid, "stage": stage, "in_reply_to": replied_to_id}
                     last_result = after_barrier
 
+                # happens when replied_to_id tweet has been deleted
                 debug('outer loop return\n')
                 return
         except:
