@@ -35,6 +35,42 @@ const log = function log(...str) {
   return true;
 };
 
+const logServer = data => data.toString().trim().split('\n')
+  .forEach(line => log.call('serve', line.includes('http') ? chalk.green(line) : line));
+
+const backendArgs = [
+  './backend.py',
+  '--account-file',
+  './.htaccounts',
+  '--port',
+  '4000',
+  '--log',
+  './logs/development/results.log',
+  '--debug',
+  './logs/development/debug.log',
+];
+const spawnBackend = () => {
+  log.call('serve', 'Spawning backend server...');
+  backendServerProcess = spawn('python3', backendArgs);
+  backendServerProcess.stdout.on('data', logServer);
+  backendServerProcess.stderr.on('data', data => log(data.toString().trim()));
+};
+
+const httpArgs = [
+  './dist/',
+  '-p',
+  '8080',
+  '-a',
+  '127.0.0.1'
+];
+const spawnHttp = () => {
+  log.call('serve', 'Spawning http server...');
+  // ./node_modules/.bin/ should be in PATH, at this point;
+  httpServerProcess = spawn('http-server', httpArgs);
+  httpServerProcess.stdout.on('data', logServer);
+  httpServerProcess.stderr.on('data', data => log(data.toString().trim()));
+};
+
 // Clean up dist directory
 gulp.task('clean', () =>
   del.sync(['dist/**', 'dist/.*'])
@@ -66,12 +102,16 @@ gulp.task('templates', () =>
 
 // Start server with restart on file changes
 gulp.task('dev', ['rollup', 'styles', 'templates', 'copy', 'serve'], () =>
-  plugins.watch(['src/**/*.*', './backend.py'], () => {
-    log('Killing php-cli server...');
-    httpServerProcess.kill();
-    backendServerProcess.kill();
+  plugins.watch(['src/**/*.*', './backend.py'], (changedFile) => {
+    if (changedFile.history[0].endsWith('backend.py')) {
+      log('Restarting backend server...');
+      backendServerProcess.kill();
+      spawnBackend();
+    } else {
+      log('Re-building frontend...');
+      runSequence('rollup', 'styles', 'templates', 'copy');
+    }
     log('Done');
-    runSequence('rollup', 'styles', 'templates', 'copy', 'serve');
   })
 );
 
@@ -91,38 +131,8 @@ gulp.task('styles', async () => {
 });
 
 gulp.task('serve', (done) => {
-  const printData = data =>
-    data.toString().trim().split('\n')
-      .forEach(line => log.call('serve', line.includes('http') ? chalk.green(line) : line));
-
-  const httpArgs = [
-    './dist/',
-    '-p',
-    '8080',
-    '-a',
-    '127.0.0.1'
-  ];
-  const args = [
-    './backend.py',
-    '--account-file',
-    './.htaccounts',
-    '--port',
-    '4000',
-    '--log',
-    './logs/development/results.log',
-    '--debug',
-    './logs/development/debug.log',
-  ];
-  log.call('serve', 'Spawning backend server...');
-  backendServerProcess = spawn('python3', args);
-  backendServerProcess.stdout.on('data', printData);
-  backendServerProcess.stderr.on('data', data => log(data.toString().trim()));
-
-  log.call('serve', 'Spawning http server...');
-  // ./node_modules/.bin/ should be in PATH, at this point;
-  httpServerProcess = spawn('http-server', httpArgs);
-  httpServerProcess.stdout.on('data', printData);
-  httpServerProcess.stderr.on('data', data => log(data.toString().trim()));
+  spawnBackend();
+  spawnHttp();
   done();
 });
 
@@ -139,7 +149,7 @@ if (!existsSync('./dist')) {
 
 process.on('SIGINT', () => {
   if (backendServerProcess) {
-    log('Killing backend...');
+    log('Killing servers...');
     httpServerProcess.kill();
     backendServerProcess.kill();
     log('Done');
