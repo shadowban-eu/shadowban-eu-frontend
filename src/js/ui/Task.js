@@ -3,17 +3,17 @@ export default class Task {
   static container = document.querySelector('#tasks');
   static template = document.getElementById('task-item-template');
 
-  constructor(task) {
+  constructor(taskData) {
     // create task item
     const {
       listItem,
       ...components
-    } = Task.createTaskElement(task);
+    } = Task.createTaskElement(taskData);
 
     // raw tasks object from /src/tasks.js
-    this.task = task;
+    this.taskData = taskData;
     // data-task-id on collapsible element
-    this.id = task.id;
+    this.id = taskData.id;
     // <li> Element, created from template
     this.listItem = listItem;
     // data-task-component Elements of this task item
@@ -24,54 +24,55 @@ export default class Task {
   }
 
   update(status, msg) {
-    const iconClassList = this.icon.classList;
-
     // icon
+    const icon = this.components.icon;
     switch (status) {
       case 'running':
-        this.icon.innerText = '';
+        icon.classList.add('gears');
+        icon.innerText = '';
         break;
       case 'pending':
-        iconClassList.remove('gears');
-        this.icon.innerText = 'access_time';
+        icon.classList.remove('gears');
+        icon.innerText = 'access_time';
         break;
       case 'ok':
-        iconClassList.remove('gears');
-        this.icon.innerText = 'check';
+        icon.classList.remove('gears');
+        icon.innerText = 'check';
         break;
       case 'ban':
-        iconClassList.remove('gears');
-        this.icon.innerText = 'error_outline';
+        icon.classList.remove('gears');
+        icon.innerText = 'error_outline';
         break;
       case 'reset':
-        iconClassList.remove('gears');
-        this.icon.innerText = 'contact_support';
+        icon.classList.remove('gears');
+        icon.innerText = 'contact_support';
         break;
       case 'warn':
-        iconClassList.remove('gears');
-        this.icon.innerText = 'error_outline';
+        icon.classList.remove('gears');
+        icon.innerText = 'error_outline';
         break;
       default:
         break;
     }
+
     // message
     if (msg) {
       // messageElement.children.forEach(child => messageElement.removeChild(child));
       const htmlMessage = `<span>${msg}</span>`;
       // Yes, innerHTML is a security issue.
       // But this is ok since we are using hardcoded values, only.
-      this.messageElement.innerHTML = htmlMessage;
+      this.components.message.innerHTML = htmlMessage;
     }
     // -task-status
-    this.element.dataset.taskStatus = status;
+    this.components.header.dataset.taskStatus = status;
   }
 
   static createTaskElement(task) {
     const listItem = Task.template.firstElementChild.cloneNode(true);
     const header = listItem.querySelector('[data-task-component="header"]');
-    const message = listItem.querySelector('[data-task-component="message"] span');
+    const message = listItem.querySelector('[data-task-component="message"]');
     const description = listItem.querySelector('[data-task-component="description"]');
-    // const faq = listItem.querySelector('[data-task-component="faq"]');
+    const faq = listItem.querySelector('[data-task-component="faq"]');
     const icon = listItem.querySelector('[data-task-component="icon"]');
 
     // set task id
@@ -82,7 +83,7 @@ export default class Task {
     }
 
     // set initial message
-    message.innerText = task.message;
+    message.innerHTML = `<span>${task.message}</span>`;
     // set the icon
     icon.innerText = task.icon || '';
 
@@ -94,19 +95,31 @@ export default class Task {
         listItem,
         header,
         message,
-        description,
+        icon
+      };
+    }
+    description.querySelector('h5').innerText = task.description.title;
+    description.querySelector('p').innerHTML = task.description.text;
+
+    if (!task.faq || !task.faq.id) {
+      faq.remove();
+      return {
+        listItem,
+        header,
+        message,
         icon
       };
     }
 
-    description.querySelector('h5').innerText = task.description.title;
-    description.querySelector('p').innerHTML = task.description.text;
+    faq.id = task.faq.id;
+
     return {
       listItem,
       header,
       message,
       description,
-      icon
+      icon,
+      faq
     };
   }
 }

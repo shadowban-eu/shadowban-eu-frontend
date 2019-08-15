@@ -2,13 +2,16 @@ import TechInfo from './ui/TechInfo';
 import qfSettingToast from './ui/qfSettingToast';
 import Task from './ui/Task';
 
-import tasks from './tasks.js';
+import taskData from './tasks.js';
 
 export default class UI {
   constructor(test) {
     // create and add task elements
-    tasks.sort((a, b) => (a.idx - b.idx)).forEach(task => new Task(task));
-
+    this.tasks = taskData.sort((a, b) => (a.idx - b.idx)).map(task => new Task(task));
+    this.tasksById = this.tasks.reduce(
+      (acc, task) => ({ [task.id]: task, ...acc }),
+      {}
+    );
     // user handle input and title synchronisation
     this.screenName = document.getElementById('screenName');
     this.screenNameLabel = document.querySelector('label[for="screenName"]');
@@ -68,7 +71,7 @@ export default class UI {
 
   runTest() {
     this.checkButton.focus(); // remove focus from input field, to close mobile screen kbd
-    this.reset(this.screenName);
+    this.reset(this.screenName.value);
     this.setLocationForScreenName();
     this.lock();
     this.test(this.screenName.value)
@@ -158,6 +161,16 @@ export default class UI {
     const screenName = this.screenName.value;
     return [{ screenName }, `Testing ${screenName}`, `/${screenName}`];
   }
+
+  updateTask = (...updates) => {
+    updates.forEach((update) => {
+      if (!this.tasksById[update.id]) {
+        console.warn(`Omitting unknown task id on update: ${update.id}`);
+        return;
+      }
+      this.tasksById[update.id].update(update.status, update.msg);
+    });
+  };
 
   // resets tasks to initial state (do this before each test!)
   reset = (screenName) => {
