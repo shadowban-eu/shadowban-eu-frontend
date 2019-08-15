@@ -1,17 +1,20 @@
 import TechInfo from './ui/TechInfo';
 import qfSettingToast from './ui/qfSettingToast';
+import Task from './ui/Task';
+
+import tasks from './tasks.js';
 
 export default class UI {
   constructor(test) {
+    // create and add task elements
+    tasks.sort((a, b) => (a.idx - b.idx)).forEach(task => new Task(task));
+
     // user handle input and title synchronisation
     this.screenName = document.getElementById('screenName');
     this.screenNameLabel = document.querySelector('label[for="screenName"]');
     this.screenNamePrefix = document.querySelector('#controls .input-field .prefix');
     this.headerScreenName = document.querySelector('.header-screen_name');
     this.screenName.addEventListener('keyup', this.updateHeaderScreenName, true);
-
-    // results
-    this.results = document.querySelector('#results');
 
     // button, initiating test
     this.checkButton = document.getElementById('check');
@@ -131,58 +134,6 @@ export default class UI {
       msg: 'A server error occured. Failed to test. Please try again later.'
     }));
     this.updateTask(...taskUpdates);
-  };
-
-  // update task info; takes one or more objects
-  updateTask = (...tasks) => {
-    tasks.forEach((task) => {
-      const taskEls = Array.isArray(task.id) ? task.id : [task.id];
-      for (let i = 0; i < taskEls.length; i += 1) {
-        const taskEl = this.results.querySelector(`[data-task-id="${taskEls[i]}"]`);
-        const taskIcon = taskEl.querySelector('.material-icons');
-        const taskIconClasses = taskIcon.classList;
-        // icon
-        switch (task.status) {
-          case 'running':
-            taskIconClasses.add('gears');
-            taskIcon.innerText = '';
-            break;
-          case 'pending':
-            taskIconClasses.remove('gears');
-            taskIcon.innerText = 'access_time';
-            break;
-          case 'ok':
-            taskIconClasses.remove('gears');
-            taskIcon.innerText = 'check';
-            break;
-          case 'ban':
-            taskIconClasses.remove('gears');
-            taskIcon.innerText = 'error_outline';
-            break;
-          case 'reset':
-            taskIconClasses.remove('gears');
-            taskIcon.innerText = 'contact_support';
-            break;
-          case 'warn':
-            taskIconClasses.remove('gears');
-            taskIcon.innerText = 'error_outline';
-            break;
-          default:
-            break;
-        }
-        // message
-        if (task.msg) {
-          const messageElement = taskEl.querySelector('.task-message');
-          // messageElement.children.forEach(child => messageElement.removeChild(child));
-          const htmlMessage = `<span>${task.msg}</span>`;
-          // Yes, innerHTML is a security issue.
-          // But this is ok since we are using hardcoded values, only.
-          messageElement.innerHTML = htmlMessage;
-        }
-        // -task-status
-        taskEl.dataset.taskStatus = task.status;
-      }
-    });
   };
 
   initFromLocation = (location) => {
