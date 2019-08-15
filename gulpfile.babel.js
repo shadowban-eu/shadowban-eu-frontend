@@ -14,6 +14,7 @@ const _v = require('./package.json').version;
 const rollup = require('rollup');
 
 const production = process.env.NODE_ENV === 'production';
+const noBackend = !!process.env.NO_BACKEND;
 const plugins = gulpLoadPlugins();
 
 const paths = {
@@ -50,10 +51,14 @@ const backendArgs = [
   './logs/development/debug.log',
 ];
 const spawnBackend = () => {
-  log.call('serve', 'Spawning backend server...');
-  backendServerProcess = spawn('python3', backendArgs);
-  backendServerProcess.stdout.on('data', logServer);
-  backendServerProcess.stderr.on('data', data => log(data.toString().trim()));
+  if (noBackend) {
+    log.call('spawnBackend', 'ignoring');
+  } else {
+    log.call('serve', 'Spawning backend server...');
+    backendServerProcess = spawn('python3', backendArgs);
+    backendServerProcess.stdout.on('data', logServer);
+    backendServerProcess.stderr.on('data', data => log(data.toString().trim()));
+  }
 };
 
 const httpArgs = [
