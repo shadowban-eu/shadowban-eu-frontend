@@ -11,13 +11,17 @@ import TechInfo from './ui/TechInfo';
 import '../scss/style.scss';
 
 const fullTest = async (screenName) => {
-  window.ui.updateTask({
-    id: 'checkUser',
-    status: 'running',
-    msg: `Testing @${screenName}`
-  });
-
-  const response = await fetch(`.api/${screenName}`);
+  let response;
+  try {
+    response = await fetch(`.api/${screenName}`);
+  } catch (err) {
+    window.ui.updateTask({
+      id: 'checkUser',
+      status: 'warn',
+      msg: 'You are offline.'
+    });
+    return;
+  }
   if (!response.ok) {
     window.ui.updateTask({
       id: 'checkUser',
