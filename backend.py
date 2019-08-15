@@ -33,6 +33,12 @@ class TwitterSession:
         self._csrf_token = None
         self._session = None
 
+    def set_csrf_header(self):
+        cookies = self._session.cookie_jar.filter_cookies('https://twitter.com/')
+        for key, cookie in cookies.items():
+            if cookie.key == 'ct0':
+                self._headers['X-Csrf-Token'] = cookie.value
+
     async def login(self, username = None, password = None, email = None):
         self._session = aiohttp.ClientSession()
 
@@ -51,12 +57,7 @@ class TwitterSession:
                     print("Login of %s successful" % username)
                 else:
                     print("Error logging in %s" % username)
-
-                cookies = self._session.cookie_jar.filter_cookies('https://twitter.com/')
-                for key, cookie in cookies.items():
-                    if cookie.key == 'ct0':
-                        self._headers['X-Csrf-Token'] = cookie.value
-
+            self.set_csrf_header()
         else:
             async with self._session.get("https://mobile.twitter.com/login", headers=self._headers) as r:
                 login_page = await r.text()
@@ -104,8 +105,8 @@ class TwitterSession:
 
     async def test_detached_tweets():
         pass
-
-    async def tweet_raw(self, tweet_id, count=20, cursor=None):
+    
+    async def tweet_raw(self, tweet_id, count=20, cursor=None, retry_csrf=True):
         if cursor is None:
             cursor = ""
         else:
@@ -113,6 +114,9 @@ class TwitterSession:
         async with self._session.get("https://api.twitter.com/2/timeline/conversation/" + tweet_id + ".json?include_reply_count=1&send_error_codes=true&count="+str(count)+ cursor, headers=self._headers) as r:
             result = await r.json()
             debug('Tweet request ' + tweet_id + ':\n' + str(r) + '\n\n' + json.dumps(result) + '\n\n\n')
+            self.set_csrf_header()
+            if retry_csrf and isinstance(result.get("errors", None), list) and len([x for x in result["errors"] if x.get("code", None) == 353]):
+                return await self.tweet_raw(tweet_id, count, cursor, False)
             return result
 
     @classmethod
