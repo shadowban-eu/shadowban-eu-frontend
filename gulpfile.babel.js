@@ -156,7 +156,9 @@ process.on('SIGINT', () => {
   if (backendServerProcess) {
     log('Killing servers...');
     httpServerProcess.kill();
-    backendServerProcess.kill();
+    if (backendServerProcess) {
+      backendServerProcess.kill();
+    }
     log('Done');
   }
   process.exit();
