@@ -1,13 +1,13 @@
 export default class TechInfo {
-  static isMobile = !!(("ontouchstart" in window) || window.navigator && window.navigator.msPointerEnabled && window.MSGesture || window.DocumentTouch && document instanceof DocumentTouch);
+  static isMobile = !!(('ontouchstart' in window) || (window.navigator && window.navigator.msPointerEnabled && window.MSGesture) || (window.DocumentTouch && document instanceof DocumentTouch));
   static makeSearchLink(query, qf, text) {
     const href = `https://${TechInfo.isMobile ? 'mobile.' : ''}twitter.com/search?f=${TechInfo.isMobile ? 'live' : 'tweets'}&src=typd&vertical=default&lang=en&q=${encodeURIComponent(query)}&qf=${qf ? 'on' : 'off'}`;
     return `<a href="${href}">${text || query}</a>`;
   }
 
   static updateSearch(results) {
-    if(!results.tests.search && results.tests.search !== false) {
-	    return;
+    if (!results.tests.search && results.tests.search !== false) {
+      return;
     }
     document.querySelector('#searchFAQ').classList.remove('hide');
     const contentElement = document.querySelector('#searchFAQ .techContent');
@@ -21,17 +21,17 @@ export default class TechInfo {
     }
     document.querySelector('#barrierFAQ').classList.remove('hide');
     const contentElement = document.querySelector('#barrierFAQ .techContent');
-    if(!results.tests.more_replies.ban) {
-      var explanation = 'The tweet was not hidden.';
-    }
-    else {
+    let explanation;
+    if (!results.tests.more_replies.ban) {
+      explanation = 'The tweet was not hidden.';
+    } else {
       explanation = 'We had to click "Show more replies" to view it';
-      if(results.tests.more_replies.stage == 1) {
+      if (results.tests.more_replies.stage === 1) {
         explanation += ' and we had to click a second time because the account is rated as potentially offensive';
       }
       explanation += '.';
     }
-    contentElement.innerHTML = `We found <a href="https://twitter.com/i/status/${results.tests.more_replies.in_reply_to}">a tweet</a> which the user <a href="https://twitter.com/i/status/${results.tests.more_replies.tweet}">replied to</a>. ` + explanation;
+    contentElement.innerHTML = `We found <a href="https://twitter.com/i/status/${results.tests.more_replies.in_reply_to}">a tweet</a> which the user <a href="https://twitter.com/i/status/${results.tests.more_replies.tweet}">replied to</a>. ${explanation}`;
   }
 
   static updateThread(results) {
@@ -40,8 +40,8 @@ export default class TechInfo {
     }
     document.querySelector('#threadFAQ').classList.remove('hide');
     const contentElement = document.querySelector('#threadFAQ .techContent');
-    if(results.tests.search) {
-      contentElement.innerHTML = `A thread ban implies a search ban. Since the account is not search banned, it cannot be thread banned.`;
+    if (results.tests.search) {
+      contentElement.innerHTML = 'A thread ban implies a search ban. Since the account is not search banned, it cannot be thread banned.';
       return;
     }
     contentElement.innerHTML = `We found <a href="https://twitter.com/i/status/${results.tests.ghost.tweet}">a tweet
