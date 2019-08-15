@@ -4,9 +4,22 @@ export default class Task {
   static template = document.getElementById('task-item-template');
 
   constructor(task) {
-    this.id = task.id;
-    this.listItem = Task.createListItem(task);
+    // create task item
+    const {
+      listItem,
+      ...components
+    } = Task.createTaskElement(task);
 
+    // raw tasks object from /src/tasks.js
+    this.task = task;
+    // data-task-id on collapsible element
+    this.id = task.id;
+    // <li> Element, created from template
+    this.listItem = listItem;
+    // data-task-component Elements of this task item
+    this.components = components;
+
+    // add task item
     Task.container.insertAdjacentElement('beforeend', this.listItem);
   }
 
@@ -53,13 +66,13 @@ export default class Task {
     this.element.dataset.taskStatus = status;
   }
 
-  static createListItem(task) {
-    const item = Task.template.firstElementChild.cloneNode(true);
-    const header = item.querySelector('[data-task-component="header"]');
-    const message = item.querySelector('[data-task-component="message"] span');
-    const description = item.querySelector('[data-task-component="description"]');
-    // const faq = item.querySelector('[data-task-component="faq"]');
-    const icon = item.querySelector('[data-task-component="icon"]');
+  static createTaskElement(task) {
+    const listItem = Task.template.firstElementChild.cloneNode(true);
+    const header = listItem.querySelector('[data-task-component="header"]');
+    const message = listItem.querySelector('[data-task-component="message"] span');
+    const description = listItem.querySelector('[data-task-component="description"]');
+    // const faq = listItem.querySelector('[data-task-component="faq"]');
+    const icon = listItem.querySelector('[data-task-component="icon"]');
 
     // set task id
     header.dataset.taskId = task.id;
@@ -77,11 +90,23 @@ export default class Task {
     // be an FAQ; we're done
     if (!task.description) {
       description.remove();
-      return item;
+      return {
+        listItem,
+        header,
+        message,
+        description,
+        icon
+      };
     }
 
     description.querySelector('h5').innerText = task.description.title;
     description.querySelector('p').innerHTML = task.description.text;
-    return item;
+    return {
+      listItem,
+      header,
+      message,
+      description,
+      icon
+    };
   }
 }
