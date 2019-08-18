@@ -5,8 +5,10 @@ import json
 import re
 import traceback
 import urllib.parse
+import sys
 from aiohttp import web
 from bs4 import BeautifulSoup
+from db import connect
 
 routes = web.RouteTableDef()
 
@@ -105,7 +107,7 @@ class TwitterSession:
 
     async def test_detached_tweets():
         pass
-    
+
     async def tweet_raw(self, tweet_id, count=20, cursor=None, retry_csrf=True):
         if cursor is None:
             cursor = ""
@@ -314,6 +316,9 @@ class TwitterSession:
         if more_replies_test and not get_nested(result, ["tests", "ghost", "ban"], False):
             result["tests"]["more_replies"] = await self.test_barrier(user_id)
 
+        debug('Writing result for ' + result['profile']['screen_name'] + ' to DB');
+        global db
+        db.writeResult(result)
         return result
 
 
@@ -354,7 +359,14 @@ parser.add_argument('--account-file', type=str, default='.htaccounts', help='jso
 parser.add_argument('--log', type=str, default=None, help='log file where test results are written to')
 parser.add_argument('--debug', type=str, default=None, help='debug log file')
 parser.add_argument('--port', type=int, default=8080, help='port which to listen on')
+parser.add_argument('--mongo-host', type=str, default='localhost', help='hostname or IP of mongoDB service to connect to')
+parser.add_argument('--mongo-port', type=int, default=27017, help='port of mongoDB service to connect to')
+parser.add_argument('--mongo-db', type=str, default='tester', help='name of mongo database to use')
+parser.add_argument('--mongo-collection', type=str, default='results', help='name of collection to save test results to')
 args = parser.parse_args()
+
+db = connect(host=args.mongo_host, port=args.mongo_port)
+
 with open(args.account_file, "r") as f:
     accounts = json.loads(f.read())
 
@@ -365,6 +377,7 @@ if args.log is not None:
 if args.debug is not None:
     print("Logging debug output to %s", args.debug)
     debug_file = open(args.debug, "a")
+
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(login_accounts(accounts))
