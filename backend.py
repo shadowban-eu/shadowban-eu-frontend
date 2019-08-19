@@ -61,12 +61,11 @@ class TwitterSession:
                     print("Error logging in %s" % username)
             self.set_csrf_header()
         else:
-            async with self._session.get("https://mobile.twitter.com/login", headers=self._headers) as r:
-                login_page = await r.text()
-
-            self._guest_token = re.search(r'"gt=([a-zA-Z0-9_]+);', login_page).group(1)
+            self._headers['Authorization'] = 'Bearer ' + self._auth
+            async with self._session.post("https://api.twitter.com/1.1/guest/activate.json", headers=self._headers) as r:
+                guest_token = await r.json()
+            self._guest_token = guest_token["guest_token"]
             self._headers['X-Guest-Token'] = self._guest_token
-
 
         self._headers['Authorization'] = 'Bearer ' + self._auth
 
