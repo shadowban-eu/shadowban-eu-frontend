@@ -24,14 +24,18 @@ const fullTest = async (screenName) => {
   }
   const result = await response.json();
   const userLink = `<a href="https://twitter.com/${screenName}">@${screenName}</a>`;
-  let failReason = null;
+
+  let failReason;
   if (!result.profile.exists) {
     failReason = 'does not exist';
   } else if (result.profile.protected) {
     failReason = 'is protected';
   } else if (result.profile.suspended) {
     failReason = 'has been suspended';
+  } else if (!result.profile.has_tweets) {
+    failReason = 'has no tweets';
   }
+
   if (failReason) {
     window.ui.updateTask({
       id: 'checkUser',
@@ -40,6 +44,7 @@ const fullTest = async (screenName) => {
     });
     return;
   }
+
   window.ui.updateTask({
     id: 'checkUser',
     status: 'ok',
