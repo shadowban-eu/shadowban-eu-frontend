@@ -243,7 +243,7 @@ class TwitterSession:
 
     async def test(self, username, more_replies_test=True):
         await self.login()
-        result = {}
+        result = {"timestamp": time.time()}
         profile = {}
         profile_raw = await self.profile_raw(username)
 
