@@ -107,8 +107,8 @@ gulp.task('templates', () =>
 
 // Start server with restart on file changes
 gulp.task('dev', ['rollup', 'styles', 'templates', 'copy', 'serve'], () =>
-  plugins.watch(['src/**/*.*', './backend.py'], (changedFile) => {
-    if (changedFile.history[0].endsWith('backend.py')) {
+  plugins.watch(['src/**/*.*', './backend.py', './db.py'], (changedFile) => {
+    if (changedFile.history[0].endsWith('.py')) {
       log('Restarting backend server...');
       backendServerProcess.kill();
       spawnBackend();
