@@ -6,6 +6,7 @@ import re
 import traceback
 import urllib.parse
 import sys
+import time
 from aiohttp import web
 from bs4 import BeautifulSoup
 from db import connect
@@ -34,6 +35,9 @@ class TwitterSession:
         self._guest_token = None
         self._csrf_token = None
         self._session = None
+        self.limit = -1
+        self.remaining = -1
+        self.reset = -1
 
     def set_csrf_header(self):
         cookies = self._session.cookie_jar.filter_cookies('https://twitter.com/')
@@ -101,6 +105,9 @@ class TwitterSession:
             result = await r.json()
             debug('Tweet request ' + tweet_id + ':\n' + str(r) + '\n\n' + json.dumps(result) + '\n\n\n')
             self.set_csrf_header()
+            self.limit = int(r.headers.get('x-rate-limit-limit', -1))
+            self.remaining = int(r.headers.get('x-rate-limit-remaining', -1))
+            self.reset = int(r.headers.get('x-rate-limit-reset', -1))
             if retry_csrf and isinstance(result.get("errors", None), list) and len([x for x in result["errors"] if x.get("code", None) == 353]):
                 return await self.tweet_raw(tweet_id, count, cursor, False)
             return result
@@ -340,9 +347,14 @@ def log(message):
 
 @routes.get('/{screen_name}')
 async def hello(request):
-    global log_file
+    screen_name = request.match_info['screen_name']
+    if screen_name == '.stats':
+        text = "Limit Remaining Reset"
+        for session in account_sessions:
+            text += "\n%5d %9d %5d" % (session.limit, session.remaining, session.reset - int(time.time()))
+        return web.Response(text=text)
     session = TwitterSession()
-    result = await session.test(request.match_info['screen_name'])
+    result = await session.test(screen_name)
     log(json.dumps(result) + '\n')
     await session.close()
     return web.json_response(result)
