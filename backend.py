@@ -240,6 +240,7 @@ class TwitterSession:
         result = {}
         profile = {}
         profile_raw = await self.profile_raw(username)
+
         try:
             user_id = str(profile_raw["data"]["user"]["rest_id"])
         except KeyError:
@@ -267,9 +268,14 @@ class TwitterSession:
             profile["suspended"] = len([1 for error in profile_raw["errors"] if error["code"] == 63]) > 0
         except KeyError:
             pass
+        try:
+            profile["has_tweets"] = int(profile_raw["data"]["user"]["legacy"]["statuses_count"]) > 0
+        except KeyError:
+            profile["has_tweets"] = False
+
         result["profile"] = profile
 
-        if not profile["exists"] or profile.get("suspended", False) or profile.get("protected", False):
+        if not profile["exists"] or profile.get("suspended", False) or profile.get("protected", False) or not profile.get('hasTweets'):
             return result
 
         result["tests"] = {}
