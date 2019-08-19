@@ -92,13 +92,15 @@ const fullTest = async (screenName) => {
   TechInfo.updateThread(result);
 
   let barrierResult = ['warn', 'Reply deboosting test failed.'];
-  if (result.tests.more_replies.ban === false) {
-    barrierResult = ['ok', 'No reply deboosting detected.'];
-  } else if (result.tests.more_replies.ban === true) {
-    const offensive = result.tests.more_replies.stage > 0
-      ? ''
-      : ' Tweets are rated as potentially offensive.';
-    barrierResult = ['ban', `Reply deboosting detected.${offensive}`];
+  if(result.tests.more_replies) {
+    if (result.tests.more_replies.ban === false) {
+      barrierResult = ['ok', 'No reply deboosting detected.'];
+    } else if (result.tests.more_replies.ban === true) {
+      const offensive = result.tests.more_replies.stage > 0
+        ? ''
+        : ' Tweets are rated as potentially offensive.';
+      barrierResult = ['ban', `Reply deboosting detected.${offensive}`];
+    }
   }
   window.ui.updateTask({
     id: 'checkBarrier',
