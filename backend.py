@@ -70,16 +70,6 @@ class TwitterSession:
 
         self._headers['Authorization'] = 'Bearer ' + self._auth
 
-
-#        async with self._session.get("https://api.twitter.com/2/timeline/conversation/1151559684593111041.json?include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1&include_can_media_tag=1&skip_status=1&cards_platform=Web-12&include_cards=1&include_composer_source=true&include_ext_alt_text=true&include_reply_count=1&tweet_mode=extended&include_entities=true&include_user_entities=true&include_ext_media_color=true&include_ext_media_availability=true&send_error_codes=true&count=20&ext=mediaStats%2ChighlightedLabel%2CcameraMoment", headers=self._headers) as r:
-#            print(await r.text())
-#            print(r.cookies)
-        #m = re.search(r'"(https://abs\.twimg\.com/responsive-web/web/main\.[0-9a-zA-Z_-]+\.js)"', main_page)
-        #async with self._session.get(m.group(1)) as r:
-        #    js = await r.text()
-        #m = re.search(r'[a-zA-Z0-9_]+\s*=\s*"Web-12"\s*,\s*[a-zA-Z0-9]+\s*=\s*"(.*?)"', js)
-        #self._auth = m.group(1)
-
     async def search_raw(self, query, live=True):
         additional_query = ""
         if live:
@@ -95,11 +85,6 @@ class TwitterSession:
         obj = json.dumps({"screen_name": username, "withHighlightedLabel": True})
         async with self._session.get(self._user_url + urllib.parse.quote(obj), headers=self._headers) as r:
             return await r.json()
-        """return {
-            "screen_name": result["data"]["user"]["legacy"]["screen_name"],
-            "protected": result["data"]["user"]["legacy"]["protected"],
-            "restricted": result["data"]["user"]["legacy"]["profile_interstitial_type"] != ""
-        }"""
 
     async def get_profile_tweets_raw(self, user_id):
         async with self._session.get("https://api.twitter.com/2/timeline/profile/" + str(user_id) +".json?include_tweet_replies=1&include_want_retweets=0&include_reply_count=1&count=1000", headers=self._headers) as r:
