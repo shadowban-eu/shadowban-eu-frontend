@@ -274,7 +274,7 @@ class TwitterSession:
 
         result["profile"] = profile
 
-        if not profile["exists"] or profile.get("suspended", False) or profile.get("protected", False) or not profile.get('hasTweets'):
+        if not profile["exists"] or profile.get("suspended", False) or profile.get("protected", False) or not profile.get('has_tweets'):
             return result
 
         result["tests"] = {}
