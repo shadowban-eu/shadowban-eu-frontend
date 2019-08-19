@@ -312,14 +312,26 @@ class TwitterSession:
 
 def debug(message):
     global debug_file
+    if message.endswith('\n') is False:
+        message = message + '\n'
+
     if debug_file is not None:
         debug_file.write(message)
         debug_file.flush()
+    else:
+        print(message)
 
 def log(message):
+    global log_file
+    # ensure newline
+    if message.endswith('\n') is False:
+         message = message + '\n'
+
     if log_file is not None:
         log_file.write(message)
         log_file.flush()
+    else:
+        print(message)
 
 @routes.get('/{screen_name}')
 async def hello(request):
