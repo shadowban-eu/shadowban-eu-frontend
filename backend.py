@@ -32,12 +32,21 @@ class TwitterSession:
         self._headers = {
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"
         }
+        # without token, shit be broken; or something
         self._guest_token = None
         self._csrf_token = None
+
+        # aiohttp ClientSession
         self._session = None
+
+        # rate limit monitoring
         self.limit = -1
         self.remaining = -1
         self.reset = -1
+        self.overshot = -1
+
+        # session user's @screen_name
+        self.screen_name = None
 
     def set_csrf_header(self):
         cookies = self._session.cookie_jar.filter_cookies('https://twitter.com/')
@@ -72,6 +81,7 @@ class TwitterSession:
             self._headers['X-Guest-Token'] = self._guest_token
 
         self._headers['Authorization'] = 'Bearer ' + self._auth
+        self.screen_name = username
 
     async def search_raw(self, query, live=True):
         additional_query = ""
@@ -103,14 +113,32 @@ class TwitterSession:
             cursor = "&cursor=" + urllib.parse.quote(cursor)
         async with self._session.get("https://api.twitter.com/2/timeline/conversation/" + tweet_id + ".json?include_reply_count=1&send_error_codes=true&count="+str(count)+ cursor, headers=self._headers) as r:
             result = await r.json()
-            debug('Tweet request ' + tweet_id + ':\n' + str(r) + '\n\n' + json.dumps(result) + '\n\n\n')
+            # debug('Tweet request ' + tweet_id + ':\n' + str(r) + '\n\n' + json.dumps(result) + '\n\n\n')
             self.set_csrf_header()
-            self.limit = int(r.headers.get('x-rate-limit-limit', -1))
-            self.remaining = int(r.headers.get('x-rate-limit-remaining', -1))
-            self.reset = int(r.headers.get('x-rate-limit-reset', -1))
+            if self.screen_name is not None:
+                self.monitor_rate_limit(r.headers)
             if retry_csrf and isinstance(result.get("errors", None), list) and len([x for x in result["errors"] if x.get("code", None) == 353]):
                 return await self.tweet_raw(tweet_id, count, cursor, False)
             return result
+
+    def monitor_rate_limit(self, headers):
+        # store last remaining count for reset detection
+        last_remaining = self.remaining
+
+        self.limit = int(headers.get('x-rate-limit-limit', -1))
+        self.remaining = int(headers.get('x-rate-limit-remaining', -1))
+        self.reset = int(headers.get('x-rate-limit-reset', -1))
+
+        # rate limit reset
+        if last_remaining < self.remaining and self.overshot > 0:
+            log('[rate-limit] Reset detected for ' + self.screen_name + '. Saving overshoot count...')
+            db.writeRateLimit({ 'screen_name': self.screen_name, 'overshot': self.overshot })
+            self.overshot = 0
+
+        # count the requests that failed because of rate limiting
+        if self.remaining is 0:
+            log('[rate-limit] Limit hit by ' + self.screen_name + '.')
+            self.overshot += 1
 
     @classmethod
     def flatten_timeline(cls, timeline_items):
@@ -176,7 +204,7 @@ class TwitterSession:
                     continue
                 filtered_ids.append(tid)
 
-            debug('Filtered ids for user ' + user_id + ': ' +  str(filtered_ids) + '\n\n\n')
+            # debug('Filtered ids for user ' + user_id + ': ' +  str(filtered_ids) + '\n\n\n')
 
             for tid in filtered_ids:
                 replied_to_id = tweets_replies["globalObjects"]["tweets"][tid].get("in_reply_to_status_id_str", None)
@@ -238,7 +266,7 @@ class TwitterSession:
                 debug('outer loop return\n')
                 return
         except:
-            debug('Exc\n')
+            debug('Unexpected Exception in test_barrier:\n')
             debug(traceback.format_exc())
 
     async def test(self, username, more_replies_test=True):

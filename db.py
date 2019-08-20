@@ -10,10 +10,13 @@ class Database:
             print('[mongoDB] Using Collection `' + collection_name + '` in Database `' + db + '`')
             self.client = MongoClient(host, port, serverSelectionTimeoutMS=3)
             self.db = self.client[db]
+            # collection for test results
             self.results = self.db[collection_name]
+            # collection for rate limit monitoring
+            self.rate_limits = self.db['rate-limits']
 
             # test connection immediately, instead of
-            # trying to write in a request, later.
+            # when trying to write in a request, later.
             self.client.admin.command('ismaster')
         except MongoErrors.ServerSelectionTimeoutError:
             print(traceback.format_exc())
@@ -26,6 +29,9 @@ class Database:
         # copy.deepcopy; otherwise mongo ObjectId (_id) would be added,
         # screwing up later JSON serialisation of results
         self.results.insert_one(copy.deepcopy(result))
+
+    def writeRateLimit(self, data):
+        self.rate_limits.insert_one(data)
 
 def connect(host=None, port=27017, db='tester', collection_name='results'):
     if host is None:
