@@ -16,7 +16,7 @@ Frontend (former TwitterShadowBanV2; history preserved):
 [shadowban-eu/shadowban-eu-frontend](https://github.com/shadowban-eu/shadowban-eu-frontend.git)
 
 Backend:  
-[shadowban-eu/shadowban-eu-frontend](https://github.com/shadowban-eu/shadowban-eu-frontend.git)
+[shadowban-eu/shadowban-eu-backend](https://github.com/shadowban-eu/shadowban-eu-backend.git)
 
 **Everything below is outdated with v > 1.3.3**
 
