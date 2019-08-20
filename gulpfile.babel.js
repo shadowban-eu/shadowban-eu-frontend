@@ -14,6 +14,7 @@ const _v = require('./package.json').version;
 const rollup = require('rollup');
 
 const production = process.env.NODE_ENV === 'production';
+const noBackend = !!process.env.NO_BACKEND;
 const plugins = gulpLoadPlugins();
 
 const paths = {
@@ -27,11 +28,52 @@ const paths = {
 };
 
 let httpServerProcess = null; // php-cli dev server process
+let backendServerProcess = null; // python backend server process
 
 const log = function log(...str) {
   const tag = this || find(gulp.tasks, { running: true }).name;
   flog(`[${chalk.cyan(tag)}] ${str.join(' ')}`);
   return true;
+};
+
+const logServer = data => data.toString().trim().split('\n')
+  .forEach(line => log.call('serve', line.includes('http') ? chalk.green(line) : line));
+
+const backendArgs = [
+  './backend.py',
+  '--account-file',
+  './.htaccounts',
+  '--port',
+  '4000',
+  '--log',
+  './logs/development/results.log',
+  '--debug',
+  './logs/development/debug.log',
+];
+const spawnBackend = () => {
+  if (noBackend) {
+    log.call('spawnBackend', 'ignoring');
+  } else {
+    log.call('serve', 'Spawning backend server...');
+    backendServerProcess = spawn('python3', backendArgs);
+    backendServerProcess.stdout.on('data', logServer);
+    backendServerProcess.stderr.on('data', data => log(data.toString().trim()));
+  }
+};
+
+const httpArgs = [
+  './dist/',
+  '-p',
+  '8080',
+  '-a',
+  '127.0.0.1'
+];
+const spawnHttp = () => {
+  log.call('serve', 'Spawning http server...');
+  // ./node_modules/.bin/ should be in PATH, at this point;
+  httpServerProcess = spawn('http-server', httpArgs);
+  httpServerProcess.stdout.on('data', logServer);
+  httpServerProcess.stderr.on('data', data => log(data.toString().trim()));
 };
 
 // Clean up dist directory
@@ -65,11 +107,16 @@ gulp.task('templates', () =>
 
 // Start server with restart on file changes
 gulp.task('dev', ['rollup', 'styles', 'templates', 'copy', 'serve'], () =>
-  plugins.watch('src/**/*.*', () => {
-    log('Killing php-cli server...');
-    httpServerProcess.kill();
+  plugins.watch(['src/**/*.*', './backend.py', './db.py'], (changedFile) => {
+    if (changedFile.history[0].endsWith('.py')) {
+      log('Restarting backend server...');
+      backendServerProcess.kill();
+      spawnBackend();
+    } else {
+      log('Re-building frontend...');
+      runSequence('rollup', 'styles', 'templates', 'copy');
+    }
     log('Done');
-    runSequence('rollup', 'styles', 'templates', 'copy', 'serve');
   })
 );
 
@@ -89,13 +136,8 @@ gulp.task('styles', async () => {
 });
 
 gulp.task('serve', (done) => {
-  const args = ['-S', '0.0.0.0:8080', '-t', './dist/'];
-  httpServerProcess = spawn('php', args);
-  httpServerProcess.stdout.on('data', data =>
-    data.toString().trim().split('\n')
-      .forEach(line => log.call('serve', line.includes('http') ? chalk.green(line) : line))
-  );
-  httpServerProcess.stderr.on('data', data => log(data.toString().trim()));
+  spawnBackend();
+  spawnHttp();
   done();
 });
 
@@ -111,9 +153,12 @@ if (!existsSync('./dist')) {
 }
 
 process.on('SIGINT', () => {
-  if (httpServerProcess) {
-    log('Killing php-cli server...');
+  if (backendServerProcess) {
+    log('Killing servers...');
     httpServerProcess.kill();
+    if (backendServerProcess) {
+      backendServerProcess.kill();
+    }
     log('Done');
   }
   process.exit();
