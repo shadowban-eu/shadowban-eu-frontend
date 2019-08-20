@@ -25,12 +25,12 @@ class Database:
             print(traceback.format_exc())
             sys.exit('MongoDB connection failed.')
 
-    def writeResult(self, result):
+    def write_result(self, result):
         # copy.deepcopy; otherwise mongo ObjectId (_id) would be added,
         # screwing up later JSON serialisation of results
         self.results.insert_one(copy.deepcopy(result))
 
-    def writeRateLimit(self, data):
+    def write_rate_limit(self, data):
         self.rate_limits.insert_one(data)
 
 def connect(host=None, port=27017, db='tester', collection_name='results'):

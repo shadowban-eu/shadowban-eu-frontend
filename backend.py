@@ -45,8 +45,9 @@ class TwitterSession:
         self.reset = -1
         self.overshot = -1
 
-        # session user's @screen_name
-        self.screen_name = None
+        # session user's @username
+        # this stays `None` for guest sessions
+        self.username = None
 
     def set_csrf_header(self):
         cookies = self._session.cookie_jar.filter_cookies('https://twitter.com/')
@@ -73,6 +74,7 @@ class TwitterSession:
                 else:
                     print("Error logging in %s" % username)
             self.set_csrf_header()
+            self.username = username
         else:
             self._headers['Authorization'] = 'Bearer ' + self._auth
             async with self._session.post("https://api.twitter.com/1.1/guest/activate.json", headers=self._headers) as r:
@@ -81,7 +83,6 @@ class TwitterSession:
             self._headers['X-Guest-Token'] = self._guest_token
 
         self._headers['Authorization'] = 'Bearer ' + self._auth
-        self.screen_name = username
 
     async def search_raw(self, query, live=True):
         additional_query = ""
@@ -132,7 +133,7 @@ class TwitterSession:
         # rate limit reset
         if last_remaining < self.remaining and self.overshot > 0:
             log('[rate-limit] Reset detected for ' + self.screen_name + '. Saving overshoot count...')
-            db.writeRateLimit({ 'screen_name': self.screen_name, 'overshot': self.overshot })
+            db.write_rate_limit({ 'screen_name': self.screen_name, 'overshot': self.overshot })
             self.overshot = 0
 
         # count the requests that failed because of rate limiting
@@ -343,7 +344,7 @@ class TwitterSession:
 
         debug('Writing result for ' + result['profile']['screen_name'] + ' to DB');
         global db
-        db.writeResult(result)
+        db.write_result(result)
         return result
 
 
