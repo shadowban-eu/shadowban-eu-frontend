@@ -8,23 +8,18 @@
     <meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1'>
     <meta property="og:title" content="Twitter Shadowban Test">
     <meta property="og:description" content="Are you shadowbanned on Twitter?">
-    <meta property="og:image" content="https://www.shadowban.eu/sm_preview.png">
+    <meta property="og:image" content="https://www.shadowban.eu/img/sm_preview.png">
     <meta property="og:url" content="https://www.shadowban.eu/">
     <meta property="og:site_name" content="Twitter Shadowban Test">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image:alt" content="shadwoban.eu">
-    <link rel="icon" type="image/png" href="favicon.png" />
-    <base target="_blank">
+    <base target="_blank" href="<%= htmlWebpackPlugin.options.baseHref %>">
 
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Import Fonts-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
     <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
-    <!--Import materialize.css-->
-    <link type="text/css" rel="stylesheet" href="vendor/materialize/css/materialize{{useMinified}}.css"  media="screen,projection"/>
-    <!-- Custom -->
-    <link rel="stylesheet" type="text/css" href="css/{{bundleVersion}}/style.css">
   </head>
   <body>
     <section class="row header section">
@@ -448,8 +443,6 @@
         <a href="https://www.paypal.me/shadowban" class="waves-effect waves white btn">Donate via PayPal</a>
       </div>
     </div>
-    {{devBanner}}
-    <script type="text/javascript" src="vendor/materialize/js/materialize{{useMinified}}.js"></script>
-    <script src='js/main.bundle-{{bundleVersion}}.js'></script>
+    <%= htmlWebpackPlugin.options.devTag %>
   </body>
 </html>

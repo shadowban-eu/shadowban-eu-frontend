@@ -2,9 +2,13 @@
 ** Twitter QFD Shadowban Checker
 ** 2018 @Netzdenunziant (research), @raphaelbeerlin (implementation)
 */
+import 'materialize-css';
+import 'materialize-css/sass/materialize.scss';
 
 import UI from './ui';
-import TechInfo from './ui/TechInfo.js';
+import TechInfo from './ui/TechInfo';
+
+import '../scss/style.scss';
 
 const fullTest = async (screenName) => {
   window.ui.updateTask({

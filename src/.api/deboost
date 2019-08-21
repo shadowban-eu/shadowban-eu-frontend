@@ -1,0 +1,19 @@
+{
+  "profile": {
+    "exists": true,
+    "protected": false,
+    "screen_name": "deboost"
+  },
+  "tests": {
+    "ghost": {
+      "ban": false
+    },
+    "more_replies": {
+      "ban": true,
+      "in_reply_to": "1161665852820852736",
+      "tweet": "1161666623843065856"
+    },
+    "search": "1161666623843065856",
+    "typeahead": true
+  }
+}

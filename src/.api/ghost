@@ -1,0 +1,21 @@
+{
+  "profile": {
+    "exists": true,
+    "protected": false,
+    "screen_name": "ghost"
+  },
+  "tests": {
+    "ghost": {
+      "ban": true,
+      "reply": "1161665852820852736",
+      "tweet": "1161666623843065856"
+    },
+    "more_replies": {
+      "ban": false,
+      "in_reply_to": "1161665852820852736",
+      "tweet": "1161666623843065856"
+    },
+    "search": false,
+    "typeahead": true
+  }
+}
