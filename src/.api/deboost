@@ -2,7 +2,8 @@
   "profile": {
     "exists": true,
     "protected": false,
-    "screen_name": "deboost"
+    "screen_name": "deboost",
+    "has_tweets": true
   },
   "tests": {
     "ghost": {

@@ -29,12 +29,17 @@ const devServerConfig = {
 
 const buildVersion = `${packageVersion}-dev`;
 
-// copy /src/.api/ folder to /dist/ when in development
+// include /src/.api/ in development builds
 // i.e. include API response mocks
+// Files in /src/.api/ will be served as
+// responses to test requests, according to the file's
+// name.
+// When you test e.g. a username `ghost`, the contents of
+// /src/.api/ghost will be served.
 const devModeApiResponseMocks = ENV === 'development'
   ? {
-    from: path.resolve(__dirname, 'src', 'img'),
-    to: path.resolve(__dirname, 'dist', 'img'),
+    from: path.resolve(__dirname, 'src', '.api'),
+    to: path.resolve(__dirname, 'dist', '.api'),
     toType: 'dir',
   }
   : {};

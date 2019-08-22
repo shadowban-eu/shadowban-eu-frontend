@@ -96,7 +96,7 @@ const fullTest = async (screenName) => {
   TechInfo.updateThread(result);
 
   let barrierResult = ['warn', 'Reply deboosting test failed.'];
-  if(result.tests.more_replies) {
+  if (result.tests.more_replies) {
     if (result.tests.more_replies.ban === false) {
       barrierResult = ['ok', 'No reply deboosting detected.'];
     } else if (result.tests.more_replies.ban === true) {

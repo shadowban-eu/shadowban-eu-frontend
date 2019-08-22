@@ -2,7 +2,8 @@
   "profile": {
     "exists": true,
     "protected": true,
-    "screen_name": "protected"
+    "screen_name": "protected",
+    "has_tweets": true
   },
   "tests": {
     "ghost": {

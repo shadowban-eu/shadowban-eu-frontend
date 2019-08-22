@@ -188,7 +188,7 @@ export default class UI {
   initFromLocation = (location) => {
     const pathMatch = location.pathname.match(/^(\/(?:@|%40)?)([A-Za-z0-9_]{1,15})$/);
     if (pathMatch) {
-      this.screenName.value = pathMatch[2];
+      [, , this.screenName.value] = pathMatch;
       this.screenNameLabel.classList.add('active');
       this.updateHeaderScreenName({
         stopPropagation: () => {},
