@@ -47,10 +47,11 @@ body {
 }
 
 #controls .card {
-  justify-content: space-around;
+  justify-content: center;
   padding: 1rem;
 
   .input-field {
+    margin-right: 3rem;
     /* label color */
     label { color: $TWITTER_BLUE !important; }
     input {
