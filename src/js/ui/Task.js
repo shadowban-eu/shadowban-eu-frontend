@@ -1,6 +1,7 @@
 export default class Task {
   // results
   static container = document.querySelector('#tasks');
+
   static template = document.getElementById('task-item-template');
 
   constructor(taskData) {
@@ -25,7 +26,7 @@ export default class Task {
 
   update(status, msg) {
     // icon
-    const icon = this.components.icon;
+    const { icon } = this.components;
     switch (status) {
       case 'running':
         icon.classList.add('gears');

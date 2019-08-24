@@ -2,7 +2,7 @@ import TechInfo from './ui/TechInfo';
 import qfSettingToast from './ui/qfSettingToast';
 import Task from './ui/Task';
 
-import taskData from './tasks.js';
+import taskData from './tasks';
 
 export default class UI {
   constructor(test) {
@@ -165,7 +165,7 @@ export default class UI {
   updateTask = (...updates) => {
     updates.forEach((update) => {
       if (!this.tasksById[update.id]) {
-        console.warn(`Omitting unknown task id on update: ${update.id}`);
+        console.warn(`Omitting unknown task id on update: ${update.id}`); // eslint-disable-line
         return;
       }
       this.tasksById[update.id].update(update.status, update.msg);
