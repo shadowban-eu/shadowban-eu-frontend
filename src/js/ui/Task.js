@@ -65,7 +65,7 @@ export default class Task {
       this.components.message.innerHTML = htmlMessage;
     }
     // -task-status
-    this.components.header.dataset.taskStatus = status;
+    this.listItem.dataset.taskStatus = status;
   }
 
   static createTaskElement(task) {
@@ -78,7 +78,7 @@ export default class Task {
     const hint = listItem.querySelector('[data-task-component="hint"]');
 
     // set task id
-    header.dataset.taskId = task.id;
+    listItem.dataset.taskId = task.id;
     // collapsible header shall not be clickable; sometimes
     if (task.nonInteractive) {
       header.setAttribute('collapsible-non-interactive', '');

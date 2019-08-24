@@ -131,11 +131,13 @@ body {
 }
 
 [data-task-id] {
-  transition: color 0.6s ease-out;
+  .collapsible-header {
+    transition: color 0.6s ease-out;
+  }
   .task-message {
     flex-grow: 1;
   }
-  ~ .result-hint {
+  .result-hint {
     padding: 0;
     height: 0rem;
     font-weight: 300;
@@ -147,22 +149,17 @@ body {
     overflow: hidden;
     transition: height 0.3s ease-out;
   }
-  &[data-task-status="ok"] {
+  &[data-task-status="ok"] [data-task-component="header"] {
     color: $ACCENT_SUCCESS;
   }
-  &[data-task-status="ban"] {
+  &[data-task-status="ban"] [data-task-component="header"]{
     color: $ACCENT_ERROR;
     ~ .result-hint {
-      display: block;
       height: 1.5rem;
     }
   }
-  &[data-task-status="warn"] {
+  &[data-task-status="warn"] [data-task-component="header"]{
     color: $ACCENT_WARN;
-    ~ .result-hint {
-      display: block;
-      height: 1.5rem;
-    }
   }
   .gears {
     width: 2rem;
