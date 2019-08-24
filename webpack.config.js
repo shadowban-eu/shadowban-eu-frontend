@@ -29,6 +29,13 @@ const devServerConfig = {
 
 const buildVersion = `${packageVersion}-dev`;
 
+
+const copies = [{
+  from: path.resolve(__dirname, 'src', 'img'),
+  to: path.resolve(__dirname, 'dist', 'img'),
+  toType: 'dir',
+}];
+
 // include /src/.api/ in development builds
 // i.e. include API response mocks
 // Files in /src/.api/ will be served as
@@ -36,13 +43,13 @@ const buildVersion = `${packageVersion}-dev`;
 // name.
 // When you test e.g. a username `ghost`, the contents of
 // /src/.api/ghost will be served.
-const devModeApiResponseMocks = ENV === 'development'
-  ? {
+if (ENV === 'development') {
+  copies.push({
     from: path.resolve(__dirname, 'src', '.api'),
     to: path.resolve(__dirname, 'dist', '.api'),
     toType: 'dir',
-  }
-  : {};
+  });
+}
 
 const config = {
   mode: ENV,
@@ -167,14 +174,7 @@ const config = {
       // ],
       verbose: true,
     }),
-    new CopyWebpackPlugin([
-      {
-        from: path.resolve(__dirname, 'src', 'img'),
-        to: path.resolve(__dirname, 'dist', 'img'),
-        toType: 'dir',
-      },
-      devModeApiResponseMocks
-    ]),
+    new CopyWebpackPlugin(copies),
   ],
 };
 
