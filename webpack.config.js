@@ -2,7 +2,6 @@
 const path = require('path');
 const autoPrefixer = require('autoprefixer');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-// const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -18,7 +17,8 @@ if (!ENV || (ENV !== 'development' && ENV !== 'production')) {
   console.error(`Your NODE_ENV value is: ${ENV}`);
   process.exit(1);
 }
-
+const production = ENV === 'production';
+const buildVersion = `${packageVersion}-dev`;
 const devServerConfig = {
   contentBase: path.join(__dirname, 'dist'),
   compress: true,
@@ -26,16 +26,11 @@ const devServerConfig = {
   host: '127.0.0.1',
   publicPath: '/'
 };
-
-const buildVersion = `${packageVersion}-dev`;
-
-
 const copies = [{
   from: path.resolve(__dirname, 'src', 'img'),
   to: path.resolve(__dirname, 'dist', 'img'),
   toType: 'dir',
 }];
-
 // include /src/.api/ in development builds
 // i.e. include API response mocks
 // Files in /src/.api/ will be served as
@@ -43,7 +38,7 @@ const copies = [{
 // name.
 // When you test e.g. a username `ghost`, the contents of
 // /src/.api/ghost will be served.
-if (ENV === 'development') {
+if (!production) {
   copies.push({
     from: path.resolve(__dirname, 'src', '.api'),
     to: path.resolve(__dirname, 'dist', '.api'),
@@ -57,7 +52,7 @@ const config = {
     app: './src/js/main.js',
   },
   output: {
-    filename: 'js/[name].js',
+    filename: 'js/[name].[hash].js',
     path: path.resolve(__dirname, 'dist'),
     publicPath: ''
   },
@@ -92,7 +87,6 @@ const config = {
             ]
           }
         }
-        // loader: 'babel-loader'
       },
       {
         test: /\.(png|gif|jpg|jpeg)$/,
@@ -123,38 +117,29 @@ const config = {
     ],
   },
   plugins: [
-    // new BrowserSyncPlugin({
-    //   proxy: localServer.path,
-    //   port: localServer.port,
-    //   files: [],
-    //   ghostMode: {
-    //     clicks: false,
-    //     location: false,
-    //     forms: false,
-    //     scroll: false,
-    //   },
-    //   injectChanges: true,
-    //   logFileChanges: true,
-    //   logLevel: 'debug',
-    //   logPrefix: 'wepback',
-    //   notify: true,
-    //   reloadDelay: 0,
-    // }),
     new HtmlWebpackPlugin({
       inject: true,
-      hash: false,
+      hash: production,
       filename: 'index.html',
       template: path.resolve(__dirname, 'src', 'index.html'),
       favicon: path.resolve(__dirname, 'src', 'favicon.png'),
-      baseHref: ENV === 'production'
+      baseHref: production
         ? 'https://shadowban.eu/'
         : `http://${devServerConfig.host}:${devServerConfig.port}${devServerConfig.publicPath}`,
-      devTag: ENV === 'production'
+      devTag: production
         ? ''
-        : `<div>${buildVersion}</div>`
+        : `<div>${buildVersion}</div>`,
+      minify: production ? {
+        collapseWhitespace: true,
+        removeComments: true,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        useShortDoctype: true
+      } : false
     }),
     new MiniCssExtractPlugin({
-      filename: 'css/[name].css',
+      filename: 'css/[name].[hash].css',
     }),
     new ImageMinPlugin({ test: /\.(jpg|jpeg|png|gif|svg)$/i }),
     new CleanWebpackPlugin({
@@ -163,22 +148,15 @@ const config = {
        * Disable automatic asset cleaning until resolved
        */
       cleanStaleWebpackAssets: false,
-      // Alternative:
-      // cleanAfterEveryBuildPatterns: [
-      // copy-webpackPlugin:
-      //   '!images/content/**/*',
-      // url-loader fonts:
-      //   '!**/*.+(eot|svg|ttf|woff|woff2)',
-      // url-loader images:
-      //   '!**/*.+(jpg|jpeg|png|gif|svg)',
-      // ],
       verbose: true,
     }),
     new CopyWebpackPlugin(copies),
   ],
 };
 
-if (ENV === 'development') {
+if (!production) {
   config.devServer = devServerConfig;
 }
+
+console.log(`Mode: ${config.mode}`);
 module.exports = config;
