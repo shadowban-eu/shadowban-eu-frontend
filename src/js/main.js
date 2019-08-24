@@ -102,16 +102,18 @@ const fullTest = async (screenName) => {
     } else if (result.tests.more_replies.ban === true) {
       const offensive = result.tests.more_replies.stage <= 0
         ? ''
-        : ' Tweets are rated as potentially offensive.';
+        : ' The tweet we found was in the section for offensive tweets.';
       barrierResult = ['ban', `Reply deboosting detected.${offensive}`];
     }
   }
-  window.ui.updateTask({
-    id: 'checkBarrier',
-    status: barrierResult[0],
-    msg: barrierResult[1]
-  });
-  TechInfo.updateBarrier(result);
+  if ('more_replies' in result.tests) {
+    window.ui.updateTask({
+      id: 'checkBarrier',
+      status: barrierResult[0],
+      msg: barrierResult[1]
+    });
+    TechInfo.updateBarrier(result);
+  }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
