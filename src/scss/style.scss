@@ -168,6 +168,12 @@ body {
     background-size: contain;
     margin-right: 7px;
   }
+
+  &.active {
+    .result-hint {
+      height: 0rem;
+    }
+  }
 }
 
 .emoji {
