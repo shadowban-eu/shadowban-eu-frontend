@@ -27,6 +27,8 @@ const fullTest = async (screenName) => {
     return;
   }
   const result = await response.json();
+  // Convert case
+  screenName = result.profile.screen_name;
   const userLink = `<a href="https://twitter.com/${screenName}">@${screenName}</a>`;
 
   let failReason;
