@@ -75,6 +75,7 @@ export default class Task {
     const description = listItem.querySelector('[data-task-component="description"]');
     const faq = listItem.querySelector('[data-task-component="faq"]');
     const icon = listItem.querySelector('[data-task-component="icon"]');
+    const hint = listItem.querySelector('[data-task-component="hint"]');
 
     // set task id
     header.dataset.taskId = task.id;
@@ -92,6 +93,7 @@ export default class Task {
     // be an FAQ; we're done
     if (!task.description) {
       description.remove();
+      hint.remove();
       return {
         listItem,
         header,
@@ -108,7 +110,8 @@ export default class Task {
         listItem,
         header,
         message,
-        icon
+        icon,
+        hint
       };
     }
 
@@ -120,7 +123,8 @@ export default class Task {
       message,
       description,
       icon,
-      faq
+      faq,
+      hint
     };
   }
 }
