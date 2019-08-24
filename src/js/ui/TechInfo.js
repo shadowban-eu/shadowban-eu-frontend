@@ -41,7 +41,7 @@ export default class TechInfo {
     document.querySelector('#threadFAQ').classList.remove('hide');
     const contentElement = document.querySelector('#threadFAQ .techContent');
     if (results.tests.search) {
-      contentElement.innerHTML = 'A thread ban implies a search ban. Since the account is not search banned, it cannot be thread banned.';
+      contentElement.innerHTML = 'A ghost ban implies a search ban. Since the account is not search banned, it cannot be ghost banned.';
       return;
     }
     contentElement.innerHTML = `We found <a href="https://twitter.com/i/status/${results.tests.ghost.tweet}">a tweet

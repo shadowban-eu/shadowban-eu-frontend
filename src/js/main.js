@@ -82,11 +82,11 @@ const fullTest = async (screenName) => {
   });
   TechInfo.updateSearch(result);
 
-  let threadResult = ['warn', 'Thread ban test failed.'];
+  let threadResult = ['warn', 'Ghost ban test failed.'];
   if (result.tests.ghost.ban === false) {
-    threadResult = ['ok', 'No thread ban.'];
+    threadResult = ['ok', 'No ghost ban.'];
   } else if (result.tests.ghost.ban === true) {
-    threadResult = ['ban', 'Thread ban.'];
+    threadResult = ['ban', 'Ghost ban.'];
   }
   window.ui.updateTask({
     id: 'checkConventional',
