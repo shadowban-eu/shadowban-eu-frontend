@@ -135,14 +135,34 @@ body {
   .task-message {
     flex-grow: 1;
   }
+  ~ .result-hint {
+    padding: 0;
+    height: 0rem;
+    font-weight: 300;
+    font-size: 1rem;
+    text-transform: uppercase;
+    background-color: white;
+    box-sizing: border-box;
+    // border-bottom: 1px solid #ddd;
+    overflow: hidden;
+    transition: height 0.3s ease-out;
+  }
   &[data-task-status="ok"] {
     color: $ACCENT_SUCCESS;
   }
   &[data-task-status="ban"] {
     color: $ACCENT_ERROR;
+    ~ .result-hint {
+      display: block;
+      height: 1.5rem;
+    }
   }
   &[data-task-status="warn"] {
     color: $ACCENT_WARN;
+    ~ .result-hint {
+      display: block;
+      height: 1.5rem;
+    }
   }
   .gears {
     width: 2rem;
