@@ -136,10 +136,11 @@ body {
   }
   .task-message {
     flex-grow: 1;
+    margin-right: 1rem;
   }
   .result-hint {
+    flex-shrink: 0;
     padding: 0;
-    height: 0rem;
     font-weight: 300;
     font-size: 1rem;
     text-transform: uppercase;
@@ -148,11 +149,18 @@ body {
     // border-bottom: 1px solid #ddd;
     overflow: hidden;
     transition: height 0.3s ease-out;
+
+    i {
+      margin: 0;
+      color: black;
+      font-size: 1rem;
+      width: unset;
+    }
   }
   &[data-task-status="ok"] [data-task-component="header"] {
     color: $ACCENT_SUCCESS;
   }
-  &[data-task-status="ban"] [data-task-component="header"]{
+  &[data-task-status="ban"] [data-task-component="header"] {
     color: $ACCENT_ERROR;
     ~ .result-hint {
       height: 1.5rem;
@@ -169,8 +177,8 @@ body {
     margin-right: 7px;
   }
 
-  &.active {
-    .result-hint {
+  &.active [data-task-component="header"] {
+    ~ .result-hint {
       height: 0rem;
     }
   }
