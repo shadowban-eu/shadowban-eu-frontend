@@ -130,7 +130,6 @@ export default class UI {
     const incompleteTasks = Array.from(document.querySelectorAll(
       '[data-task-status="pending"],[data-task-status="running"]'
     ));
-    window._tsk = incompleteTasks;
     const taskUpdates = incompleteTasks.map(x => ({
       id: x.dataset.taskId,
       status: 'warn',

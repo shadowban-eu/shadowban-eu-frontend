@@ -10,12 +10,14 @@ import TechInfo from './ui/TechInfo';
 
 import '../scss/style.scss';
 
+const ui = new UI();
+
 const fullTest = async (screenName) => {
   let response;
   try {
     response = await fetch(`.api/${screenName}`);
   } catch (err) {
-    window.ui.updateTask({
+    ui.updateTask({
       id: 'checkUser',
       status: 'warn',
       msg: 'You are offline.'
@@ -23,7 +25,7 @@ const fullTest = async (screenName) => {
     return;
   }
   if (!response.ok) {
-    window.ui.updateTask({
+    ui.updateTask({
       id: 'checkUser',
       status: 'warn',
       msg: 'Server error. Please try again later.'
@@ -32,8 +34,8 @@ const fullTest = async (screenName) => {
   }
   const result = await response.json();
   // Convert case
-  screenName = result.profile.screen_name;
-  const userLink = `<a href="https://twitter.com/${screenName}">@${screenName}</a>`;
+  const _screenName = result.profile.screen_name;
+  const userLink = `<a href="https://twitter.com/${_screenName}">@${_screenName}</a>`;
 
   let failReason;
   if (!result.profile.exists) {
@@ -47,7 +49,7 @@ const fullTest = async (screenName) => {
   }
 
   if (failReason) {
-    window.ui.updateTask({
+    ui.updateTask({
       id: 'checkUser',
       status: 'warn',
       msg: `${userLink} ${failReason}.`
@@ -55,7 +57,7 @@ const fullTest = async (screenName) => {
     return;
   }
 
-  window.ui.updateTask({
+  ui.updateTask({
     id: 'checkUser',
     status: 'ok',
     msg: `${userLink} exists.`
@@ -68,7 +70,7 @@ const fullTest = async (screenName) => {
   if (result.tests.typeahead === false) {
     typeaheadResult = ['ban', 'Search suggestion ban.'];
   }
-  window.ui.updateTask({
+  ui.updateTask({
     id: 'checkSuggest',
     status: typeaheadResult[0],
     msg: typeaheadResult[1]
@@ -81,7 +83,7 @@ const fullTest = async (screenName) => {
   if (result.tests.search === false) {
     searchResult = ['ban', 'Search ban.'];
   }
-  window.ui.updateTask({
+  ui.updateTask({
     id: 'checkSearch',
     status: searchResult[0],
     msg: searchResult[1]
@@ -94,7 +96,7 @@ const fullTest = async (screenName) => {
   } else if (result.tests.ghost.ban === true) {
     threadResult = ['ban', 'Ghost ban.'];
   }
-  window.ui.updateTask({
+  ui.updateTask({
     id: 'checkConventional',
     status: threadResult[0],
     msg: threadResult[1]
@@ -113,7 +115,7 @@ const fullTest = async (screenName) => {
     }
   }
   if ('more_replies' in result.tests) {
-    window.ui.updateTask({
+    ui.updateTask({
       id: 'checkBarrier',
       status: barrierResult[0],
       msg: barrierResult[1]
@@ -122,9 +124,6 @@ const fullTest = async (screenName) => {
   }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  window.ui = new UI(fullTest);
-  window.fullTest = fullTest;
-  // init test by /?screenName
-  window.ui.initFromLocation(window.location);
-});
+ui.test = fullTest;
+// init test by /?screenName
+ui.initFromLocation(window.location);

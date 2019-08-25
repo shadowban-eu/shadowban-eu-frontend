@@ -165,11 +165,8 @@ body {
   }
   &[data-task-status="ban"] [data-task-component="header"] {
     color: $ACCENT_ERROR;
-    ~ .result-hint {
-      height: 1.5rem;
-    }
   }
-  &[data-task-status="warn"] [data-task-component="header"]{
+  &[data-task-status="warn"] [data-task-component="header"] {
     color: $ACCENT_WARN;
   }
   .gears {
