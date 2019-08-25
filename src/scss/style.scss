@@ -149,12 +149,15 @@ body {
     // border-bottom: 1px solid #ddd;
     overflow: hidden;
     transition: height 0.3s ease-out;
-
     i {
       margin: 0;
       color: black;
       font-size: 1rem;
       width: unset;
+    }
+    .active-indicator {
+      transition: transform 0.3s ease-out;
+      transform: rotateX(0);
     }
   }
   &[data-task-status="ok"] [data-task-component="header"] {
@@ -177,10 +180,8 @@ body {
     margin-right: 7px;
   }
 
-  &.active [data-task-component="header"] {
-    ~ .result-hint {
-      height: 0rem;
-    }
+  &.active .active-indicator {
+    transform: rotateX(180deg);
   }
 }
 
