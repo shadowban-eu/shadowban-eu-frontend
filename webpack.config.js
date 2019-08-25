@@ -10,14 +10,10 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ImageMinPlugin = require('imagemin-webpack-plugin').default;
 
 const packageVersion = require('./package.json').version;
+const getClientEnvironment = require('./config/env');
 
-const ENV = process.env.NODE_ENV;
-if (!ENV || (ENV !== 'development' && ENV !== 'production')) {
-  console.error('You must set NODE_ENV to either development or production!');
-  console.error(`Your NODE_ENV value is: ${ENV}`);
-  process.exit(1);
-}
-const production = ENV === 'production';
+const { raw: env } = getClientEnvironment();
+const production = env.NODE_ENV === 'production';
 const buildVersion = `${packageVersion}-dev`;
 const devServerConfig = {
   contentBase: path.join(__dirname, 'dist'),
@@ -47,7 +43,7 @@ if (!production) {
 }
 
 const config = {
-  mode: ENV,
+  mode: env.NODE_ENV,
   entry: {
     app: './src/js/main.js',
   },
@@ -133,7 +129,7 @@ const config = {
       template: path.resolve(__dirname, 'src', 'index.html'),
       favicon: path.resolve(__dirname, 'src', 'favicon.png'),
       baseHref: production
-        ? 'https://shadowban.eu/'
+        ? env.BASE_HREF
         : `http://${devServerConfig.host}:${devServerConfig.port}${devServerConfig.publicPath}`,
       devTag: production
         ? ''
