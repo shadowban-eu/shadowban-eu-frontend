@@ -60,7 +60,10 @@ export default class UI {
 
     // toast warning about qf option in notification settings
     if (!localStorage.getItem('testing-toast')) {
-      this.qfSettingToastInstance = qfSettingToast(() => this.qfSettingToastDimsmiss(true));
+      this.qfSettingToastInstance = qfSettingToast(
+        () => this.qfSettingToastDimsmiss(), // onClick (closing via OK button; could also be swiped)
+        () => this.qfSettingToastDimsmiss(true) // onComplete (toast is fully closed)
+      );
     }
 
     // actual test function
