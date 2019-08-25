@@ -47,10 +47,11 @@ body {
 }
 
 #controls .card {
-  justify-content: space-around;
+  justify-content: center;
   padding: 1rem;
 
   .input-field {
+    margin-right: 3rem;
     /* label color */
     label { color: $TWITTER_BLUE !important; }
     input {
@@ -130,17 +131,42 @@ body {
 }
 
 [data-task-id] {
-  transition: color 0.6s ease-out;
+  .collapsible-header {
+    transition: color 0.6s ease-out;
+  }
   .task-message {
     flex-grow: 1;
+    margin-right: 1rem;
   }
-  &[data-task-status="ok"] {
+  .result-hint {
+    flex-shrink: 0;
+    padding: 0;
+    font-weight: 300;
+    font-size: 1rem;
+    text-transform: uppercase;
+    background-color: white;
+    box-sizing: border-box;
+    // border-bottom: 1px solid #ddd;
+    overflow: hidden;
+    transition: height 0.3s ease-out;
+    i {
+      margin: 0;
+      color: black;
+      font-size: 1rem;
+      width: unset;
+    }
+    .active-indicator {
+      transition: transform 0.3s ease-out;
+      transform: rotateX(0);
+    }
+  }
+  &[data-task-status="ok"] [data-task-component="header"] {
     color: $ACCENT_SUCCESS;
   }
-  &[data-task-status="ban"] {
+  &[data-task-status="ban"] [data-task-component="header"] {
     color: $ACCENT_ERROR;
   }
-  &[data-task-status="warn"] {
+  &[data-task-status="warn"] [data-task-component="header"] {
     color: $ACCENT_WARN;
   }
   .gears {
@@ -149,6 +175,10 @@ body {
     background: transparent url('/img/gears.svg') bottom center no-repeat;
     background-size: contain;
     margin-right: 7px;
+  }
+
+  &.active .active-indicator {
+    transform: rotateX(180deg);
   }
 }
 

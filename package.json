@@ -12,7 +12,9 @@
   "scripts": {
     "start": "npm dev",
     "dev": "cross-env NODE_ENV=development webpack-dev-server",
-    "build": "cross-env NODE_ENV=production webpack"
+    "build": "cross-env NODE_ENV=production webpack",
+    "lint": "eslint -c ./.eslintrc ./src/js/**",
+    "pre-commit": "npm lint"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
