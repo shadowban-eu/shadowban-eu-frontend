@@ -1,6 +1,7 @@
 import TechInfo from './ui/TechInfo';
 import qfSettingToast from './ui/qfSettingToast';
 import Task from './ui/Task';
+import I18N from './i18n';
 
 import constructTaskData from './tasks';
 
@@ -70,6 +71,9 @@ export default class UI {
     this.test = test;
     const donateModalElement = document.getElementById('donate-modal');
     M.Modal.init(donateModalElement);
+
+    // set i18n strings
+    I18N.resetElements();
   }
 
   runTest() {

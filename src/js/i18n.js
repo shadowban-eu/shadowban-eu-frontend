@@ -11,7 +11,7 @@ export default class I18N {
       .init({
         fallbackLng: 'en-US',
         debug: process.env.NODE_ENV === 'development',
-        ns: ['tasks'],
+        ns: ['tasks', 'common'],
         defaultNS: 'tasks',
         backend: {
           // load from i18next-gitbook repo
@@ -21,10 +21,7 @@ export default class I18N {
       });
 
     i18next.on('languageChanged', () => {
-      // some super-master function that resets ALL
-      // possible values. Might as well trigger a complete
-      // UI reset; tbd...
-      // resetContent();
+      I18N.resetElements();
     });
   }
 
@@ -34,11 +31,16 @@ export default class I18N {
 
   /**
    * Sets innerHTML of an `element` to the
-   * text/translation provided by `key`
-   * @param {HTMLElement} element - Element whose text shall be set
-   * @param {String}      key     - i18n key to get text from
+   * text/translation of that target's .dataset.i18n value
+   * @param {HTMLElement} ...elements - Element whose text shall be set
    */
-  static updateElement(element, key) {
-    element.innerHTML = i18next.t(key); // eslint-disable-line
+  static updateElements(...elements) {
+    elements.forEach((el) => {
+      el.innerHTML = i18next.t(el.dataset.i18n); // eslint-disable-line
+    });
+  }
+
+  static resetElements() {
+    I18N.updateElements(...Array.from(document.querySelectorAll('[data-i18n]')));
   }
 }

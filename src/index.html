@@ -28,7 +28,13 @@
       <div class="col s12">
         <h2>Is <span class="header-screen_name">@username</span><br> shadowbanned on Twitter?</h2>
       </div>
-      <button data-target="donate-modal" class="btn modal-trigger waves-effect waves white">Support Us</button>
+      <button
+        class="btn modal-trigger waves-effect waves white"
+        data-target="donate-modal"
+        data-i18n="common:buttons.support"
+      >
+        {{common:buttons.support}}
+      </button>
     </section>
 
     <section id="controls" class="row">
@@ -49,7 +55,13 @@
             <label for="screenName">Username</label>
           </div>
           <div>
-            <button id="check" class="waves-effect waves white btn btn-flat">Check</button>
+            <button
+              id="check"
+              class="waves-effect waves white btn btn-flat"
+              data-i18n="common:buttons.check"
+            >
+              {{common:buttons.check}}
+            </button>
           </div>
         </div>
       </div>
