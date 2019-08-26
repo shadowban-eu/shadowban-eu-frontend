@@ -49,7 +49,7 @@ const config = {
     app: './src/js/main.js',
   },
   output: {
-    filename: 'js/[name].[hash].js',
+    filename: 'js/[name].[hash:7].js',
     path: path.resolve(__dirname, 'dist'),
     publicPath: ''
   },
@@ -145,7 +145,7 @@ const config = {
       } : false
     }),
     new MiniCssExtractPlugin({
-      filename: 'css/[name].[hash].css',
+      filename: 'css/[name].[hash:7].css',
     }),
     new ImageMinPlugin({ test: /\.(jpg|jpeg|png|gif|svg)$/i }),
     new CleanWebpackPlugin({
