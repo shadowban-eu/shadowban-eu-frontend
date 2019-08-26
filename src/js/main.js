@@ -7,7 +7,7 @@ import 'materialize-css/sass/materialize.scss';
 
 import UI from './ui';
 import TechInfo from './ui/TechInfo';
-import loadI18n from './i18n';
+import I18N from './i18n';
 
 import '../scss/style.scss';
 
@@ -125,7 +125,7 @@ const fullTest = async (screenName) => {
   }
 };
 
-loadI18n().then(() => {
+I18N.init().then(() => {
   ui = new UI();
   ui.test = fullTest;
   // init test by /?screenName
