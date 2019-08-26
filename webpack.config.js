@@ -8,12 +8,13 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ImageMinPlugin = require('imagemin-webpack-plugin').default;
+const { DefinePlugin } = require('webpack');
 
 const packageVersion = require('./package.json').version;
 const getClientEnvironment = require('./config/env');
 
-const { raw: env } = getClientEnvironment();
-const production = env.NODE_ENV === 'production';
+const env = getClientEnvironment();
+const production = env.raw.NODE_ENV === 'production';
 const buildVersion = `${packageVersion}-dev`;
 const devServerConfig = {
   contentBase: path.join(__dirname, 'dist'),
@@ -43,7 +44,7 @@ if (!production) {
 }
 
 const config = {
-  mode: env.NODE_ENV,
+  mode: env.raw.NODE_ENV,
   entry: {
     app: './src/js/main.js',
   },
@@ -129,7 +130,7 @@ const config = {
       template: path.resolve(__dirname, 'src', 'index.html'),
       favicon: path.resolve(__dirname, 'src', 'favicon.png'),
       baseHref: production
-        ? env.BASE_HREF
+        ? env.raw.BASE_HREF
         : `http://${devServerConfig.host}:${devServerConfig.port}${devServerConfig.publicPath}`,
       devTag: production
         ? ''
@@ -156,6 +157,10 @@ const config = {
       verbose: true,
     }),
     new CopyWebpackPlugin(copies),
+    new DefinePlugin({
+      TEST: 'foo',
+      ...env.stringified
+    })
   ],
 };
 
