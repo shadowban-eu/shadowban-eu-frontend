@@ -7,10 +7,11 @@ import 'materialize-css/sass/materialize.scss';
 
 import UI from './ui';
 import TechInfo from './ui/TechInfo';
+import loadI18n from './i18n';
 
 import '../scss/style.scss';
 
-const ui = new UI();
+let ui;
 
 const fullTest = async (screenName) => {
   let response;
@@ -124,6 +125,9 @@ const fullTest = async (screenName) => {
   }
 };
 
-ui.test = fullTest;
-// init test by /?screenName
-ui.initFromLocation(window.location);
+loadI18n().then(() => {
+  ui = new UI();
+  ui.test = fullTest;
+  // init test by /?screenName
+  ui.initFromLocation(window.location);
+});

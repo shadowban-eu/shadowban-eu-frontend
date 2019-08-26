@@ -2,12 +2,12 @@ import TechInfo from './ui/TechInfo';
 import qfSettingToast from './ui/qfSettingToast';
 import Task from './ui/Task';
 
-import taskData from './tasks';
+import constructTaskData from './tasks';
 
 export default class UI {
   constructor(test) {
     // create and add task elements
-    this.tasks = taskData.sort((a, b) => (a.idx - b.idx)).map(task => new Task(task));
+    this.tasks = constructTaskData().sort((a, b) => (a.idx - b.idx)).map(task => new Task(task));
     this.tasksById = this.tasks.reduce(
       (acc, task) => ({ [task.id]: task, ...acc }),
       {}

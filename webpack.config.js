@@ -27,6 +27,10 @@ const copies = [{
   from: path.resolve(__dirname, 'src', 'img'),
   to: path.resolve(__dirname, 'dist', 'img'),
   toType: 'dir',
+}, {
+  from: path.resolve(__dirname, 'src', 'i18n'),
+  to: path.resolve(__dirname, 'dist', 'i18n'),
+  toType: 'dir',
 }];
 // include /src/.api/ in development builds
 // i.e. include API response mocks
