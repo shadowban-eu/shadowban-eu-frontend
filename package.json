@@ -10,11 +10,12 @@
   "license": "GPL-3.0-only",
   "private": true,
   "scripts": {
-    "start": "npm dev",
+    "start": "npm run dev",
     "dev": "cross-env NODE_ENV=development webpack-dev-server",
+    "build:dev": "cross-env NODE_ENV=development webpack",
     "build": "cross-env NODE_ENV=production webpack",
     "lint": "eslint -c ./.eslintrc ./src/js/**",
-    "pre-commit": "npm lint"
+    "pre-commit": "npm run lint"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
