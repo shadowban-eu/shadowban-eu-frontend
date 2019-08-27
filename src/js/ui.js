@@ -17,7 +17,7 @@ export default class UI {
     this.screenName = document.getElementById('screenName');
     this.screenNameLabel = document.querySelector('label[for="screenName"]');
     this.screenNamePrefix = document.querySelector('#controls .input-field .prefix');
-    this.headerScreenName = document.querySelector('.header-screen_name');
+    this.headerScreenName = document.getElementById('headerScreenName');
     this.screenName.addEventListener('keyup', this.updateHeaderScreenName, true);
 
     // button, initiating test
@@ -96,11 +96,15 @@ export default class UI {
     if (!this.screenName.value) {
       classes.remove('invalid');
       classes.remove('valid');
-      this.headerScreenName.innerText = '@username';
+      I18N.updateWithInterpolation(this.headerScreenName, {
+        screenName: I18N.getSingleValue('common:screenNameDefault')
+      });
       return false;
     }
 
-    this.screenName.value = this.screenName.value.replace('@', '').trim();
+    I18N.updateWithInterpolation(this.headerScreenName, {
+      screenName: this.screenName.value.replace('@', '').trim()
+    });
 
     if (!this.screenName.validity.patternMismatch) {
       classes.remove('invalid');
@@ -109,7 +113,9 @@ export default class UI {
       classes.remove('valid');
       classes.add('invalid');
     }
-    this.headerScreenName.innerText = `@${this.screenName.value}`;
+    I18N.updateWithInterpolation(this.headerScreenName, {
+      screenName: this.screenName.value
+    });
     return false;
   };
 

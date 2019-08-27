@@ -2,5 +2,7 @@
   "buttons": {
     "check": "Check",
     "support": "Support Us"
-  }
+  },
+  "title": "Is <span class=\"header-screen_name\">@{{screenName}}</span><br> shadowbanned on Twitter?",
+  "screenNameDefault": "username"
 }
