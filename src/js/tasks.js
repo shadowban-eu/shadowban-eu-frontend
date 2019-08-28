@@ -1,3 +1,5 @@
+import i18next from 'i18next';
+
 /**
  * @typedef {TaskData}
  * @property {String} id                - String id that will be put onto task item's
@@ -19,53 +21,55 @@
  *                                        have FAQ/TechInfo Collapsible in its description.
  * @property {String} faq.id            - id of FAQ <ul> element
  */
-export default [{
+const construct = () => [{
   id: 'checkUser',
   idx: 0, // used to determine place in list; 0 = top-most item
-  message: 'Test Results',
+  message: i18next.t('tasks:checkUser.message'),
   icon: '',
   nonInteractive: true
 }, {
   id: 'checkBarrier',
   idx: 4,
-  message: 'Reply Deboosting',
+  message: i18next.t('tasks:checkBarrier.message'),
   icon: 'contact_support',
   nonInteractive: false,
   description: {
-    title: 'Reply Deboosting',
-    text: 'If Twitter\'s signals determine that an account might engage in harmful behavior, Twitter hides their replies behind a barrier and only loads them when "Show more replies" is clicked. This behavior is personalized, i.e. Twitter does not hide the tweets of accounts you follow. We therefore use an unbiased reference account without followings in order to determine whether tweets within a thread can be retrieved without clicking "Show more replies" from its view.\nIn some cases, Twitter classifies accounts to be offensive. In this case,replies are hidden behind a second barrier within the "Show more replies" section.'
+    title: i18next.t('tasks:checkBarrier.description.title'),
+    text: i18next.t('tasks:checkBarrier.description.text')
   },
   faq: { id: 'barrierFAQ' }
 }, {
   id: 'checkSuggest',
   idx: 1,
-  message: 'Search Suggestion Ban',
+  message: i18next.t('tasks:checkSuggest.message'),
   icon: 'contact_support',
   nonInteractive: false,
   description: {
-    title: 'Search Suggestion Ban',
-    text: 'This type of ban causes an account to not populate search suggestions and people search results when it is searched for while being logged out. Twitter seems to take <a href="https://en.wikipedia.org/wiki/Social_network_analysis#Metrics" target="_blank">tie strength</a> or a similar metric into account. While an account may be suggested to users you are strongly tied to, it may not be shown to others.'
+    title: i18next.t('tasks:checkSuggest.description.title'),
+    text: i18next.t('tasks:checkSuggest.description.text')
   }
 }, {
   id: 'checkSearch',
   idx: 2,
-  message: 'Search Ban',
+  message: i18next.t('tasks:checkSearch.message'),
   icon: 'contact_support',
   nonInteractive: false,
   description: {
-    title: 'Search Ban',
-    text: 'This type of ban causes your tweets to be hidden from the search results entirely, no matter whether the quality filter is turned on or off. This behavior includes hashtags as well. This type of ban seems to be temporally limited for active accounts.'
+    title: i18next.t('tasks:checkSearch.description.title'),
+    text: i18next.t('tasks:checkSearch.description.text')
   },
   faq: { id: 'searchFAQ' }
 }, {
   id: 'checkConventional',
   idx: 3,
-  message: 'Thread Ban',
+  message: i18next.t('tasks:checkConventional.message'),
   icon: 'contact_support',
   nonInteractive: false,
   description: {
-    title: 'Thread Ban',
-    text: 'This is what is referred to as conventional shadowban or ghost banning as well. It comprises a search ban while threads are completely ripped apart by hiding reply tweets of the affected user to others. Everything will look perfectly normal to the affected user but many others will not be able to see reply tweets of the affected user at all. Reasons for this ban include behavior like excessive tweeting or following. Again, this type of ban seems to be temporally limited for active accounts.'
+    title: i18next.t('tasks:checkConventional.description.title'),
+    text: i18next.t('tasks:checkConventional.description.text')
   },
   faq: { id: 'threadFAQ' }
 }];
+
+export default construct;
