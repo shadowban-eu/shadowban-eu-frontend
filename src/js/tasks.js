@@ -24,50 +24,50 @@ import i18next from 'i18next';
 const construct = () => [{
   id: 'checkUser',
   idx: 0, // used to determine place in list; 0 = top-most item
-  message: i18next.t('checkUser.message'),
+  message: i18next.t('tasks:checkUser.message'),
   icon: '',
   nonInteractive: true
 }, {
   id: 'checkBarrier',
   idx: 4,
-  message: i18next.t('checkBarrier.message'),
+  message: i18next.t('tasks:checkBarrier.message'),
   icon: 'contact_support',
   nonInteractive: false,
   description: {
-    title: i18next.t('checkBarrier.description.title'),
-    text: i18next.t('checkBarrier.description.text')
+    title: i18next.t('tasks:checkBarrier.description.title'),
+    text: i18next.t('tasks:checkBarrier.description.text')
   },
   faq: { id: 'barrierFAQ' }
 }, {
   id: 'checkSuggest',
   idx: 1,
-  message: i18next.t('checkSuggest.message'),
+  message: i18next.t('tasks:checkSuggest.message'),
   icon: 'contact_support',
   nonInteractive: false,
   description: {
-    title: i18next.t('checkSuggest.description.title'),
-    text: i18next.t('checkSuggest.description.text')
+    title: i18next.t('tasks:checkSuggest.description.title'),
+    text: i18next.t('tasks:checkSuggest.description.text')
   }
 }, {
   id: 'checkSearch',
   idx: 2,
-  message: i18next.t('checkSearch.message'),
+  message: i18next.t('tasks:checkSearch.message'),
   icon: 'contact_support',
   nonInteractive: false,
   description: {
-    title: i18next.t('checkSearch.description.title'),
-    text: i18next.t('checkSearch.description.text')
+    title: i18next.t('tasks:checkSearch.description.title'),
+    text: i18next.t('tasks:checkSearch.description.text')
   },
   faq: { id: 'searchFAQ' }
 }, {
   id: 'checkConventional',
   idx: 3,
-  message: i18next.t('checkConventional.message'),
+  message: i18next.t('tasks:checkConventional.message'),
   icon: 'contact_support',
   nonInteractive: false,
   description: {
-    title: i18next.t('checkConventional.description.title'),
-    text: i18next.t('checkConventional.description.text')
+    title: i18next.t('tasks:checkConventional.description.title'),
+    text: i18next.t('tasks:checkConventional.description.text')
   },
   faq: { id: 'threadFAQ' }
 }];

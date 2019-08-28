@@ -11,8 +11,8 @@ export default class I18N {
       .init({
         fallbackLng: 'en-US',
         debug: process.env.NODE_ENV === 'development',
-        ns: ['tasks', 'common'],
-        defaultNS: 'tasks',
+        ns: ['common', 'tasks', 'functionality'],
+        defaultNS: 'common',
         backend: {
           // load from i18next-gitbook repo
           loadPath: `${process.env.BASE_HREF}/i18n/{{lng}}/{{ns}}.json`,
