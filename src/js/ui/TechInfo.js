@@ -1,3 +1,5 @@
+import I18N from '../i18n';
+
 /* global DocumentTouch */
 export default class TechInfo {
   static isMobile = !!(('ontouchstart' in window) || (window.navigator && window.navigator.msPointerEnabled && window.MSGesture) || (window.DocumentTouch && document instanceof DocumentTouch));
@@ -14,7 +16,16 @@ export default class TechInfo {
     document.querySelector('#searchFAQ').classList.remove('hide');
     const contentElement = document.querySelector('#searchFAQ .techContent');
     const searchLink = TechInfo.makeSearchLink(`from:@${results.profile.screen_name}`);
-    contentElement.innerHTML = `We ${results.tests.search === false ? 'did not find a tweet' : `found <a href="https://twitter.com/i/status/${results.tests.search}">a tweet</a>`} by searching for ${searchLink}.`;
+    contentElement.innerHTML = I18N.getSingleValue('techinfo:search.text', {
+      foundOrNot: I18N.getSingleValue(
+        results.tests.search
+          ? 'techinfo:search.found'
+          : 'techinfo:search.notFound',
+        { tweetId: results.tests.search, interpolation: { escapeValue: true } }
+      ),
+      searchLink,
+      interpolation: { escapeValue: false }
+    });
   }
 
   static updateBarrier(results) {
@@ -23,17 +34,22 @@ export default class TechInfo {
     }
     document.querySelector('#barrierFAQ').classList.remove('hide');
     const contentElement = document.querySelector('#barrierFAQ .techContent');
+
     let explanation;
     if (!results.tests.more_replies.ban) {
-      explanation = 'The tweet was not hidden.';
+      explanation = I18N.getSingleValue('techinfo:barrier.highQuality');
     } else {
-      explanation = 'We had to click "Show more replies" to view it';
-      if (results.tests.more_replies.stage === 1) {
-        explanation += ' and we had to click a second time because the account is rated as potentially offensive';
-      }
-      explanation += '.';
+      explanation = I18N.getSingleValue('techinfo:barrier.lowQuality', {
+        abuse: results.tests.more_replies.stage === 1
+          ? I18N.getSingleValue('techinfo:barrier.abuseQuality')
+          : ''
+      });
     }
-    contentElement.innerHTML = `We found <a href="https://twitter.com/i/status/${results.tests.more_replies.in_reply_to}">a tweet</a> which the user <a href="https://twitter.com/i/status/${results.tests.more_replies.tweet}">replied to</a>. ${explanation}`;
+    contentElement.innerHTML = I18N.getSingleValue('techinfo:barrier.text', {
+      replyToId: results.tests.more_replies.in_reply_to,
+      tweetId: results.tests.more_replies.tweet,
+      explanation
+    });
   }
 
   static updateThread(results) {
@@ -43,12 +59,14 @@ export default class TechInfo {
     document.querySelector('#threadFAQ').classList.remove('hide');
     const contentElement = document.querySelector('#threadFAQ .techContent');
     if (results.tests.search) {
-      contentElement.innerHTML = 'A ghost ban implies a search ban. Since the account is not search banned, it cannot be ghost banned.';
+      contentElement.innerHTML = I18N.getSingleValue('techinfo:thread.searchBanned');
       return;
     }
-    contentElement.innerHTML = `We found <a href="https://twitter.com/i/status/${results.tests.ghost.tweet}">a tweet
-    with at least one reply</a> on the user's profile. A <a href="https://twitter.com/i/status/${results.tests.ghost.reply}">reply tweet</a>
-    is ${results.tests.ghost.ban ? '' : 'not '}detached.`;
+    contentElement.innerHTML = I18N.getSingleValue('techinfo:thread.text', {
+      tweetId: results.tests.ghost.tweet,
+      replyId: results.tests.ghost.reply,
+      detached: results.tests.ghost.ban ? '' : 'not'
+    });
   }
 
   static updateQFD(results) {

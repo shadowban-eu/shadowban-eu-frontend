@@ -11,7 +11,7 @@ export default class I18N {
       .init({
         fallbackLng: 'en-US',
         debug: process.env.NODE_ENV === 'development',
-        ns: ['common', 'tasks', 'functionality'],
+        ns: ['common', 'tasks', 'functionality', 'techinfo'],
         defaultNS: 'common',
         backend: {
           // load from i18next-gitbook repo
@@ -37,8 +37,8 @@ export default class I18N {
     i18next.changeLanguage(lng);
   }
 
-  static getSingleValue(key) {
-    return i18next.t(key);
+  static getSingleValue(key, options = {}) {
+    return i18next.t(key, options);
   }
 
   /**
