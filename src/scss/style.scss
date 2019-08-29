@@ -1,8 +1,13 @@
+$BACKGROUND: rgb(230, 236, 240);
 $TWITTER_BLUE: rgb(20, 129, 195);
 $ACCENT_PURPLE: rgb(175, 52, 175);
 $ACCENT_SUCCESS: rgb(8, 136, 16);
 $ACCENT_ERROR: rgb(197, 61, 61);
 $ACCENT_WARN: orange;
+$PLACEHOLDER_COLOR: #ced4da;
+
+// import after setting $ph-* vars!
+@import "./placeholder-loading";
 
 * {
     outline: none;
@@ -11,7 +16,7 @@ $ACCENT_WARN: orange;
 body {
   font-family: Roboto, 'Helvetica Neue', Arial, sans-serif;
   color: #333;
-  background-color: rgb(230, 236, 240);
+  background-color: $BACKGROUND;
   font-weight: 500;
 }
 

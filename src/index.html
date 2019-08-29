@@ -24,54 +24,67 @@
     <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
   </head>
   <body>
-    <section class="row header section">
-      <div class="col s12">
-        <h2
-          id="headerScreenName"
-          data-i18n="common:title"
-        >
-          {{common:title}}
-        </h2>
+    <section class="header section">
+      <div class="row">
+        <div class="col s12">
+          <div class="loadable-container">
+            <h2
+              id="headerScreenName"
+              data-i18n="common:title"
+              class="loadable loading"
+            >
+              {{common:title}}
+            </h2>
+          </div>
+        </div>
       </div>
-      <button
-        class="btn modal-trigger waves-effect waves white"
-        data-target="donate-modal"
-        data-i18n="common:buttons.support"
-      >
-        {{common:buttons.support}}
-      </button>
+      <div class="row">
+        <div class="col s12">
+          <div class="loadable-container">
+            <button
+              class="btn modal-trigger waves-effect waves white loadable loading"
+              data-target="donate-modal"
+              data-i18n="common:buttons.support"
+            >
+              {{common:buttons.support}}
+            </button>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section id="controls" class="row">
       <div class="col s12 offset-m1 m10 offset-l2 l8 center-align">
-        <div class="card valign-wrapper">
-          <div class="input-field">
-            <span class="prefix">@</span>
-            <input
-              id="screenName"
-              type="text"
-              autocomplete="username"
-              required
-              pattern="^[A-Za-z0-9_]{1,15}$"
-              data-position="bottom"
-              data-tooltip="Please provide a valid Twitter @handle!"
-              maxlength="16"
-            >
-            <label
-              for="screenName"
-              data-i18n="common:screenNameDefault"
-            >
-              {{common:screenNameDefault}}
-            </label>
-          </div>
-          <div>
-            <button
-              id="check"
-              class="waves-effect waves white btn btn-flat"
-              data-i18n="common:buttons.check"
-            >
-              {{common:buttons.check}}
-            </button>
+        <div class="loadable-container">
+          <div class="card valign-wrapper loadable loading">
+            <div class="input-field">
+              <span class="prefix">@</span>
+              <input
+                id="screenName"
+                type="text"
+                autocomplete="username"
+                required
+                pattern="^[A-Za-z0-9_]{1,15}$"
+                data-position="bottom"
+                data-tooltip="Please provide a valid Twitter @handle!"
+                maxlength="16"
+              >
+              <label
+                for="screenName"
+                data-i18n="common:screenNameDefault"
+              >
+                {{common:screenNameDefault}}
+              </label>
+            </div>
+            <div>
+              <button
+                id="check"
+                class="waves-effect waves white btn btn-flat"
+                data-i18n="common:buttons.check"
+              >
+                {{common:buttons.check}}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -79,56 +92,60 @@
 
     <section id="results" class="row">
       <div class="col s12 offset-m1 m10 offset-l2 l8 center-align">
-        <ul id="tasks" class="collapsible"></ul>
+        <div class="loadable-container">
+          <ul id="tasks" class="collapsible loadable loading"></ul>
+        </div>
       </div>
     </section>
 
     <section class="row">
       <div class="col s12 offset-m1 m10 offset-l2 l8">
-        <ul id="functionality" class="collapsible popout">
-          <li>
-            <div
-              class="collapsible-header"
-              data-i18n="functionality:noShadowbanClaim.title"
-            >
-              {{functionality:noShadowbanClaim.title}}
-            </div>
-            <div
-              class="collapsible-body"
-              data-i18n="functionality:noShadowbanClaim.text"
-            >
-              {{functionality:noShadowbanClaim.text}}
-            </div>
-          </li>
-          <li>
-            <div
-              class="collapsible-header"
-              data-i18n="functionality:qfdTestGone.title"
-            >
-              {{functionality:qfdTestGone.title}}
-            </div>
-            <div
-              class="collapsible-body"
-              data-i18n="functionality:qfdTestGone.text"
-            >
-              {{functionality:qfdTestGone.text}}
-            </div>
-          </li>
-          <li>
-            <div
-              class="collapsible-header"
-              data-i18n="functionality:testerFunctions.title"
-            >
-              {{functionality:testerFunctions.title}}
-            </div>
-            <div
-              class="collapsible-body"
-              data-i18n="functionality:testerFunctions.text"
-            >
-              {{functionality:testerFunctions.text}}
-            </div>
-          </li>
-        </ul>
+        <div class="loadable-container">
+          <ul id="functionality" class="collapsible popout loadable loading">
+            <li>
+              <div
+                class="collapsible-header"
+                data-i18n="functionality:noShadowbanClaim.title"
+              >
+                {{functionality:noShadowbanClaim.title}}
+              </div>
+              <div
+                class="collapsible-body"
+                data-i18n="functionality:noShadowbanClaim.text"
+              >
+                {{functionality:noShadowbanClaim.text}}
+              </div>
+            </li>
+            <li>
+              <div
+                class="collapsible-header"
+                data-i18n="functionality:qfdTestGone.title"
+              >
+                {{functionality:qfdTestGone.title}}
+              </div>
+              <div
+                class="collapsible-body"
+                data-i18n="functionality:qfdTestGone.text"
+              >
+                {{functionality:qfdTestGone.text}}
+              </div>
+            </li>
+            <li>
+              <div
+                class="collapsible-header"
+                data-i18n="functionality:testerFunctions.title"
+              >
+                {{functionality:testerFunctions.title}}
+              </div>
+              <div
+                class="collapsible-body"
+                data-i18n="functionality:testerFunctions.text"
+              >
+                {{functionality:testerFunctions.text}}
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </section>
 
@@ -210,6 +227,12 @@
         >
           {{common:supportModal.button}}
         </a>
+      </div>
+    </div>
+    <div class="ph-item">
+      <div class="ph-col-12">
+          <div class="ph-picture"></div>
+
       </div>
     </div>
     <%= htmlWebpackPlugin.options.devTag %>

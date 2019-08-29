@@ -20,14 +20,14 @@ export default class I18N {
         }
       });
 
-    I18N.setupInterpolationDefaultsTheHackyWay();
+    I18N.setInterpolationDefaults();
 
     // i18next.on('languageChanged', () => {
     //   I18N.resetElements();
     // });
   }
 
-  static setupInterpolationDefaultsTheHackyWay() {
+  static setInterpolationDefaults() {
     i18next.options.interpolation.defaultVariables = {
       screenName: i18next.t('common:screenNameDefault')
     };
@@ -58,5 +58,14 @@ export default class I18N {
 
   static resetElements() {
     I18N.updateElements(...Array.from(document.querySelectorAll('[data-i18n]')));
+    const tEndHandler = ({ target }) => {
+      target.classList.remove('loadable');
+      target.removeEventListener('transitionend', tEndHandler);
+    };
+    Array.from(document.querySelectorAll('.loadable.loading'))
+      .forEach((element) => {
+        element.addEventListener('transitionend', tEndHandler);
+        element.classList.remove('loading');
+      });
   }
 }
