@@ -1,12 +1,14 @@
 /* eslint-disable no-console */
 import i18next from 'i18next';
+import ChainedBackend from 'i18next-chained-backend';
+import LocalStorageBackend from 'i18next-localstorage-backend';
 import XHRBackend from 'i18next-xhr-backend';
 import BrowserLanguageDetector from 'i18next-browser-languagedetector';
 
 export default class I18N {
   static async init() {
     await i18next
-      .use(XHRBackend)
+      .use(ChainedBackend)
       .use(BrowserLanguageDetector)
       .init({
         fallbackLng: 'en-US',
@@ -14,9 +16,15 @@ export default class I18N {
         ns: ['common', 'tasks', 'functionality', 'techinfo'],
         defaultNS: 'common',
         backend: {
-          // load from i18next-gitbook repo
-          loadPath: '/i18n/{{lng}}/{{ns}}.json',
-          crossDomain: false
+          backends: [LocalStorageBackend, XHRBackend],
+          backendOptions: [
+            { /* LocalStorageBackend options */ },
+            {
+              // XHRBackend options
+              loadPath: '/i18n/{{lng}}/{{ns}}.json',
+              crossDomain: false
+            }
+          ]
         }
       });
 
