@@ -49,15 +49,6 @@ export default class UI {
     // Keyboard events disabled entirely
     M.Collapsible.prototype._handleCollapsibleKeydown = () => {};
 
-    // all other collapsibles
-    this.tasksCollapsible = M.Collapsible.init(document.getElementById('tasks'));
-    this.searchFaqCollapsible = M.Collapsible.init(document.getElementById('searchFAQ'));
-    this.threadFaqCollapsible = M.Collapsible.init(document.getElementById('threadFAQ'));
-    this.barrierFaqCollapsible = M.Collapsible.init(document.getElementById('barrierFAQ'));
-    this.qfdFaqCollapsible = M.Collapsible.init(document.getElementById('qfdFAQ'), {
-      onOpenEnd: UI.scrollToTop
-    });
-    this.functionalityCollapsible = M.Collapsible.init(document.getElementById('functionality'));
 
     // toast warning about qf option in notification settings
     if (!localStorage.getItem('testing-toast')) {
@@ -74,6 +65,16 @@ export default class UI {
 
     // set i18n strings
     I18N.resetElements();
+
+    // all other collapsibles
+    this.tasksCollapsible = M.Collapsible.init(document.getElementById('tasks'));
+    this.searchFaqCollapsible = M.Collapsible.init(document.getElementById('searchFAQ'));
+    this.threadFaqCollapsible = M.Collapsible.init(document.getElementById('threadFAQ'));
+    this.barrierFaqCollapsible = M.Collapsible.init(document.getElementById('barrierFAQ'));
+    this.qfdFaqCollapsible = M.Collapsible.init(document.getElementById('qfdFAQ'), {
+      onOpenEnd: UI.scrollToTop
+    });
+    this.functionalityCollapsible = M.Collapsible.init(document.getElementById('functionality'));
   }
 
   runTest() {
