@@ -15,7 +15,7 @@ export default class I18N {
         defaultNS: 'common',
         backend: {
           // load from i18next-gitbook repo
-          loadPath: `${process.env.BASE_HREF}/i18n/{{lng}}/{{ns}}.json`,
+          loadPath: '/i18n/{{lng}}/{{ns}}.json',
           crossDomain: false
         }
       });

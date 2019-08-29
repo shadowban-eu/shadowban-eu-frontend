@@ -15,6 +15,8 @@ const getClientEnvironment = require('./config/env');
 
 const env = getClientEnvironment();
 const production = env.raw.NODE_ENV === 'production';
+const useDevServer = !production && process.env.WEBPACK_DEV_SERVER === 'true';
+
 const buildVersion = `${packageVersion}-dev`;
 const devServerConfig = {
   contentBase: path.join(__dirname, 'dist'),
@@ -133,9 +135,9 @@ const config = {
       filename: 'index.html',
       template: path.resolve(__dirname, 'src', 'index.html'),
       favicon: path.resolve(__dirname, 'src', 'favicon.png'),
-      baseHref: production
-        ? env.raw.BASE_HREF
-        : `http://${devServerConfig.host}:${devServerConfig.port}${devServerConfig.publicPath}`,
+      baseHref: useDevServer
+        ? `http://${devServerConfig.host}:${devServerConfig.port}${devServerConfig.publicPath}`
+        : env.raw.BASE_HREF,
       devTag: production
         ? ''
         : `<div>${buildVersion}</div>`,
@@ -168,9 +170,10 @@ const config = {
   ],
 };
 
-if (!production) {
+if (useDevServer) {
   config.devServer = devServerConfig;
 }
 
 console.log(`Mode: ${config.mode}`);
+console.log(`useDevServer: ${useDevServer}`);
 module.exports = config;
