@@ -70,7 +70,7 @@ export default class TechInfo {
   }
 
   static reset() {
-    document.querySelectorAll('#threadFAQ, #searchFAQ, #barrierFAQ .techInfo')
+    document.querySelectorAll('#threadFAQ, #searchFAQ, #barrierFAQ')
       .forEach(element => element.classList.add('hide'));
   }
 }
