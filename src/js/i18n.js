@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+/* global i18nVersions */
 import i18next from 'i18next';
 import ChainedBackend from 'i18next-chained-backend';
 import LocalStorageBackend from 'i18next-localstorage-backend';
@@ -18,7 +19,10 @@ export default class I18N {
         backend: {
           backends: [LocalStorageBackend, XHRBackend],
           backendOptions: [
-            { /* LocalStorageBackend options */ },
+            {
+              // LocalStorageBackend options
+              versions: i18nVersions
+            },
             {
               // XHRBackend options
               loadPath: '/i18n/{{lng}}/{{ns}}.json',

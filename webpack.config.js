@@ -10,6 +10,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ImageMinPlugin = require('imagemin-webpack-plugin').default;
 const { DefinePlugin } = require('webpack');
 
+const I18nextVersioningPlugin = require('i18next-versioning-webpack-plugin');
+
 const packageVersion = require('./package.json').version;
 const getClientEnvironment = require('./config/env');
 
@@ -52,12 +54,15 @@ if (!production) {
 const config = {
   mode: env.raw.NODE_ENV,
   entry: {
-    app: './src/js/main.js',
+    app: './src/js/main.js'
   },
   output: {
     filename: 'js/[name].[hash:7].js',
     path: path.resolve(__dirname, 'dist'),
     publicPath: ''
+  },
+  infrastructureLogging: {
+    level: 'info'
   },
   module: {
     rules: [
@@ -129,6 +134,10 @@ const config = {
     ],
   },
   plugins: [
+    new I18nextVersioningPlugin({
+      langsRoot: './src/i18n',
+      hashFileName: './i18nVersionHashes.json'
+    }),
     new HtmlWebpackPlugin({
       inject: true,
       hash: production,
@@ -164,8 +173,8 @@ const config = {
     }),
     new CopyWebpackPlugin(copies),
     new DefinePlugin({
-      TEST: 'foo',
-      ...env.stringified
+      ...env.stringified,
+      // i18nVersions - added by I18nextVersioningPlugin
     })
   ],
 };
