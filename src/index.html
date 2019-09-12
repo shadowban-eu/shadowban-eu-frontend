@@ -13,7 +13,7 @@
     <meta property="og:site_name" content="Twitter Shadowban Test">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image:alt" content="shadwoban.eu">
-    <base target="_blank" href="<%= htmlWebpackPlugin.options.baseHref %>">
+    <base target="_blank" href="<%= baseHref %>">
 
     <link rel="prefetch" href="./img/gears.svg" />
 
@@ -24,6 +24,23 @@
     <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
   </head>
   <body>
+    <% if (!production) { %>
+      <section class="dev-header">
+        <div class="row">
+          <div class="col s6">
+            This is a development build!
+          </div>
+          <div class="col s6 right-align">
+            <%= buildVersion %>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12">
+            Test users: <%= testUsers %>
+          </div>
+        </div>
+      </section>
+    <% } %>
     <section class="header section">
       <div class="row">
         <div class="col s12">
@@ -235,6 +252,5 @@
 
       </div>
     </div>
-    <%= htmlWebpackPlugin.options.devTag %>
   </body>
 </html>

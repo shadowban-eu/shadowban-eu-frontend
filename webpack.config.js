@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 const path = require('path');
+const { readdirSync } = require('fs');
 const autoPrefixer = require('autoprefixer');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const I18nextVersioningPlugin = require('i18next-versioning-webpack-plugin');
@@ -35,11 +36,10 @@ const copies = [{
   to: path.resolve(__dirname, 'dist', 'i18n'),
   toType: 'dir',
 }];
-// include /src/.api/ in development builds
-// i.e. include API response mocks
-// Files in /src/.api/ will be served as
-// responses to test requests, according to the file's
-// name.
+
+// include /src/.api/ in development builds; i.e. include API response mocks
+// Files in /src/.api/ will be served as responses to test requests,
+// according to the file's name.
 // When you test e.g. a username `ghost`, the contents of
 // /src/.api/ghost will be served.
 if (!production) {
@@ -143,12 +143,14 @@ const config = {
       filename: 'index.html',
       template: path.resolve(__dirname, 'src', 'index.html'),
       favicon: path.resolve(__dirname, 'src', 'favicon.png'),
-      baseHref: useDevServer
-        ? `http://${devServerConfig.host}:${devServerConfig.port}${devServerConfig.publicPath}`
-        : env.raw.BASE_HREF,
-      devTag: production
-        ? ''
-        : `<div>${buildVersion}</div>`,
+      templateParameters: {
+        baseHref: useDevServer
+          ? `http://${devServerConfig.host}:${devServerConfig.port}${devServerConfig.publicPath}`
+          : env.raw.BASE_HREF,
+        production,
+        buildVersion,
+        testUsers: !production ? readdirSync('./src/.api').join(', ') : undefined
+      },
       minify: production ? {
         collapseWhitespace: true,
         removeComments: true,
