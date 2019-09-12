@@ -2,6 +2,7 @@
 const path = require('path');
 const autoPrefixer = require('autoprefixer');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const I18nextVersioningPlugin = require('i18next-versioning-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -9,8 +10,6 @@ const TerserPlugin = require('terser-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ImageMinPlugin = require('imagemin-webpack-plugin').default;
 const { DefinePlugin } = require('webpack');
-
-const I18nextVersioningPlugin = require('i18next-versioning-webpack-plugin');
 
 const packageVersion = require('./package.json').version;
 const getClientEnvironment = require('./config/env');
