@@ -53,7 +53,7 @@ export default class UI {
     // toast warning about qf option in notification settings
     if (!localStorage.getItem('testing-toast')) {
       this.qfSettingToastInstance = qfSettingToast(
-        () => this.qfSettingToastDimsmiss(), // onClick (closing via OK button; could also be swiped)
+        () => this.qfSettingToastDimsmiss(), // onClick (closing via OK button; not swiped)
         () => this.qfSettingToastDimsmiss(true) // onComplete (toast is fully closed)
       );
     }
@@ -71,9 +71,7 @@ export default class UI {
     this.searchFaqCollapsible = M.Collapsible.init(document.getElementById('searchFAQ'));
     this.threadFaqCollapsible = M.Collapsible.init(document.getElementById('threadFAQ'));
     this.barrierFaqCollapsible = M.Collapsible.init(document.getElementById('barrierFAQ'));
-    this.qfdFaqCollapsible = M.Collapsible.init(document.getElementById('qfdFAQ'), {
-      onOpenEnd: UI.scrollToTop
-    });
+    this.qfdFaqCollapsible = M.Collapsible.init(document.getElementById('qfdFAQ'));
     this.functionalityCollapsible = M.Collapsible.init(document.getElementById('functionality'));
   }
 
@@ -223,23 +221,5 @@ export default class UI {
     if (!swiped) {
       this.qfSettingToastInstance.dismiss();
     }
-  }
-
-  static scrollToTop(element) {
-    if (!element.querySelector('.collapsible-header').classList.contains('highlight')) {
-      return;
-    }
-    const targetY = element.offsetTop - 20;
-    const stepY = 15;
-    let currentY = window.pageYOffset;
-    const direction = currentY > targetY ? 'up' : 'down';
-
-    const scrollInterval = window.setInterval(() => {
-      currentY = direction === 'up' ? currentY - stepY : currentY + stepY;
-      window.scrollTo(0, currentY);
-      if (currentY >= targetY || currentY === window.innerHeight) {
-        window.clearInterval(scrollInterval);
-      }
-    }, 10);
   }
 }
