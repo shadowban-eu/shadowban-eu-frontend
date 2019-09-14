@@ -16,7 +16,8 @@ const dotenvPath = resolveApp('./.env');
 
 // https://github.com/bkeepers/dotenv#what-other-env-files-can-i-use
 const dotenvFiles = [
-  `${dotenvPath}.${NODE_ENV}.local`,
+  // ignore .local env file, when started with --ignore-local flag
+  !process.argv.includes('--ignore-local') && `${dotenvPath}.${NODE_ENV}.local`,
   `${dotenvPath}.${NODE_ENV}`,
   // Don't include `.env.local` for `test` environment
   // since normally you expect tests to produce the same
