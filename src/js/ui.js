@@ -1,17 +1,24 @@
 import TechInfo from './ui/TechInfo';
 import qfSettingToast from './ui/qfSettingToast';
+import Task from './ui/Task';
+import I18N from './i18n';
+
+import constructTaskData from './tasks';
 
 export default class UI {
   constructor(test) {
+    // create and add task elements
+    this.tasks = constructTaskData().sort((a, b) => (a.idx - b.idx)).map(task => new Task(task));
+    this.tasksById = this.tasks.reduce(
+      (acc, task) => ({ [task.id]: task, ...acc }),
+      {}
+    );
     // user handle input and title synchronisation
     this.screenName = document.getElementById('screenName');
     this.screenNameLabel = document.querySelector('label[for="screenName"]');
     this.screenNamePrefix = document.querySelector('#controls .input-field .prefix');
-    this.headerScreenName = document.querySelector('.header-screen_name');
+    this.headerScreenName = document.getElementById('headerScreenName');
     this.screenName.addEventListener('keyup', this.updateHeaderScreenName, true);
-
-    // results
-    this.results = document.querySelector('#results');
 
     // button, initiating test
     this.checkButton = document.getElementById('check');
@@ -42,30 +49,35 @@ export default class UI {
     // Keyboard events disabled entirely
     M.Collapsible.prototype._handleCollapsibleKeydown = () => {};
 
-    // all other collapsibles
-    this.tasksCollapsible = M.Collapsible.init(document.getElementById('tasks'));
-    this.searchFaqCollapsible = M.Collapsible.init(document.getElementById('searchFAQ'));
-    this.threadFaqCollapsible = M.Collapsible.init(document.getElementById('threadFAQ'));
-    this.barrierFaqCollapsible = M.Collapsible.init(document.getElementById('barrierFAQ'));
-    this.qfdFaqCollapsible = M.Collapsible.init(document.getElementById('qfdFAQ'), {
-      onOpenEnd: UI.scrollToTop
-    });
-    this.functionalityCollapsible = M.Collapsible.init(document.getElementById('functionality'));
 
     // toast warning about qf option in notification settings
     if (!localStorage.getItem('testing-toast')) {
-      this.qfSettingToastInstance = qfSettingToast(() => this.qfSettingToastDimsmiss(true));
+      this.qfSettingToastInstance = qfSettingToast(
+        () => this.qfSettingToastDimsmiss(), // onClick (closing via OK button; not swiped)
+        () => this.qfSettingToastDimsmiss(true) // onComplete (toast is fully closed)
+      );
     }
 
     // actual test function
     this.test = test;
     const donateModalElement = document.getElementById('donate-modal');
     M.Modal.init(donateModalElement);
+
+    // set i18n strings
+    I18N.resetElements();
+
+    // all other collapsibles
+    this.tasksCollapsible = M.Collapsible.init(document.getElementById('tasks'));
+    this.searchFaqCollapsible = M.Collapsible.init(document.getElementById('searchFAQ'));
+    this.threadFaqCollapsible = M.Collapsible.init(document.getElementById('threadFAQ'));
+    this.barrierFaqCollapsible = M.Collapsible.init(document.getElementById('barrierFAQ'));
+    this.qfdFaqCollapsible = M.Collapsible.init(document.getElementById('qfdFAQ'));
+    this.functionalityCollapsible = M.Collapsible.init(document.getElementById('functionality'));
   }
 
   runTest() {
     this.checkButton.focus(); // remove focus from input field, to close mobile screen kbd
-    this.reset(this.screenName);
+    this.reset(this.screenName.value);
     this.setLocationForScreenName();
     this.lock();
     this.test(this.screenName.value)
@@ -83,11 +95,15 @@ export default class UI {
     if (!this.screenName.value) {
       classes.remove('invalid');
       classes.remove('valid');
-      this.headerScreenName.innerText = '@username';
+      I18N.updateWithInterpolation(this.headerScreenName, {
+        screenName: I18N.getSingleValue('common:screenNameDefault')
+      });
       return false;
     }
 
-    this.screenName.value = this.screenName.value.replace('@', '').trim();
+    I18N.updateWithInterpolation(this.headerScreenName, {
+      screenName: this.screenName.value.replace('@', '').trim()
+    });
 
     if (!this.screenName.validity.patternMismatch) {
       classes.remove('invalid');
@@ -96,7 +112,9 @@ export default class UI {
       classes.remove('valid');
       classes.add('invalid');
     }
-    this.headerScreenName.innerText = `@${this.screenName.value}`;
+    I18N.updateWithInterpolation(this.headerScreenName, {
+      screenName: this.screenName.value
+    });
     return false;
   };
 
@@ -124,7 +142,6 @@ export default class UI {
     const incompleteTasks = Array.from(document.querySelectorAll(
       '[data-task-status="pending"],[data-task-status="running"]'
     ));
-    window._tsk = incompleteTasks;
     const taskUpdates = incompleteTasks.map(x => ({
       id: x.dataset.taskId,
       status: 'warn',
@@ -133,62 +150,10 @@ export default class UI {
     this.updateTask(...taskUpdates);
   };
 
-  // update task info; takes one or more objects
-  updateTask = (...tasks) => {
-    tasks.forEach((task) => {
-      const taskEls = Array.isArray(task.id) ? task.id : [task.id];
-      for (let i = 0; i < taskEls.length; i += 1) {
-        const taskEl = this.results.querySelector(`[data-task-id="${taskEls[i]}"]`);
-        const taskIcon = taskEl.querySelector('.material-icons');
-        const taskIconClasses = taskIcon.classList;
-        // icon
-        switch (task.status) {
-          case 'running':
-            taskIconClasses.add('gears');
-            taskIcon.innerText = '';
-            break;
-          case 'pending':
-            taskIconClasses.remove('gears');
-            taskIcon.innerText = 'access_time';
-            break;
-          case 'ok':
-            taskIconClasses.remove('gears');
-            taskIcon.innerText = 'check';
-            break;
-          case 'ban':
-            taskIconClasses.remove('gears');
-            taskIcon.innerText = 'error_outline';
-            break;
-          case 'reset':
-            taskIconClasses.remove('gears');
-            taskIcon.innerText = 'contact_support';
-            break;
-          case 'warn':
-            taskIconClasses.remove('gears');
-            taskIcon.innerText = 'error_outline';
-            break;
-          default:
-            break;
-        }
-        // message
-        if (task.msg) {
-          const messageElement = taskEl.querySelector('.task-message');
-          // messageElement.children.forEach(child => messageElement.removeChild(child));
-          const htmlMessage = `<span>${task.msg}</span>`;
-          // Yes, innerHTML is a security issue.
-          // But this is ok since we are using hardcoded values, only.
-          messageElement.innerHTML = htmlMessage;
-        }
-        // -task-status
-        taskEl.dataset.taskStatus = task.status;
-      }
-    });
-  };
-
   initFromLocation = (location) => {
     const pathMatch = location.pathname.match(/^(\/(?:@|%40)?)([A-Za-z0-9_]{1,15})$/);
     if (pathMatch) {
-      this.screenName.value = pathMatch[2];
+      [, , this.screenName.value] = pathMatch;
       this.screenNameLabel.classList.add('active');
       this.updateHeaderScreenName({
         stopPropagation: () => {},
@@ -207,6 +172,16 @@ export default class UI {
     const screenName = this.screenName.value;
     return [{ screenName }, `Testing ${screenName}`, `/${screenName}`];
   }
+
+  updateTask = (...updates) => {
+    updates.forEach((update) => {
+      if (!this.tasksById[update.id]) {
+        console.warn(`Omitting unknown task id on update: ${update.id}`); // eslint-disable-line
+        return;
+      }
+      this.tasksById[update.id].update(update.status, update.msg);
+    });
+  };
 
   // resets tasks to initial state (do this before each test!)
   reset = (screenName) => {
@@ -246,23 +221,5 @@ export default class UI {
     if (!swiped) {
       this.qfSettingToastInstance.dismiss();
     }
-  }
-
-  static scrollToTop(element) {
-    if (!element.querySelector('.collapsible-header').classList.contains('highlight')) {
-      return;
-    }
-    const targetY = element.offsetTop - 20;
-    const stepY = 15;
-    let currentY = window.pageYOffset;
-    const direction = currentY > targetY ? 'up' : 'down';
-
-    const scrollInterval = window.setInterval(() => {
-      currentY = direction === 'up' ? currentY - stepY : currentY + stepY;
-      window.scrollTo(0, currentY);
-      if (currentY >= targetY || currentY === window.innerHeight) {
-        window.clearInterval(scrollInterval);
-      }
-    }, 10);
   }
 }

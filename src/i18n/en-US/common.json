@@ -1,0 +1,13 @@
+{
+  "buttons": {
+    "check": "Check",
+    "support": "Support Us"
+  },
+  "title": "Is <span class=\"header-screen_name\">@{{screenName}}</span><br> shadowbanned on Twitter?",
+  "screenNameDefault": "username",
+  "qfSettingToast": "PLEASE NOTE: We can only detect the presence of specific bans or deboosting methods, not their absence. There may be others which we do not know or cannot easily test for.",
+  "supportModal": {
+    "content": "<h4>Support Us</h4><p>Shadowban.eu is an open-source project, created and run in the spirit of Benjamin Franklin's</p><p><i>“Knowledge is in every country the surest basis of public happiness.”</i></p><p>We hope to have brought you some clarity about what is going on with your Twitter account. If you feel like supporting us, you can do so by donating to our PayPal.</p><h6>We aren't done, there's more to come</h6><p>Your donation would help</p><ul class=\"browser-default\"><li><i class=\"material-icons notranslate\">search</i><span>us to look further into other ways Twitter has implemented to lower your reach,</span></li><li><i class=\"material-icons notranslate\">build</i><span>the development of this site and an API to test multiple accounts at the same timeor all of your followers.</span></li></ul>",
+    "button": "Donate via PayPal"
+  }
+}

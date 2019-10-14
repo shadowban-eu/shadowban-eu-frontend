@@ -8,51 +8,100 @@
     <meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1'>
     <meta property="og:title" content="Twitter Shadowban Test">
     <meta property="og:description" content="Are you shadowbanned on Twitter?">
-    <meta property="og:image" content="https://www.shadowban.eu/sm_preview.png">
+    <meta property="og:image" content="https://www.shadowban.eu/img/sm_preview.png">
     <meta property="og:url" content="https://www.shadowban.eu/">
     <meta property="og:site_name" content="Twitter Shadowban Test">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image:alt" content="shadwoban.eu">
-    <link rel="icon" type="image/png" href="favicon.png" />
-    <base target="_blank">
+    <base target="_blank" href="<%= baseHref %>">
+
+    <link rel="prefetch" href="./img/gears.svg" />
 
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Import Fonts-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
     <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
-    <!--Import materialize.css-->
-    <link type="text/css" rel="stylesheet" href="vendor/materialize/css/materialize{{useMinified}}.css"  media="screen,projection"/>
-    <!-- Custom -->
-    <link rel="stylesheet" type="text/css" href="css/{{bundleVersion}}/style.css">
   </head>
   <body>
-    <section class="row header section">
-      <div class="col s12">
-        <h2>Is <span class="header-screen_name">@username</span><br> shadowbanned on Twitter?</h2>
+    <% if (!production) { %>
+      <section class="dev-header">
+        <div class="row">
+          <div class="col s6">
+            This is a development build!
+          </div>
+          <div class="col s6 right-align">
+            <%= buildVersion %>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12">
+            Test users: <%= testUsers %>
+          </div>
+        </div>
+      </section>
+    <% } %>
+    <section class="header section">
+      <div class="row">
+        <div class="col s12">
+          <div class="loadable-container">
+            <h2
+              id="headerScreenName"
+              data-i18n="common:title"
+              class="loadable loading"
+            >
+              {{common:title}}
+            </h2>
+          </div>
+        </div>
       </div>
-      <button data-target="donate-modal" class="btn modal-trigger waves-effect waves white">Support Us</button>
+      <div class="row">
+        <div class="col s12">
+          <div class="loadable-container">
+            <button
+              class="btn modal-trigger waves-effect waves white loadable loading"
+              data-target="donate-modal"
+              data-i18n="common:buttons.support"
+            >
+              {{common:buttons.support}}
+            </button>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section id="controls" class="row">
       <div class="col s12 offset-m1 m10 offset-l2 l8 center-align">
-        <div class="card valign-wrapper">
-          <div class="input-field">
-            <span class="prefix">@</span>
-            <input
-              id="screenName"
-              type="text"
-              autocomplete="username"
-              required
-              pattern="^[A-Za-z0-9_]{1,15}$"
-              data-position="bottom"
-              data-tooltip="Please provide a valid Twitter @handle!"
-              maxlength="16"
-            >
-            <label for="screenName">Username</label>
-          </div>
-          <div>
-            <button id="check" class="waves-effect waves white btn btn-flat">Check</button>
+        <div class="loadable-container">
+          <div class="card valign-wrapper loadable loading">
+            <div class="input-field">
+              <span class="prefix">@</span>
+              <input
+                id="screenName"
+                type="text"
+                autocomplete="username"
+                required
+                pattern="^[A-Za-z0-9_]{1,15}$"
+                data-position="bottom"
+                data-tooltip="Please provide a valid Twitter @handle!"
+                maxlength="16"
+              >
+              <label
+                for="screenName"
+                data-i18n="common:screenNameDefault"
+              >
+                {{common:screenNameDefault}}
+              </label>
+            </div>
+            <div>
+              <button
+                id="check"
+                class="waves-effect waves white btn btn-flat"
+                data-i18n="common:buttons.check"
+              >
+                {{common:buttons.check}}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -60,321 +109,60 @@
 
     <section id="results" class="row">
       <div class="col s12 offset-m1 m10 offset-l2 l8 center-align">
-        <ul id="tasks" class="collapsible">
-          <li>
-            <div class="collapsible-header" data-task-id="checkUser" collapsible-non-interactive>
-              <i class="material-icons notranslate"></i>
-              <div class="task-message">
-                <span>Test Results</span>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div class="collapsible-header" data-task-id="checkSuggest">
-              <i class="material-icons notranslate">contact_support</i>
-              <div class="task-message">
-                <span>Search Suggestion Ban</span>
-              </div>
-            </div>
-            <div class="collapsible-body left-align">
-              <h5>Search Suggestion Ban</h5>
-              <p>
-                This type of ban causes an account to not populate search suggestions
-                and people search results when it is searched for while being logged out.
-                Twitter seems to take <a href="https://en.wikipedia.org/wiki/Social_network_analysis#Metrics" target="_blank">tie strength</a> or a similar metric into account. While an account may be suggested to users you are strongly tied to, it may not be shown to others.
-              </p>
-            </div>
-          </li>
-          <li>
-            <div class="collapsible-header" data-task-id="checkSearch">
-              <i class="material-icons notranslate">contact_support</i>
-              <div class="task-message">
-                <span>Search Ban</span>
-              </div>
-            </div>
-            <div class="collapsible-body left-align">
-              <h5>Search Ban</h5>
-              <p>
-                This type of ban causes your tweets to be hidden from the search results
-                entirely, no matter whether the quality filter is turned on or off.
-                This behavior includes hashtags as well. This type of ban seems to be
-                temporally limited for active accounts.
-              </p>
-              <ul id="searchFAQ" class="collapsible hide">
-                <li class="techInfo">
-                  <div class="collapsible-header">
-                    <span>Technical information about the result</span>
-                  </div>
-                  <div class="collapsible-body">
-                    <p class="techContent">
-                    </p>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </li>
-          <li>
-            <div class="collapsible-header" data-task-id="checkConventional">
-              <i class="material-icons notranslate">contact_support</i>
-              <div class="task-message">
-                <span>Thread Ban</span>
-              </div>
-            </div>
-            <div class="collapsible-body left-align">
-              <h5>Thread Ban</h5>
-              <p>
-                This is what is referred to as conventional shadowban or ghost banning as well. It comprises a
-                search ban while threads are completely ripped apart by hiding reply tweets
-                of the affected user to others. Everything will look perfectly normal to the
-                affected user but many others will not be able to see reply tweets of the
-                affected user at all. Reasons for this ban include behavior like excessive
-                tweeting or following. Again, this type of ban seems to be temporally limited
-                for active accounts.
-              </p>
-              <ul id="threadFAQ" class="collapsible hide">
-                <li class="techInfo">
-                  <div class="collapsible-header">
-                    <span>Technical information about the result</span>
-                  </div>
-                  <div class="collapsible-body">
-                    <p class="techContent">
-                    </p>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </li>
-	  <li>
-            <div class="collapsible-header" data-task-id="checkBarrier">
-              <i class="material-icons notranslate">contact_support</i>
-              <div class="task-message">
-                <span>Reply Deboosting</span>
-              </div>
-            </div>
-            <div class="collapsible-body left-align">
-              <h5>Reply Deboosting</h5>
-              <p>
-	        If Twitter's signals determine that an account might engage in harmful behavior,
-		Twitter hides their replies behind a barrier and only loads them when "Show more
-		replies" is clicked. This behavior is personalized, i.e. Twitter does not hide
-		the tweets of accounts you follow. We therefore use an unbiased reference account
-		without followings in order to determine whether tweets within a thread can be
-		retrieved without clicking "Show more replies" from its view.<br/>
-		In some cases, Twitter classifies accounts to be offensive. In this case, replies
-		are hidden behind a second barrier within the "Show more replies" section.
-              </p>
-              <ul id="barrierFAQ" class="collapsible hide">
-                <li class="techInfo">
-                  <div class="collapsible-header">
-                    <span>Technical information about the result</span>
-                  </div>
-                  <div class="collapsible-body">
-                    <p class="techContent">
-                    </p>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </li>
-        </ul>
+        <div class="loadable-container">
+          <ul id="tasks" class="collapsible loadable loading"></ul>
+        </div>
       </div>
     </section>
 
     <section class="row">
       <div class="col s12 offset-m1 m10 offset-l2 l8">
-        <ul id="functionality" class="collapsible popout">
-          <li>
-            <div class="collapsible-header">
-              But Twitter claims that they do not shadowban
-            </div>
-            <div class="collapsible-body">
-              In a <a href="https://blog.twitter.com/en_us/topics/company/2018/Setting-the-record-straight-on-shadow-banning.html">blog post from July 2018</a>,
-              Twitter claims that they do not shadowban by defining shadowbanning as
-              <i>deliberately making someone’s content undiscoverable to everyone except the person who posted it, unbeknownst to the original poster</i>.
-              If you strictly follow Twitter's own definition, this may not be false because the key is discoverability. Later, Twitter provides a hint why
-              this definition is deceptive by stating that you are
-              <i>always able to see the tweets from accounts you follow (although you may have to do more work to find them, like go directly to their profile)</i>.
-              The problem is obvious: Having to do more work to find tweets of accounts is not shadowbanning if you let Twitter define it. Although tweets within a thread
-              may be completely invisible to others or tweets may not be shown in a user's followers' timelines, you will always be able to find those tweets by navigating
-              to the user's "Tweets &amp; replies" section on their profile. In contrast to Twitter, we find that this is shadowbanning because without navigating there, it
-              is not even possible for others to know that the corresponding tweets do exist.
-            </div>
-          </li>
-          <li>
-            <div class="collapsible-header">
-              Why is the QFD test gone?
-            </div>
-            <div class="collapsible-body">
-              <h5>Quality Filter Discrimination</h5>
-              <p>
-                QFD caused your tweets to be invisible within the latest section of the
-                search, including hashtags, when the quality filter on the search page was turned on.
-                The filter was turned on by default
-                and would reset for each search anew. QFD was introduced on May 15, 2018 as part of
-                Twitter's so-called <a href="https://blog.twitter.com/official/en_us/topics/product/2018/Serving_Healthy_Conversation.html">healthy conversation project</a>.
-              </p>
-              <p>
-                The quality filter was deprecated shortly before Twitter CEO Jack Dorsey
-                <a href="https://docs.house.gov/meetings/IF/IF00/20180905/108642/HHRG-115-IF00-Wstate-DorseyJ-20180905.pdf">testified before the United States House Committee on Energy and Commerce</a>.
-                In his testimony, Dorsey stated the following:<br/>
-                <i>Twitter recently made a change to how one of our behavior based algorithms works in
-                search results. When people used search, our algorithms were filtering out those that had a higher
-                likelihood of being abusive from the “Lastest" tab by default. Those search results were visible
-                in “Latest” if someone turned off the quality filter in search, and they were also in Top search
-                and elsewhere throughout the product. Twitter decided that a higher level of precision is needed
-                when filtering to ensure these accounts are included in “Latest” by default. Twitter therefore
-                turned off the algorithm. As always, we will continue to refine our approach and will be
-                transparent about why we make the decisions that we do.</i><br/>
-                Currently, the quality filter seems to have no effect indeed. But please note that this is not a verification
-                that users are not classified anymore by this algorithm. We just cannot observe it anymore through the quality filter.
-              </p>
-              <p>For documentation purposes, you still find the frequently answered questions about QFD here:</p>
-              <ul id="qfdFAQ" class="collapsible">
-                <li>
-                  <div class="collapsible-header">
-                    <span>Does turning off the quality filter within my notification settings help?</span>
-                  </div>
-                  <div class="collapsible-body">
-                    <p>
-                      The quality filter within your notification settings only controls the
-                      notification you receive. Turning it off is recommended and will cause you
-                      to see more notifications which you would not have received otherwise.
-                      However, turning it off will not cause your own tweets to be more visible.
-                    </p>
-                  </div>
-                </li>
-                <li>
-                  <div class="collapsible-header">
-                    <span>How do I get into the QFD ban?</span>
-                  </div>
-                  <div class="collapsible-body">
-                    <p>
-                      A lot of interaction with accounts affected by QFD will likely cause your
-                      account to be affected by QFD soon, too. The absence of personal misbehavior
-                      does not guarantee an account to be unaffected.
-                    </p>
-                  </div>
-                </li>
-                <li>
-                  <div class="collapsible-header">
-                    <span>How do I get out of the QFD ban?</span>
-                  </div>
-                  <div class="collapsible-body">
-                    <p>
-                      Several German Twitter users that were affected by QFD have been
-                      experimenting with an Arabic follow-back botnet.
-                      The botnet generated a lot of followers for those who followed some
-                      accounts from this botnet. By accumulating many new followers that were not
-                      affected by QFD, at least 30 accounts were able to escape this type of ban.
-                      This is a strong hint that guilt by association is a major concept of the
-                      classifying algorithm.
-                    </p>
-                  </div>
-                </li>
-                <li>
-                  <div class="collapsible-header">
-                    <span>Is there a political bias?</span>
-                  </div>
-                  <div class="collapsible-body">
-                    <p>
-                      The quality filter indeed seems to mainly affect conservative and right-wing
-                      accounts. Testing over 2,000 contacts of two German left-wing extremist
-                      accounts did not yield a single account affected by QFD that would not be
-                      considered politically right. Testing 509 Twitter accounts from German
-                      members of Parliament yielded 14 affected accounts. All of them belong to
-                      the AfD, which is a German right-wing party.
-                    </p>
-                  </div>
-                </li>
-                <li>
-                  <div class="collapsible-header">
-                    <span>Does it only affect hashtags and the search? Why is it so bad then?</span>
-                  </div>
-                  <div class="collapsible-body">
-                    <p>
-                      We cannot tell whether the effects of QFD are limited to hashtags and the
-                      search. These are only the symptoms making the ban visible to us. It shows
-                      that Twitter is capable and willing to discriminate against accounts with certain
-                      political opinions. Since shadowbanning is a very unethical way to silence
-                      people already, it is possible for Twitter to apply methods that are harder
-                      to detect. Think of more subtle ways of banning by limiting the share of
-                      followers who a user's tweets are shown to. This would be a censorship
-                      method that could only be detected collectively by their followers.
-                    </p>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </li>
-          <li>
-            <div class="collapsible-header">
-              How does this tester work?
-            </div>
-            <div class="collapsible-body">
-              <h5>Search Ban</h5>
-              <p>
-                The Twitter search features several search modifiers. One of them is the prefix from:
-                which allows to search for tweets from a specific user. For example, when checking
-                whether
-                <a href="https://twitter.com/shadowban_eu">
-                  @shadowban_eu
-                </a>
-                has a shadowban, we query the Twitter search for
-                <a href="https://twitter.com/search?f=tweets&vertical=default&q=from%3A%40shadowban_eu&src=typd&qf=off">
-                  from:@shadowban_eu
-                </a>.
-                If we do not find any tweets although the user has
-                tweeted in the past, the account is subject to a search ban.
-              </p>
-              <h5>Thread Ban</h5>
-              <p>
-                When the user has a search ban, the tester searches their profile for the latest
-                tweet with at least one reply. It then visits the direct URL of the tweet and
-                selects some reply tweet. Afterwards, the direct URL of the reply tweet is visited.
-                If the tweet that the user replied to is not visible, the likelihood that the
-                account is affected by a thread shadowban is very high.
-              </p>
-              <h5>QFD (deprectated)</h5>
-              <p>
-                When you upload an image, cite a tweet or link to an external page, Twitter generates
-                a shortlink for that content.
-              </p>
-              <p>
-                We first find a reference tweet using a combination of from: and filter: search
-                modifiers. For example,
-                <a href="https://twitter.com/search?f=tweets&q=from%3A%40shadowban_eu%20filter%3Alinks&src=typd">
-                  from:@shadowban_eu filter:links
-                </a>
-                returns all tweets from
-                <a href="https://twitter.com/shadowban_eu">
-                  @shadowban_eu
-                </a>
-                containing a link.
-              </p>
-              <p>
-                We simply pick one result tweet as
-                reference and extract the shortlink, e.g.
-                <a href="https://t.co/5Vzu63ypQJ">
-                  https://t.co/5Vzu63ypQJ
-                </a>.<br />
-                (This link points to a tweet, quoted <a href="https://twitter.com/shadowban_eu/status/1019242190277697538">here</a>).
-              </p>
-              <p>
-                We then query the Twitter search for the tweet using the shortlink's URL
-                with the quality filter turned on and off.
-                If the reference tweet is found in both
-                cases, the account is not affected by QFD. In case it is found only when the filter
-                is turned off, it is affected.
-              </p>
-              <p>
-                We chose this method because shortlinks are unique. Methodically, it does not differ
-                from searching for text or a hashtag but the uniqueness of shortlinks is a technical
-                advantage.
-              </p>
-              </p>
-            </div>
-          </li>
-        </ul>
+        <div class="loadable-container">
+          <ul id="functionality" class="collapsible popout loadable loading">
+            <li>
+              <div
+                class="collapsible-header"
+                data-i18n="functionality:noShadowbanClaim.title"
+              >
+                {{functionality:noShadowbanClaim.title}}
+              </div>
+              <div
+                class="collapsible-body"
+                data-i18n="functionality:noShadowbanClaim.text"
+              >
+                {{functionality:noShadowbanClaim.text}}
+              </div>
+            </li>
+            <li>
+              <div
+                class="collapsible-header"
+                data-i18n="functionality:qfdTestGone.title"
+              >
+                {{functionality:qfdTestGone.title}}
+              </div>
+              <div
+                class="collapsible-body"
+                data-i18n="functionality:qfdTestGone.text"
+              >
+                {{functionality:qfdTestGone.text}}
+              </div>
+            </li>
+            <li>
+              <div
+                class="collapsible-header"
+                data-i18n="functionality:testerFunctions.title"
+              >
+                {{functionality:testerFunctions.title}}
+              </div>
+              <div
+                class="collapsible-body"
+                data-i18n="functionality:testerFunctions.text"
+              >
+                {{functionality:testerFunctions.text}}
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </section>
 
@@ -389,67 +177,80 @@
         </div>
       </div>
     </footer>
+    <div id="task-item-template" class="hide">
+      <li data-task-id="NOTICE--{{task.id}}--ME">
+        <div class="collapsible-header" data-task-component="header">
+          <i class="material-icons notranslate" data-task-component="icon"><!-- task.icon --></i>
+          <div class="task-message" data-task-component="message">
+            <span><!-- task.message --></span>
+          </div>
+          <!-- remove, if !task.description -->
+          <div class="result-hint" data-task-component="hint">
+            <i class="material-icons">info</i>
+            <i class="material-icons active-indicator">arrow_drop_down</i>
+          </div>
+          <!-- !task.description -->
+        </div>
+        <!-- remove, if !task.description -->
+        <div class="collapsible-body left-align" data-task-component="description">
+          <h5><!-- task.description.title --></h5>
+          <p>
+            <!-- task.description.text -->
+          </p>
+          <!-- remove, if !task.faq -->
+          <ul id="NOTICE--{{task.faq.id}}--ME" class="collapsible hide" data-task-component="faq">
+            <li class="techInfo">
+              <div class="collapsible-header">
+              <span>Technical information about the result</span>
+              </div>
+              <div class="collapsible-body">
+                <p class="techContent">
+                </p>
+              </div>
+            </li>
+          </ul>
+          <!-- !task.faq -->
+        </div>
+        <!-- !task.description -->
+      </li>
+    </div>
     <div id="qf-setting-toast-template" class="hide">
       <div class="row">
-        <div class="col s12">
-          PLEASE NOTE: We can only detect the presence of specific bans or deboosting methods, not their absence. There may be others
-          which we do not know or cannot easily test for.
+        <div
+          class="col s12"
+          data-i18n="common:qfSettingToast"
+        >
+          {{common:qfSettingToast}}
         </div>
       </div>
       <div class="row">
         <div class="col s12 center">
-          <button
-            class="btn-flat toast-action"
-            onClick="ui.qfSettingToastDimsmiss();">OK</button>
+          <button class="btn-flat toast-action">OK</button>
         </div>
       </div>
     </div>
     <div id="donate-modal" class="modal modal-fixed-footer">
-      <div class="modal-content">
-        <h4>Support Us</h4>
-        <p>Shadowban.eu is an open-source project, created and run in the spirit of Benjamin Franklin's</p>
-        <p>
-          <i>“Knowledge is in every country the surest basis of public happiness.”</i>
-        </p>
-        <p>
-          We hope to have brought you some clarity about what is going on with your Twitter account.
-          If you feel like supporting us, you can do so by donating to our PayPal.
-        </p>
-        <h6>
-          We aren't done, there's more to come
-        </h6>
-        <p>
-          Your donation would help
-        </p>
-        <ul class="browser-default">
-          <li>
-            <i class="material-icons notranslate">search</i>
-            <span>
-              us to look further into other ways Twitter has implemented to lower your reach,
-            </span>
-          </li>
-          <li>
-            <i class="material-icons notranslate">build</i>
-            <span>
-              the development of this site and an API to test multiple accounts at the same time
-              or all of your followers,
-            </span>
-          </li>
-          <li>
-            <i class="material-icons notranslate">extension</i>
-            <span>
-              the development of TwitterNinja, a browser extension that disables the quality filter
-              for you.
-            </span>
-          </li>
-        </ul>
+      <div
+        class="modal-content"
+        data-i18n="common:supportModal.content"
+      >
+        {{common:supportModal.content}}
       </div>
       <div class="modal-footer">
-        <a href="https://www.paypal.me/shadowban" class="waves-effect waves white btn">Donate via PayPal</a>
+        <a
+          href="https://www.paypal.me/shadowban"
+          class="waves-effect waves white btn"
+          data-i18n="common:supportModal.button"
+        >
+          {{common:supportModal.button}}
+        </a>
       </div>
     </div>
-    {{devBanner}}
-    <script type="text/javascript" src="vendor/materialize/js/materialize{{useMinified}}.js"></script>
-    <script src='js/main.bundle-{{bundleVersion}}.js'></script>
+    <div class="ph-item">
+      <div class="ph-col-12">
+          <div class="ph-picture"></div>
+
+      </div>
+    </div>
   </body>
 </html>

@@ -2,20 +2,31 @@
 ** Twitter QFD Shadowban Checker
 ** 2018 @Netzdenunziant (research), @raphaelbeerlin (implementation)
 */
+import 'materialize-css';
+import 'materialize-css/sass/materialize.scss';
 
 import UI from './ui';
-import TechInfo from './ui/TechInfo.js';
+import TechInfo from './ui/TechInfo';
+import I18N from './i18n';
+
+import '../scss/style.scss';
+
+let ui;
 
 const fullTest = async (screenName) => {
-  window.ui.updateTask({
-    id: 'checkUser',
-    status: 'running',
-    msg: `Testing @${screenName}`
-  });
-
-  const response = await fetch(`.api/${screenName}`);
+  let response;
+  try {
+    response = await fetch(`.api/${screenName}`);
+  } catch (err) {
+    ui.updateTask({
+      id: 'checkUser',
+      status: 'warn',
+      msg: 'You are offline.'
+    });
+    return;
+  }
   if (!response.ok) {
-    window.ui.updateTask({
+    ui.updateTask({
       id: 'checkUser',
       status: 'warn',
       msg: 'Server error. Please try again later.'
@@ -23,7 +34,9 @@ const fullTest = async (screenName) => {
     return;
   }
   const result = await response.json();
-  const userLink = `<a href="https://twitter.com/${screenName}">@${screenName}</a>`;
+  // Convert case
+  const _screenName = result.profile.screen_name;
+  const userLink = `<a href="https://twitter.com/${_screenName}">@${_screenName}</a>`;
 
   let failReason;
   if (!result.profile.exists) {
@@ -37,7 +50,7 @@ const fullTest = async (screenName) => {
   }
 
   if (failReason) {
-    window.ui.updateTask({
+    ui.updateTask({
       id: 'checkUser',
       status: 'warn',
       msg: `${userLink} ${failReason}.`
@@ -45,7 +58,7 @@ const fullTest = async (screenName) => {
     return;
   }
 
-  window.ui.updateTask({
+  ui.updateTask({
     id: 'checkUser',
     status: 'ok',
     msg: `${userLink} exists.`
@@ -58,7 +71,7 @@ const fullTest = async (screenName) => {
   if (result.tests.typeahead === false) {
     typeaheadResult = ['ban', 'Search suggestion ban.'];
   }
-  window.ui.updateTask({
+  ui.updateTask({
     id: 'checkSuggest',
     status: typeaheadResult[0],
     msg: typeaheadResult[1]
@@ -71,20 +84,20 @@ const fullTest = async (screenName) => {
   if (result.tests.search === false) {
     searchResult = ['ban', 'Search ban.'];
   }
-  window.ui.updateTask({
+  ui.updateTask({
     id: 'checkSearch',
     status: searchResult[0],
     msg: searchResult[1]
   });
   TechInfo.updateSearch(result);
 
-  let threadResult = ['warn', 'Thread ban test failed.'];
+  let threadResult = ['warn', 'Ghost ban test failed.'];
   if (result.tests.ghost.ban === false) {
-    threadResult = ['ok', 'No thread ban.'];
+    threadResult = ['ok', 'No ghost ban.'];
   } else if (result.tests.ghost.ban === true) {
-    threadResult = ['ban', 'Thread ban.'];
+    threadResult = ['ban', 'Ghost ban.'];
   }
-  window.ui.updateTask({
+  ui.updateTask({
     id: 'checkConventional',
     status: threadResult[0],
     msg: threadResult[1]
@@ -92,27 +105,29 @@ const fullTest = async (screenName) => {
   TechInfo.updateThread(result);
 
   let barrierResult = ['warn', 'Reply deboosting test failed.'];
-  if(result.tests.more_replies) {
+  if (result.tests.more_replies) {
     if (result.tests.more_replies.ban === false) {
       barrierResult = ['ok', 'No reply deboosting detected.'];
     } else if (result.tests.more_replies.ban === true) {
-      const offensive = result.tests.more_replies.stage > 0
+      const offensive = result.tests.more_replies.stage <= 0
         ? ''
-        : ' Tweets are rated as potentially offensive.';
+        : ' The tweet we found was in the section for offensive tweets.';
       barrierResult = ['ban', `Reply deboosting detected.${offensive}`];
     }
   }
-  window.ui.updateTask({
-    id: 'checkBarrier',
-    status: barrierResult[0],
-    msg: barrierResult[1]
-  });
-  TechInfo.updateBarrier(result);
+  if ('more_replies' in result.tests) {
+    ui.updateTask({
+      id: 'checkBarrier',
+      status: barrierResult[0],
+      msg: barrierResult[1]
+    });
+    TechInfo.updateBarrier(result);
+  }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  window.ui = new UI(fullTest);
-  window.fullTest = fullTest;
+I18N.init().then(() => {
+  ui = new UI();
+  ui.test = fullTest;
   // init test by /?screenName
-  window.ui.initFromLocation(window.location);
+  ui.initFromLocation(window.location);
 });
