@@ -18,47 +18,49 @@ Frontend (former TwitterShadowBanV2; history preserved):
 Backend:  
 [shadowban-eu/shadowban-eu-backend](https://github.com/shadowban-eu/shadowban-eu-backend.git)
 
-**Everything below is outdated with v > 1.3.3**
+---
 
 ## Setup
 
-Browser compatibility needs transpiling. Nothing fancy, just the usual babel magic.
-
 ```bash
-git clone https://github.com/shadowban-eu/TwitterShadowBanV2 && cd TwitterShadowBanV2
-npm install
-```
+# Clone
+git clone https://github.com/shadowban-eu/shadowban-eu-frontend.git && cd shadowban-eu-frontend
 
-Since we are using a php backend for request proxying, you will also need PHP.
-The gulp script uses php-cli's webserver.
+# Install
+npm i
 
-[Debian]
-```bash
-apt-get install php7.2-cli
-```
-
-Finally, use the `default` gulp task to start the php-cli webserver and
-watching for file changes.
-
-```bash
+#Start development
 npm start
+# or npm run dev
+
+# Build (to ./dist/)
+npm run build
 ```
 
-## Deploy
-Run `npm start build`! This creates an uglified script bundle and uses minified versions of 3rd party scripts.
-Then copy `dist/`'s content to your server_root.
+Some values, like the HTML base href, are hard-coded in `webpack.config.js`.
 
-## Misc
+## Notes
+#### Base href
+The `<base href>` is set on build, depending on the `NODE_ENV`:
 
-Checking for running server (the PID differs, of course)
-```bash
-pgrep php -f
-> 20748 php -S localhost:8080 -t ./dist/
+  - production: https://shadowban.eu/
+  - development: http://127.0.0.1:9000/
+
+The development value is taken from the `devServerConfig` object in `webpack.config.js`, including `basePath`.  
+Be aware that setting `<base href>` to `http://127.0.0.1:9000/`, but then visiting the site via `http://localhost:9000/` will work at first, but the browser will deny setting the URL to http://localhost:9000/testedName, when running a test.
+ 
+#### .api mocks
+During development, /src/.api/ is included to have the webpack-dev-server serve API responses.
+
+```
+./src/.api/
+├── deboost
+├── ghost
+├── invalid
+├── notweets
+├── protected
+└── typeahead
 ```
 
-If you need to run the php-cli webserver on another port, you will have to
-change it manually in `gulpfile.babel.js`, somewhere around line 72.
-
-```js
-  const args = ['-S', 'localhost:8080', '-t', './dist/'];
-```
+All these files hold one response object in JSON notation.
+These files are served, whenever you test their respective name.
