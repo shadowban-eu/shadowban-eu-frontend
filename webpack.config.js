@@ -154,7 +154,6 @@ const config = {
       minify: production ? {
         collapseWhitespace: true,
         removeComments: true,
-        removeRedundantAttributes: true,
         removeScriptTypeAttributes: true,
         removeStyleLinkTypeAttributes: true,
         useShortDoctype: true
