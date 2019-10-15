@@ -63,15 +63,12 @@ body {
       font-weight: 500;
       color: $ACCENT_PURPLE;
 
-      &[type=text] {
-        /* label underline focus color */
-        &:focus {
-          border-bottom: 1px solid $TWITTER_BLUE !important;
-          box-shadow: 0 1px 0 0 $TWITTER_BLUE !important;
-          /* label focus color */
-          & + label {
-            color: $TWITTER_BLUE !important;
-          }
+      &[type=text]:focus {
+        border-bottom: 1px solid $TWITTER_BLUE !important;
+        box-shadow: 0 1px 0 0 $TWITTER_BLUE !important;
+        /* label focus color */
+        & + label {
+          color: $TWITTER_BLUE !important;
         }
       }
     }
