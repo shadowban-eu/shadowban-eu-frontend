@@ -61,7 +61,7 @@
     "i18next-browser-languagedetector": "^3.0.3",
     "i18next-chained-backend": "^2.0.0",
     "i18next-localstorage-backend": "^3.0.0",
-    "i18next-versioning-webpack-plugin": "git+https://github.com/shadowban-eu/i18next-versioning-webpack-plugin.git",
+    "i18next-versioning-webpack-plugin": "git+https://github.com/rbeer/i18next-versioning-webpack-plugin.git",
     "i18next-xhr-backend": "^3.1.2",
     "webpack-dev-server": "^3.8.0"
   }
