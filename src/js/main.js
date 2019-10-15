@@ -25,6 +25,14 @@ const fullTest = async (screenName) => {
     });
     return;
   }
+  if (response.status === 429) {
+    ui.updateTask({
+      id: 'checkUser',
+      status: 'warn',
+      msg: 'Rate limit exceeded. Please try again in a minute!'
+    });
+    return;
+  }
   if (!response.ok) {
     ui.updateTask({
       id: 'checkUser',
