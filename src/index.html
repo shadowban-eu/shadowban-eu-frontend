@@ -65,6 +65,9 @@
             >
               {{common:buttons.support}}
             </button>
+            <div id="donate-thanks" class="hide">
+              Thank you for your donation!
+            </div>
           </div>
         </div>
       </div>
@@ -236,10 +239,16 @@
       <div class="modal-footer">
         <a
           href="https://www.paypal.me/shadowban"
-          class="waves-effect waves white btn"
-          data-i18n="common:supportModal.button"
+          class="waves-effect waves white btn modal-close"
+          data-i18n="common:supportModal.donateButton"
         >
-          {{common:supportModal.button}}
+          {{common:supportModal.donateButton}}
+        </a>
+        <a
+          class="waves-effect waves white btn modal-close"
+          data-i18n="common:supportModal.dismissButton"
+        >
+          {{common:supportModal.dismissButton}}
         </a>
       </div>
     </div>

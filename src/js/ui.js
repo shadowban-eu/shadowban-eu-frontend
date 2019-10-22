@@ -60,8 +60,14 @@ export default class UI {
 
     // actual test function
     this.test = test;
+
+    // donate modal
     const donateModalElement = document.getElementById('donate-modal');
-    M.Modal.init(donateModalElement);
+    this.donateModal = M.Modal.init(donateModalElement);
+
+    donateModalElement.querySelector('[href]').addEventListener('click', () => {
+      document.getElementById('donate-thanks').classList.remove('hide');
+    });
 
     // set i18n strings
     I18N.resetElements();
@@ -77,6 +83,7 @@ export default class UI {
 
   runTest() {
     this.checkButton.focus(); // remove focus from input field, to close mobile screen kbd
+    this.showDonateModal();
     this.reset(this.screenName.value);
     this.setLocationForScreenName();
     this.lock();
@@ -220,6 +227,14 @@ export default class UI {
     localStorage.setItem('testing-toast', true);
     if (!swiped) {
       this.qfSettingToastInstance.dismiss();
+    }
+  }
+
+  showDonateModal() {
+    const seen = localStorage.getItem('donate-cta');
+    if (!seen) {
+      localStorage.setItem('donate-cta', true);
+      this.donateModal.show();
     }
   }
 }
