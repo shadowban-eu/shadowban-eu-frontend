@@ -234,7 +234,7 @@ export default class UI {
     const seen = localStorage.getItem('donate-cta');
     if (!seen) {
       localStorage.setItem('donate-cta', true);
-      this.donateModal.show();
+      this.donateModal.open();
     }
   }
 }
