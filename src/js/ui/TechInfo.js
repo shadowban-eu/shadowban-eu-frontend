@@ -6,7 +6,7 @@ export default class TechInfo {
 
   static makeSearchLink(query, qf, text) {
     const href = `https://${TechInfo.isMobile ? 'mobile.' : ''}twitter.com/search?f=${TechInfo.isMobile ? 'live' : 'tweets'}&src=typd&vertical=default&lang=en&q=${encodeURIComponent(query)}&qf=${qf ? 'on' : 'off'}`;
-    return `<a href="${href}">${text || query}</a>`;
+    return `<a href="${href}" rel=\"noopener noreferrer\">${text || query}</a>`;
   }
 
   static updateSearch(results) {

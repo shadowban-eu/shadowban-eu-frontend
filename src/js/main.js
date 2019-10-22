@@ -44,7 +44,7 @@ const fullTest = async (screenName) => {
   const result = await response.json();
   // Convert case
   const _screenName = result.profile.screen_name;
-  const userLink = `<a href="https://twitter.com/${_screenName}">@${_screenName}</a>`;
+  const userLink = `<a href="https://twitter.com/${_screenName}" rel=\"noopener noreferrer\">@${_screenName}</a>`;
 
   let failReason;
   if (!result.profile.exists) {

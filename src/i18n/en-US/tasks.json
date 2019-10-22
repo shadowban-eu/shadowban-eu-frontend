@@ -13,7 +13,7 @@
     "message": "Search Suggestion Ban",
     "description": {
       "title": "Search Suggestion Ban",
-      "text": "This type of ban causes an account to not populate search suggestions and people search results when it is searched for while being logged out. Twitter seems to take <a href=\"https://en.wikipedia.org/wiki/Social_network_analysis#Metrics\" target=\"_blank\">tie strength</a> or a similar metric into account. While an account may be suggested to users you are strongly tied to, it may not be shown to others."
+      "text": "This type of ban causes an account to not populate search suggestions and people search results when it is searched for while being logged out. Twitter seems to take <a href=\"https://en.wikipedia.org/wiki/Social_network_analysis#Metrics\" target=\"_blank\" rel=\"noopener noreferrer\">tie strength</a> or a similar metric into account. While an account may be suggested to users you are strongly tied to, it may not be shown to others."
     }
   },
   "checkSearch": {
