@@ -231,8 +231,11 @@ export default class UI {
   }
 
   showDonateModal() {
+    const tested = parseInt(localStorage.getItem('tested') || '0', 10) + 1;
+    localStorage.setItem('tested', tested);
+
     const seen = localStorage.getItem('donate-cta');
-    if (!seen) {
+    if (!seen && tested === 7) {
       localStorage.setItem('donate-cta', true);
       this.donateModal.open();
     }
