@@ -114,7 +114,9 @@ const fullTest = async (screenName) => {
 
   let barrierResult = ['warn', 'Reply deboosting test failed.'];
   if (result.tests.more_replies) {
-    if (result.tests.more_replies.ban === false) {
+    if (result.tests.more_replies.error === 'ENOREPLIES') {
+      barrierResult = ['warn', `${screenName} has not made any reply tweets.`];
+    } else if (result.tests.more_replies.ban === false) {
       barrierResult = ['ok', 'No reply deboosting detected.'];
     } else if (result.tests.more_replies.ban === true) {
       const offensive = result.tests.more_replies.stage <= 0
