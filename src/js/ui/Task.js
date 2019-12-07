@@ -50,7 +50,7 @@ export default class Task {
         break;
       case 'warn':
         icon.classList.remove('gears');
-        icon.innerText = 'error_outline';
+        icon.innerText = 'contact_support';
         break;
       default:
         break;
