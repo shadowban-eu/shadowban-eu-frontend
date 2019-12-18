@@ -258,3 +258,27 @@ footer {
   font-size: xx-large;
   color: $ACCENT_PURPLE;
 }
+
+.attention {
+  color: $ACCENT_PURPLE;
+}
+
+.strike {
+  text-decoration: line-through;
+}
+
+.noban-claim-legacy {
+  color: lighten($TEXT, 50%);
+  text-decoration: line-through;
+  a {
+    color: lighten($TWITTER_BLUE, 30%);
+  }
+
+  &:hover {
+    color: $TEXT;
+    text-decoration: none;
+    a {
+      color: $TWITTER_BLUE;
+    }
+  }
+}
