@@ -20,13 +20,16 @@ const production = env.raw.NODE_ENV === 'production';
 const useDevServer = !production && process.env.WEBPACK_DEV_SERVER === 'true';
 
 const buildVersion = `${packageVersion}-dev`;
+
+const devServerUrl = new URL(env.raw.BASE_HREF || 'http://127.0.0.1:9000');
 const devServerConfig = {
   contentBase: path.join(__dirname, 'dist'),
   compress: true,
-  port: 9000,
-  host: '127.0.0.1',
-  publicPath: '/'
+  port: devServerUrl.port,
+  host: devServerUrl.hostname,
+  publicPath: devServerUrl.pathname
 };
+
 const copies = [{
   from: path.resolve(__dirname, 'src', 'img'),
   to: path.resolve(__dirname, 'dist', 'img'),
