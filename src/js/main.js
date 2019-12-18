@@ -44,7 +44,7 @@ const fullTest = async (screenName) => {
   const result = await response.json();
   // Convert case
   const _screenName = result.profile.screen_name;
-  const userLink = `<a href="https://twitter.com/${_screenName}" rel=\"noopener noreferrer\">@${_screenName}</a>`;
+  const userLink = `<a href="https://twitter.com/${_screenName}" rel="noopener noreferrer">@${_screenName}</a>`;
 
   let failReason;
   if (!result.profile.exists) {
@@ -72,7 +72,9 @@ const fullTest = async (screenName) => {
     msg: `${userLink} exists.`
   });
 
-  let typeaheadResult = ['warn', 'Search suggestion ban test failed.'];
+  const resultsDefault = ['warn', 'We were unable to test for technical reasons.'];
+
+  let typeaheadResult = resultsDefault;
   if (result.tests.typeahead === true) {
     typeaheadResult = ['ok', 'No search suggestion ban.'];
   }
@@ -85,7 +87,7 @@ const fullTest = async (screenName) => {
     msg: typeaheadResult[1]
   });
 
-  let searchResult = ['warn', 'Search ban test failed.'];
+  let searchResult = resultsDefault;
   if (result.tests.search) {
     searchResult = ['ok', 'No search ban.'];
   }
@@ -99,7 +101,7 @@ const fullTest = async (screenName) => {
   });
   TechInfo.updateSearch(result);
 
-  let threadResult = ['warn', 'Ghost ban test failed.'];
+  let threadResult = resultsDefault;
   if (result.tests.ghost.ban === false) {
     threadResult = ['ok', 'No ghost ban.'];
   } else if (result.tests.ghost.ban === true) {
@@ -112,7 +114,7 @@ const fullTest = async (screenName) => {
   });
   TechInfo.updateThread(result);
 
-  let barrierResult = ['warn', 'Reply deboosting test failed.'];
+  let barrierResult = resultsDefault;
   if (result.tests.more_replies) {
     if (result.tests.more_replies.error === 'ENOREPLIES') {
       barrierResult = ['warn', `${screenName} has not made any reply tweets.`];
