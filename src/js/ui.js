@@ -79,6 +79,8 @@ export default class UI {
     M.Collapsible.init(document.getElementById('barrierFAQ'));
     M.Collapsible.init(document.getElementById('qfdFAQ'));
     M.Collapsible.init(document.getElementById('functionality'));
+
+    M.Materialbox.init(document.querySelector('.noban-claim ~ .materialboxed'));
   }
 
   runTest() {
