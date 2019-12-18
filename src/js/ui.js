@@ -73,12 +73,12 @@ export default class UI {
     I18N.resetElements();
 
     // all other collapsibles
-    this.tasksCollapsible = M.Collapsible.init(document.getElementById('tasks'));
-    this.searchFaqCollapsible = M.Collapsible.init(document.getElementById('searchFAQ'));
-    this.threadFaqCollapsible = M.Collapsible.init(document.getElementById('threadFAQ'));
-    this.barrierFaqCollapsible = M.Collapsible.init(document.getElementById('barrierFAQ'));
-    this.qfdFaqCollapsible = M.Collapsible.init(document.getElementById('qfdFAQ'));
-    this.functionalityCollapsible = M.Collapsible.init(document.getElementById('functionality'));
+    M.Collapsible.init(document.getElementById('tasks'));
+    M.Collapsible.init(document.getElementById('searchFAQ'));
+    M.Collapsible.init(document.getElementById('threadFAQ'));
+    M.Collapsible.init(document.getElementById('barrierFAQ'));
+    M.Collapsible.init(document.getElementById('qfdFAQ'));
+    M.Collapsible.init(document.getElementById('functionality'));
   }
 
   runTest() {
