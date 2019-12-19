@@ -1,0 +1,17 @@
+{
+  "profile": {
+    "exists": true,
+    "has_tweets": true,
+    "protected": false,
+    "screen_name": "humptydumpty"
+  },
+  "tests": {
+    "ghost": {
+      "ban": null
+    },
+    "more_replies": {},
+    "search": null,
+    "typeahead": null
+  },
+  "timestamp": 1575732782.355011
+}

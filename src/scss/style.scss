@@ -1,4 +1,5 @@
 $BACKGROUND: rgb(230, 236, 240);
+$TEXT: rgb(51, 51, 51);
 $TWITTER_BLUE: rgb(20, 129, 195);
 $ACCENT_PURPLE: rgb(175, 52, 175);
 $ACCENT_SUCCESS: rgb(8, 136, 16);
@@ -15,9 +16,13 @@ $PLACEHOLDER_COLOR: #ced4da;
 
 body {
   font-family: Roboto, 'Helvetica Neue', Arial, sans-serif;
-  color: #333;
+  color: $TEXT;
   background-color: $BACKGROUND;
   font-weight: 500;
+}
+
+a {
+  color: $TWITTER_BLUE;
 }
 
 .material-icons {
@@ -252,4 +257,37 @@ footer {
 #donate-thanks {
   font-size: xx-large;
   color: $ACCENT_PURPLE;
+}
+
+.attention {
+  color: $ACCENT_PURPLE;
+}
+
+.text-strike {
+  text-decoration: line-through;
+}
+
+.font-small {
+  font-size: small;
+}
+
+
+.noban-claim-legacy {
+  color: lighten($TEXT, 50%);
+  text-decoration: line-through;
+  a {
+    color: lighten($TWITTER_BLUE, 30%);
+  }
+
+  &:hover {
+    color: $TEXT;
+    text-decoration: none;
+    a {
+      color: $TWITTER_BLUE;
+    }
+  }
+}
+
+.flex-col {
+  flex-direction: column;
 }

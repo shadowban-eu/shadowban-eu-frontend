@@ -20,14 +20,20 @@ const production = env.raw.NODE_ENV === 'production';
 const useDevServer = !production && process.env.WEBPACK_DEV_SERVER === 'true';
 
 const buildVersion = `${packageVersion}-dev`;
+
+const devServerUrl = new URL(env.raw.BASE_HREF || 'http://127.0.0.1:9000');
 const devServerConfig = {
   contentBase: path.join(__dirname, 'dist'),
   compress: true,
-  port: 9000,
-  host: '127.0.0.1',
-  publicPath: '/'
+  port: devServerUrl.port,
+  host: devServerUrl.hostname,
+  publicPath: devServerUrl.pathname
 };
+
 const copies = [{
+  from: path.resolve(__dirname, 'src', 'manifest.json'),
+  to: path.resolve(__dirname, 'dist', 'manifest.json'),
+}, {
   from: path.resolve(__dirname, 'src', 'img'),
   to: path.resolve(__dirname, 'dist', 'img'),
   toType: 'dir',
@@ -53,10 +59,13 @@ if (!production) {
 const config = {
   mode: env.raw.NODE_ENV,
   entry: {
-    app: './src/js/main.js'
+    app: './src/js/main.js',
+    worker: './src/js/worker.js'
   },
   output: {
-    filename: 'js/[name].[hash:7].js',
+    filename: (chunkData) => {
+      return chunkData.chunk.name === 'app' ? 'js/[name].[hash:7].js' : './[name].js';
+    },
     path: path.resolve(__dirname, 'dist'),
     publicPath: ''
   },
@@ -142,7 +151,7 @@ const config = {
       hash: production,
       filename: 'index.html',
       template: path.resolve(__dirname, 'src', 'index.html'),
-      favicon: path.resolve(__dirname, 'src', 'favicon.png'),
+      favicon: path.resolve(__dirname, 'src', 'img', 'favicon.png'),
       templateParameters: {
         baseHref: useDevServer
           ? `http://${devServerConfig.host}:${devServerConfig.port}${devServerConfig.publicPath}`

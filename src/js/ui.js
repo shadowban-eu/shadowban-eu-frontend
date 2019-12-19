@@ -73,12 +73,14 @@ export default class UI {
     I18N.resetElements();
 
     // all other collapsibles
-    this.tasksCollapsible = M.Collapsible.init(document.getElementById('tasks'));
-    this.searchFaqCollapsible = M.Collapsible.init(document.getElementById('searchFAQ'));
-    this.threadFaqCollapsible = M.Collapsible.init(document.getElementById('threadFAQ'));
-    this.barrierFaqCollapsible = M.Collapsible.init(document.getElementById('barrierFAQ'));
-    this.qfdFaqCollapsible = M.Collapsible.init(document.getElementById('qfdFAQ'));
-    this.functionalityCollapsible = M.Collapsible.init(document.getElementById('functionality'));
+    M.Collapsible.init(document.getElementById('tasks'));
+    M.Collapsible.init(document.getElementById('searchFAQ'));
+    M.Collapsible.init(document.getElementById('threadFAQ'));
+    M.Collapsible.init(document.getElementById('barrierFAQ'));
+    M.Collapsible.init(document.getElementById('qfdFAQ'));
+    M.Collapsible.init(document.getElementById('functionality'));
+
+    M.Materialbox.init(document.querySelector('.noban-claim ~ .materialboxed'));
   }
 
   runTest() {
@@ -158,9 +160,24 @@ export default class UI {
   };
 
   initFromLocation = (location) => {
-    const pathMatch = location.pathname.match(/^(\/(?:@|%40)?)([A-Za-z0-9_]{1,15})$/);
-    if (pathMatch) {
-      [, , this.screenName.value] = pathMatch;
+    const url = new URL(location);
+    let screenName;
+
+    if (url.pathname === '/share' && url.search) {
+      const shareText = url.searchParams.get('text');
+      const shareMatch = shareText.match(/https:\/\/twitter.com\/([A-Za-z0-9_]{1,15})/);
+      if (shareMatch) {
+        [, screenName] = shareMatch;
+      }
+    }
+
+    const pathMatch = url.pathname.match(/^\/(?:@|%40)?([A-Za-z0-9_]{1,15})$/);
+    if (pathMatch && !screenName) {
+      [, screenName] = pathMatch;
+    }
+
+    if (screenName) {
+      this.screenName.value = screenName;
       this.screenNameLabel.classList.add('active');
       this.updateHeaderScreenName({
         stopPropagation: () => {},
