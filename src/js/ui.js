@@ -160,9 +160,24 @@ export default class UI {
   };
 
   initFromLocation = (location) => {
-    const pathMatch = location.pathname.match(/^(\/(?:@|%40)?)([A-Za-z0-9_]{1,15})$/);
-    if (pathMatch) {
-      [, , this.screenName.value] = pathMatch;
+    const url = new URL(location);
+    let screenName;
+
+    if (url.pathname === '/share' && url.search) {
+      const shareText = url.searchParams.get('text');
+      const shareMatch = shareText.match(/https:\/\/twitter.com\/([A-Za-z0-9_]{1,15})/);
+      if (shareMatch) {
+        [, screenName] = shareMatch;
+      }
+    }
+
+    const pathMatch = url.pathname.match(/^\/(?:@|%40)?([A-Za-z0-9_]{1,15})$/);
+    if (pathMatch && !screenName) {
+      [, screenName] = pathMatch;
+    }
+
+    if (screenName) {
+      this.screenName.value = screenName;
       this.screenNameLabel.classList.add('active');
       this.updateHeaderScreenName({
         stopPropagation: () => {},
