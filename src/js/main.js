@@ -137,6 +137,20 @@ const fullTest = async (screenName) => {
   }
 };
 
+/* eslint-disable no-console */
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('worker.js')
+    .then(() => console.log('Service worker registered.'))
+    .catch(err => console.log('Service worker not registered. This happened:', err));
+}
+
+// window.addEventListener('beforeinstallprompt', (e) => {
+//   console.log('beforeinstallprompt');
+//   e.prompt();
+// });
+
+/* eslint-enable no-console */
+
 I18N.init().then(() => {
   ui = new UI();
   ui.test = fullTest;
