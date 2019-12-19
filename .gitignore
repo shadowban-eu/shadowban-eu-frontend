@@ -53,3 +53,5 @@ node_modules
 .env
 .env.*
 .ht*
+
+ansible/

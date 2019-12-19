@@ -15,7 +15,8 @@
     "build:dev": "cross-env NODE_ENV=development webpack",
     "build": "cross-env NODE_ENV=production webpack",
     "lint": "eslint -c ./.eslintrc ./src/js/**",
-    "pre-commit": "npm run lint"
+    "pre-commit": "npm run lint",
+    "deploy:dev": "ansible-playbook ansible/deploy_naughty.yml"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
