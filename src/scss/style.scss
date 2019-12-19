@@ -263,9 +263,14 @@ footer {
   color: $ACCENT_PURPLE;
 }
 
-.strike {
+.text-strike {
   text-decoration: line-through;
 }
+
+.font-small {
+  font-size: small;
+}
+
 
 .noban-claim-legacy {
   color: lighten($TEXT, 50%);
@@ -281,4 +286,8 @@ footer {
       color: $TWITTER_BLUE;
     }
   }
+}
+
+.flex-col {
+  flex-direction: column;
 }

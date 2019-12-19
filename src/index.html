@@ -123,17 +123,22 @@
         <div class="loadable-container">
           <ul id="functionality" class="collapsible popout loadable loading">
             <li>
-              <div
-                class="collapsible-header"
-                data-i18n="functionality:noShadowbanClaim.title"
-              >
-                {{functionality:noShadowbanClaim.title}}
+              <div class="flex-col collapsible-header">
+                <span class="attention" data-i18n="functionality:limitVisibility.title">
+                  {{functionality:limitVisibility.title}}
+                </span>
+                <span class="text-strike font-small" data-i18n="functionality:noShadowbanClaim.title">
+                  {{functionality:noShadowbanClaim.title}}
+                </span>
               </div>
-              <div
-                class="collapsible-body"
-                data-i18n="functionality:noShadowbanClaim.text"
-              >
-                {{functionality:noShadowbanClaim.text}}
+              <div class="collapsible-body">
+                <p class="noban-claim" data-i18n="functionality:limitVisibility.text">
+                  {{functionality:limitVisibility.text}}
+                </p>
+                <img class="materialboxed" width="100%" src="/img/updated-tos.png" />
+                <p class="noban-claim-legacy" data-i18n="functionality:noShadowbanClaim.text">
+                  {{functionality:noShadowbanClaim.text}}
+                </p>
               </div>
             </li>
             <li>
