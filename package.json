@@ -1,6 +1,6 @@
 {
   "name": "shadowban-eu-frontend",
-  "version": "3.1.4",
+  "version": "3.2.0",
   "description": "Frontend for https://shadowban.eu",
   "author": "Raphael Beer <raphael.beer@protonmail.com>",
   "repository": {
