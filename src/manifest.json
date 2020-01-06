@@ -1,19 +1,32 @@
 {
-  "short_name": "shadowban.eu",
+  "short_name": "Shadowban.eu",
   "name": "Twitter Shadowban Test",
-  "icons": [{
-    "src": "/img/favicon_192.png",
-    "type": "image/png",
-    "sizes": "192x192"
-  }, {
-    "src": "/img/favicon_512.png",
-    "type": "image/png",
-    "sizes": "512x512"
-  }],
+  "icons": [
+    {
+      "src": "/favicon/favicon_32.png",
+      "sizes": "32x32 24x24 16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon/favicon_64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon/favicon_192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/favicon/favicon_512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
   "start_url": "/",
-  "background_color": "#e6ecf0",
   "display": "standalone",
-  "theme_color": "#af34af",
+  "theme_color": "#1481c3",
+  "background_color": "#1481c3",
   "share_target": {
     "action": "/share",
     "method": "GET",

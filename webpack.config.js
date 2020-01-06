@@ -38,6 +38,10 @@ const copies = [{
   to: path.resolve(__dirname, 'dist', 'img'),
   toType: 'dir',
 }, {
+  from: path.resolve(__dirname, 'src', 'favicon'),
+  to: path.resolve(__dirname, 'dist', 'favicon'),
+  toType: 'dir',
+}, {
   from: path.resolve(__dirname, 'src', 'i18n'),
   to: path.resolve(__dirname, 'dist', 'i18n'),
   toType: 'dir',
