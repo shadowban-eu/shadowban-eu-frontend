@@ -36,6 +36,11 @@ a {
   cursor: default !important;
 }
 
+.header-buttons {
+  display: flex;
+  justify-content: center;
+}
+
 .btn {
   color: $TWITTER_BLUE;
   border: 1px solid $TWITTER_BLUE;
