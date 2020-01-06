@@ -1,0 +1,33 @@
+{
+  "checkUser": {
+    "message": "Test Results"
+  },
+  "checkBarrier": {
+    "message": "Reply Deboosting",
+    "description": {
+      "title": "Reply Deboosting",
+      "text": "If Twitter's signals determine that an account might engage in harmful behavior, Twitter hides their replies behind a barrier and only loads them when \"Show more replies\" is clicked. This behavior is personalized, i.e. Twitter does not hide the tweets of accounts you follow. We therefore use an unbiased reference account without followings in order to determine whether tweets within a thread can be retrieved without clicking \"Show more replies\" from its view.\nIn some cases, Twitter classifies accounts as offensive. In this case, replies are hidden behind a second barrier within the \"Show more replies\" section.<br/> The outcome of this test may depend on the conversation which we found one of your tweets in. For testing, we take your latest reply tweet that is not within a conversation you started. Note that test results are cached for a short period of time.<br/> A failure to test is neither a positive nor a negative test result. This test relies on some conditions that are not fulfilled by all accounts. In some cases, we cannot test for purely technical reasons."
+    }
+  },
+  "checkSuggest": {
+    "message": "Search Suggestion Ban",
+    "description": {
+      "title": "Search Suggestion Ban",
+      "text": "This type of ban causes an account to not populate search suggestions and people search results when it is searched for while being logged out. Twitter seems to take <a href=\"https://en.wikipedia.org/wiki/Social_network_analysis#Metrics\" target=\"_blank\" rel=\"noopener noreferrer\">tie strength</a> or a similar metric into account. While an account may be suggested to users you are strongly tied to, it may not be shown to others."
+    }
+  },
+  "checkSearch": {
+    "message": "Search Ban",
+    "description": {
+      "title": "Search Ban",
+      "text": "This type of ban causes your tweets to be hidden from the search results entirely, no matter whether the quality filter is turned on or off. This behavior includes hashtags as well. This type of ban seems to be temporally limited for active accounts."
+    }
+  },
+  "checkConventional": {
+    "message": "Ghost Ban",
+    "description": {
+      "title": "Ghost Ban",
+      "text": "This is what is referred to as conventional shadowban or thread banning as well. It comprises a search ban while threads are completely ripped apart by hiding reply tweets of the affected user to others. Everything will look perfectly normal to the affected user but many others will not be able to see reply tweets of the affected user at all. Reasons for this ban include behavior like excessive tweeting or following. Again, this type of ban seems to be temporally limited for active accounts."
+    }
+  }
+}
