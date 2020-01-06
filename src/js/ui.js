@@ -24,6 +24,16 @@ export default class UI {
     this.checkButton = document.getElementById('check');
     this.checkButton.addEventListener('click', this.handleCheckClick);
 
+    // PWA install (Add 2 Home Screen)
+    this.deferredPrompt = null;
+    this.installButton = document.querySelector('.install-trigger');
+    window.addEventListener('beforeinstallprompt', (evt) => {
+      evt.preventDefault();
+      this.deferredPrompt = evt;
+      this.installButton.addEventListener('click', this.handleInstallClick);
+      this.installButton.parentElement.parentElement.classList.remove('hiddendiv');
+    });
+
     // custom click handler for Materialize Collapsibles
     const handleCollapsibleClick = M.Collapsible.prototype._handleCollapsibleClick;
     M.Collapsible.prototype._handleCollapsibleClick = function _handleCollapsibleClick(evt) {
@@ -125,7 +135,7 @@ export default class UI {
       screenName: this.screenName.value
     });
     return false;
-  };
+  }
 
   // click handler for test initiator button
   handleCheckClick = (evt) => {
@@ -145,6 +155,18 @@ export default class UI {
         toolTip.destroy();
       }, 5000);
     }
+  };
+
+  handleInstallClick = () => {
+    this.deferredPrompt.prompt();
+    this.deferredPrompt.userChoice.then((choice) => {
+      if (choice.outcome === 'accepted') {
+        this.installButton.classList.add('hiddendiv');
+      } else {
+        this.installButton.classList.remove('hiddendiv');
+      }
+      this.deferredPrompt = null;
+    });
   };
 
   unhandledError = () => {

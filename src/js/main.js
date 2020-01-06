@@ -1,6 +1,6 @@
 /*
 ** Twitter QFD Shadowban Checker
-** 2018 @Netzdenunziant (research), @raphaelbeerlin (implementation)
+** 2018-2020 @Netzdenunziant, @raphaelbeerlin
 */
 import 'materialize-css';
 import 'materialize-css/sass/materialize.scss';
