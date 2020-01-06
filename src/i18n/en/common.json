@@ -1,0 +1,15 @@
+{
+  "buttons": {
+    "check": "Check",
+    "support": "Support Us",
+    "install": "Install"
+  },
+  "title": "Is <span class=\"header-screen_name\">@{{screenName}}</span><br> shadowbanned on Twitter?",
+  "screenNameDefault": "username",
+  "qfSettingToast": "PLEASE NOTE: We can only detect the presence of specific bans or deboosting methods, not their absence. There may be others which we do not know or cannot easily test for.",
+  "supportModal": {
+    "content": "<h4>Support Us</h4><p>Shadowban.eu needs your help!</p><p>For over a year now (since 04/2018), shadowban.eu has given Twitter users all around the world an easy way to test their accounts.We have exposed and defeated the #QFD and our test results have been used as evidence in several law suits.<h6>We are running low on resources</h6><p>You may have noticed some problems with the site over the past few days. Those were due to our one-server solution not able to handle all the requests and the need for user accounts, testing for the newest addition, the deboosting test. Since Twitter decided to to enforce phone verification, we have to buy some SIM cards to be able to do so.</p>Just recently, we have furthermore identified a new shadowbanning method: <a href=\"https://twitter.com/search?q=%23TimelineTerminationBan&src=typed_query\" rel=\"noopener noreferrer\">#TimelineTerminationBan</a>. We have outlined it in our <a href=\"https://blog.shadowban.eu/#2019-10-16-here-we-go-again\" rel=\"noopener noreferrer\">first blogpost</a> and a new test is in development.</p><p>This then, however, requires a whole new approach of testing, which would definetly bring the current setup to its knees.</p><p>So if you feel that shadowban.eu brings you any value, please consider making a donation to our PayPal! Every bit helps keeping the site running and continuing our research.</p><h6>Thanks You! :)</h6>",
+    "donateButton": "Donate via PayPal",
+    "dismissButton": "No, thanks"
+  }
+}
